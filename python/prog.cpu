@@ -1,0 +1,19 @@
+CTA
+STA 60
+ADC 1
+STA 62
+LDA 1
+STA 64
+STA 66
+CLC
+loop:
+    LSA 66
+    MUL 64
+    STA 66
+    LSA 64
+    ADC 1
+    STA 64
+    CMPC 62
+    BNE loop
+    OTT 66
+    BRK

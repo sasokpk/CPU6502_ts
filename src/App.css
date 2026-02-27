@@ -1,0 +1,110 @@
+.app {
+  width: min(1100px, 100%);
+  margin: 0 auto;
+  padding: 24px;
+  display: grid;
+  gap: 16px;
+}
+
+.panel {
+  background: #121c2b;
+  border: 1px solid #2b3b56;
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+  align-items: end;
+  flex-wrap: wrap;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  color: #d6e0f0;
+  font-size: 14px;
+}
+
+input,
+textarea,
+button,
+pre {
+  font: inherit;
+}
+
+input,
+textarea {
+  background: #08111f;
+  color: #f2f6ff;
+  border: 1px solid #30435f;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+textarea {
+  min-height: 280px;
+}
+
+button {
+  background: #d5e6ff;
+  color: #0b1829;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.status {
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+
+.status.connected {
+  background: #163a24;
+  color: #7de3a3;
+}
+
+.status.connecting {
+  background: #453000;
+  color: #f8d77f;
+}
+
+.status.disconnected {
+  background: #422024;
+  color: #ff9ea8;
+}
+
+.error {
+  color: #ff9ea8;
+}
+
+pre {
+  background: #08111f;
+  border: 1px solid #30435f;
+  border-radius: 8px;
+  padding: 10px;
+  overflow-x: auto;
+  color: #d9e6ff;
+}
+
+.trace {
+  max-height: 300px;
+  overflow: auto;
+  border: 1px solid #30435f;
+  border-radius: 8px;
+  padding: 8px;
+  background: #08111f;
+}
+
+.traceRow {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: #cdd9ef;
+  font-size: 13px;
+  padding: 2px 0;
+}

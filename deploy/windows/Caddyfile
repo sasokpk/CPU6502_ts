@@ -1,0 +1,16 @@
+your-domain.example.com {
+  encode gzip zstd
+
+  root * C:\cpu6502\CPU6502_ts\dist
+  file_server
+
+  @ws path /ws*
+  reverse_proxy @ws 127.0.0.1:8765
+
+  header {
+    Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    X-Content-Type-Options "nosniff"
+    X-Frame-Options "DENY"
+    Referrer-Policy "same-origin"
+  }
+}
