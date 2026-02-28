@@ -16,6 +16,7 @@ type TraceEntry = {
   step: number
   opcode: number
   before: CpuState
+  memory_used?: Array<{ address: number; value: number }>
   after?: CpuState
   halted?: boolean
   error?: string
@@ -581,11 +582,19 @@ function App() {
               {result?.trace.length ? (
                 result.trace.slice(0, 300).map((entry) => (
                   <div key={entry.step} className="traceRow">
-                    <strong>#{entry.step}</strong> op:{formatHex(entry.opcode, 2)} PC:
-                    {formatHex(entry.before.PC)} A:{formatHex(entry.before.A)} X:
-                    {formatHex(entry.before.X)} Y:{formatHex(entry.before.Y)}
-                    {entry.error ? ` ERROR: ${entry.error}` : ''}
-                    {entry.halted ? ' HALTED' : ''}
+                    <div>
+                      <strong>#{entry.step}</strong> op:{formatHex(entry.opcode, 2)} PC:
+                      {formatHex(entry.before.PC)} A:{formatHex(entry.before.A)} X:
+                      {formatHex(entry.before.X)} Y:{formatHex(entry.before.Y)}
+                      {entry.error ? ` ERROR: ${entry.error}` : ''}
+                      {entry.halted ? ' HALTED' : ''}
+                    </div>
+                    <div className="memoryLine">
+                      MEM:{' '}
+                      {entry.memory_used?.length
+                        ? entry.memory_used.map((m) => `${formatHex(m.address)}:${formatHex(m.value, 2)}`).join(' ')
+                        : '-'}
+                    </div>
                   </div>
                 ))
               ) : (

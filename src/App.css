@@ -432,12 +432,19 @@ pre {
   line-height: 1.45;
   padding: 8px 4px;
   border-bottom: 1px solid var(--border-row);
+  display: grid;
+  gap: 4px;
 }
 
 .traceEmpty {
   color: var(--text-muted);
   font-size: 13px;
   padding: 12px 6px;
+}
+
+.memoryLine {
+  color: var(--text-muted);
+  font-size: 11px;
 }
 
 @media (max-width: 1100px) {
