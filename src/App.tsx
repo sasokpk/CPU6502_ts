@@ -261,7 +261,7 @@ function App() {
               <pre>
                 {result?.outputs.length
                   ? result.outputs
-                      .map((o) => `addr=${formatHex(o.address)} value=${formatHex(o.value)} (${o.value})`)
+                      .map((o) => `addr=${formatHex(o.address)} \n value=${formatHex(o.value)} (${o.value})`)
                       .join('\n')
                   : '-'}
               </pre>
