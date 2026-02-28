@@ -357,7 +357,8 @@ pre {
 }
 
 .consoleCard {
-  min-height: 170px;
+  height: 300px;
+  min-height: 300px;
   grid-template-rows: auto minmax(0, 1fr) auto;
 }
 
@@ -374,8 +375,9 @@ pre {
   border-radius: 10px;
   background: var(--surface-input);
   padding: 8px;
-  min-height: 90px;
-  max-height: 130px;
+  min-height: 0;
+  height: 100%;
+  max-height: none;
   overflow: auto;
   display: grid;
   gap: 4px;
