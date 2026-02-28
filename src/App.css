@@ -1,14 +1,22 @@
 .ide {
-  --violet-050: #f7f0ff;
-  --violet-100: #f1e5ff;
-  --violet-200: #e6d4ff;
-  --violet-300: #d8bcff;
-  --violet-400: #be97ff;
-  --violet-600: #7f4dd7;
-  --violet-700: #6434be;
-  --ink-900: #1f1630;
-  --ink-800: #2b1f41;
-  --ink-700: #3a2a59;
+  --surface-header: linear-gradient(125deg, #fff7ff 0%, #efe2ff 45%, #e9dbff 100%);
+  --surface-panel: #fffafd;
+  --surface-card: #f9f1ff;
+  --surface-input: #fcf8ff;
+  --surface-trace: #fcf8ff;
+  --surface-chip: #f1e5ff;
+  --surface-button-ghost: #f7ecff;
+  --surface-button-primary: linear-gradient(140deg, #cda8ff 0%, #b58eff 100%);
+  --border-main: #dec5ff;
+  --border-input: #d2bbf3;
+  --border-chip: #ceb2f7;
+  --border-row: #ead9ff;
+  --text-main: #1f1630;
+  --text-alt: #2b1f41;
+  --text-muted: #3a2a59;
+  --text-chip: #6434be;
+  --text-button-primary: #24113f;
+  --text-button-ghost: #4f258f;
   --ok-bg: #daf7e6;
   --ok-text: #0c6b33;
   --warn-bg: #fff2d7;
@@ -23,13 +31,40 @@
   gap: 16px;
 }
 
+.ide[data-theme='dark'] {
+  --surface-header: linear-gradient(125deg, #241037 0%, #1e1237 45%, #1a1033 100%);
+  --surface-panel: #1f1530;
+  --surface-card: #25183c;
+  --surface-input: #2a1d43;
+  --surface-trace: #2a1d43;
+  --surface-chip: #2e1f4f;
+  --surface-button-ghost: #2b1d45;
+  --surface-button-primary: linear-gradient(140deg, #8f67d8 0%, #744fc4 100%);
+  --border-main: #4b3474;
+  --border-input: #573e86;
+  --border-chip: #694ca3;
+  --border-row: #4f397d;
+  --text-main: #f1e8ff;
+  --text-alt: #e8dcff;
+  --text-muted: #cfbbf5;
+  --text-chip: #d4b8ff;
+  --text-button-primary: #f5efff;
+  --text-button-ghost: #e4d0ff;
+  --ok-bg: #214c38;
+  --ok-text: #95e3b7;
+  --warn-bg: #5b4420;
+  --warn-text: #f2d79e;
+  --bad-bg: #5b2736;
+  --bad-text: #ffc2d4;
+}
+
 .ideHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  background: linear-gradient(125deg, #fff7ff 0%, #efe2ff 45%, #e9dbff 100%);
-  border: 1px solid #dfc8ff;
+  background: var(--surface-header);
+  border: 1px solid var(--border-main);
   border-radius: 14px;
   padding: 14px 16px;
 }
@@ -39,13 +74,13 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-size: 11px;
-  color: #866bb4;
+  color: var(--text-muted);
 }
 
 h1 {
   margin: 2px 0 0;
   font-size: 1.45rem;
-  color: var(--ink-900);
+  color: var(--text-main);
 }
 
 .headerActions {
@@ -62,8 +97,8 @@ h1 {
 }
 
 .pane {
-  background: #fffafd;
-  border: 1px solid #dec5ff;
+  background: var(--surface-panel);
+  border: 1px solid var(--border-main);
   border-radius: 14px;
   padding: 12px;
   display: grid;
@@ -79,19 +114,19 @@ h1 {
 h2 {
   margin: 0;
   font-size: 1.02rem;
-  color: var(--ink-900);
+  color: var(--text-main);
 }
 
 h3 {
   margin: 0;
-  color: var(--ink-800);
+  color: var(--text-alt);
   font-size: 0.9rem;
 }
 
 .chip {
-  border: 1px solid #ceb2f7;
-  background: var(--violet-100);
-  color: var(--violet-700);
+  border: 1px solid var(--border-chip);
+  background: var(--surface-chip);
+  color: var(--text-chip);
   border-radius: 999px;
   padding: 4px 10px;
   font-size: 12px;
@@ -103,7 +138,7 @@ h3 {
 .fieldLabel {
   display: grid;
   gap: 6px;
-  color: var(--ink-700);
+  color: var(--text-muted);
   font-size: 13px;
   font-weight: 600;
 }
@@ -130,9 +165,9 @@ pre {
 input,
 textarea {
   width: 100%;
-  background: #fcf8ff;
-  border: 1px solid #d2bbf3;
-  color: #26183f;
+  background: var(--surface-input);
+  border: 1px solid var(--border-input);
+  color: var(--text-main);
   border-radius: 10px;
   padding: 10px 12px;
 }
@@ -154,14 +189,14 @@ button {
 }
 
 .primaryButton {
-  background: linear-gradient(140deg, #cda8ff 0%, #b58eff 100%);
-  color: #24113f;
+  background: var(--surface-button-primary);
+  color: var(--text-button-primary);
 }
 
 .ghostButton {
-  background: #f7ecff;
-  border-color: #d5b5ff;
-  color: #4f258f;
+  background: var(--surface-button-ghost);
+  border-color: var(--border-input);
+  color: var(--text-button-ghost);
 }
 
 .status {
@@ -190,9 +225,9 @@ button {
 
 .errorBanner {
   margin: 0;
-  background: #ffe4f0;
-  border: 1px solid #f6b4c8;
-  color: #8a1035;
+  background: var(--bad-bg);
+  border: 1px solid var(--bad-text);
+  color: var(--bad-text);
   border-radius: 10px;
   padding: 10px 12px;
   font-weight: 600;
@@ -209,8 +244,8 @@ button {
 }
 
 .miniCard {
-  background: #f9f1ff;
-  border: 1px solid #dec2ff;
+  background: var(--surface-card);
+  border: 1px solid var(--border-main);
   border-radius: 10px;
   padding: 8px;
   display: grid;
@@ -221,9 +256,9 @@ button {
 
 pre {
   margin: 0;
-  background: #fcf8ff;
-  border: 1px solid #d2bbf3;
-  color: #26183f;
+  background: var(--surface-input);
+  border: 1px solid var(--border-input);
+  color: var(--text-main);
   border-radius: 8px;
   padding: 10px;
   overflow-y: auto;
@@ -248,23 +283,23 @@ pre {
 .trace {
   height: 320px;
   overflow: auto;
-  border: 1px solid #d2bbf3;
+  border: 1px solid var(--border-input);
   border-radius: 10px;
   padding: 8px;
-  background: #fcf8ff;
+  background: var(--surface-trace);
 }
 
 .traceRow {
   font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", Menlo, monospace;
-  color: #26183f;
+  color: var(--text-main);
   font-size: 12px;
   line-height: 1.45;
   padding: 3px 2px;
-  border-bottom: 1px solid #ead9ff;
+  border-bottom: 1px solid var(--border-row);
 }
 
 .traceEmpty {
-  color: #7c5ba8;
+  color: var(--text-muted);
   font-size: 13px;
   padding: 8px 4px;
 }

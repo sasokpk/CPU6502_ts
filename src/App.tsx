@@ -64,6 +64,11 @@ const resolveDefaultWsUrl = () => {
 }
 
 function App() {
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window === 'undefined') return 'light'
+    const stored = window.localStorage.getItem('cpu6502-theme')
+    return stored === 'dark' ? 'dark' : 'light'
+  })
   const [wsUrl, setWsUrl] = useState(resolveDefaultWsUrl)
   const [status, setStatus] = useState<'disconnected' | 'connecting' | 'connected'>(
     'disconnected',
@@ -110,6 +115,10 @@ function App() {
     return () => socketRef.current?.close()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    window.localStorage.setItem('cpu6502-theme', theme)
+  }, [theme])
 
   const request = (type: string, payload: Record<string, unknown>) =>
     new Promise<any>((resolve, reject) => {
@@ -169,13 +178,20 @@ function App() {
   const formatHex = (value: number, width = 4) => value.toString(16).toUpperCase().padStart(width, '0')
 
   return (
-    <main className="ide">
+    <main className="ide" data-theme={theme}>
       <header className="ideHeader">
         <div>
           <p className="kicker">6502 online workspace</p>
           <h1>CPU6502 Assembly Runner</h1>
         </div>
         <div className="headerActions">
+          <button
+            type="button"
+            className="ghostButton"
+            onClick={() => setTheme((current) => (current === 'light' ? 'dark' : 'light'))}
+          >
+            {theme === 'light' ? 'Dark theme' : 'Light theme'}
+          </button>
           <button type="button" className="ghostButton" onClick={connect}>
             Reconnect
           </button>
