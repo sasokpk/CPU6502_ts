@@ -1,9 +1,9 @@
 :root {
-  font-family: Inter, "Segoe UI", sans-serif;
+  font-family: "Manrope", "IBM Plex Sans", "Segoe UI", sans-serif;
   line-height: 1.4;
   font-weight: 400;
-  color: #f5f9ff;
-  background: radial-gradient(circle at 20% 10%, #1e3458 0%, #0a1320 45%, #050a11 100%);
+  color: #231737;
+  background: radial-gradient(circle at 10% 8%, #f4e6ff 0%, #ead7ff 42%, #ddc4ff 100%);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

@@ -169,85 +169,114 @@ function App() {
   const formatHex = (value: number, width = 4) => value.toString(16).toUpperCase().padStart(width, '0')
 
   return (
-    <main className="app">
-      <h1>CPU6502 Emulator</h1>
-
-      <section className="panel">
-        <div className="row">
-          <label>
-            WS URL
-            <input value={wsUrl} onChange={(e) => setWsUrl(e.target.value)} />
-          </label>
-          <button type="button" onClick={connect}>
+    <main className="ide">
+      <header className="ideHeader">
+        <div>
+          <p className="kicker">6502 online workspace</p>
+          <h1>CPU6502 Assembly Runner</h1>
+        </div>
+        <div className="headerActions">
+          <button type="button" className="ghostButton" onClick={connect}>
             Reconnect
           </button>
           <span className={`status ${status}`}>{status}</span>
         </div>
-      </section>
+      </header>
 
-      <section className="panel">
-        <label>
-          Assembly source
-          <textarea value={source} onChange={(e) => setSource(e.target.value)} rows={18} />
-        </label>
-        <div className="row">
-          <label>
-            Inputs (hex, comma separated)
-            <input value={inputs} onChange={(e) => setInputs(e.target.value)} />
-          </label>
-          <label>
-            Max steps
-            <input
-              type="number"
-              min={1}
-              value={maxSteps}
-              onChange={(e) => setMaxSteps(Number(e.target.value) || 1000)}
-            />
-          </label>
-        </div>
-        <div className="row">
-          <button type="button" onClick={onAssemble}>
-            Assemble
-          </button>
-          <button type="button" onClick={onRun}>
-            Run
-          </button>
-        </div>
-      </section>
+      {error ? <p className="errorBanner">{error}</p> : null}
 
-      {error ? <p className="error">{error}</p> : null}
-
-      <section className="panel">
-        <h2>Program bytes</h2>
-        <pre>{assembled.map((x) => formatHex(x, 2)).join(' ') || '-'}</pre>
-      </section>
-
-      {result ? (
-        <section className="panel">
-          <h2>Final state</h2>
-          <pre>{JSON.stringify(result.final_state, null, 2)}</pre>
-          <h2>Outputs</h2>
-          <pre>
-            {result.outputs.length
-              ? result.outputs
-                  .map((o) => `addr=${formatHex(o.address)} value=${formatHex(o.value)} (${o.value})`)
-                  .join('\n')
-              : '-'}
-          </pre>
-          <h2>Trace ({result.trace.length} steps)</h2>
-          <div className="trace">
-            {result.trace.slice(0, 300).map((entry) => (
-              <div key={entry.step} className="traceRow">
-                <strong>#{entry.step}</strong> op:{formatHex(entry.opcode, 2)} PC:
-                {formatHex(entry.before.PC)} A:{formatHex(entry.before.A)} X:
-                {formatHex(entry.before.X)} Y:{formatHex(entry.before.Y)}
-                {entry.error ? ` ERROR: ${entry.error}` : ''}
-                {entry.halted ? ' HALTED' : ''}
-              </div>
-            ))}
+      <section className="workspace">
+        <article className="pane editorPane">
+          <div className="paneHead">
+            <h2>Editor</h2>
+            <span className="chip">assembly</span>
           </div>
-        </section>
-      ) : null}
+
+          <label className="fieldLabel">
+            WS endpoint
+            <input value={wsUrl} onChange={(e) => setWsUrl(e.target.value)} />
+          </label>
+
+          <label className="fieldLabel">
+            Source code
+            <textarea value={source} onChange={(e) => setSource(e.target.value)} rows={20} />
+          </label>
+
+          <div className="controlRow">
+            <label className="fieldLabel compact">
+              Inputs (hex)
+              <input value={inputs} onChange={(e) => setInputs(e.target.value)} />
+            </label>
+            <label className="fieldLabel compact">
+              Max steps
+              <input
+                type="number"
+                min={1}
+                value={maxSteps}
+                onChange={(e) => setMaxSteps(Number(e.target.value) || 1000)}
+              />
+            </label>
+          </div>
+
+          <div className="actionRow">
+            <button type="button" className="primaryButton" onClick={onRun}>
+              Run
+            </button>
+            <button type="button" className="ghostButton" onClick={onAssemble}>
+              Assemble
+            </button>
+          </div>
+        </article>
+
+        <article className="pane outputPane">
+          <div className="paneHead">
+            <h2>Output</h2>
+            <span className="chip">runtime</span>
+          </div>
+
+          <div className="cardGrid">
+            <section className="miniCard">
+              <h3>Program bytes</h3>
+              <pre>{assembled.map((x) => formatHex(x, 2)).join(' ') || '-'}</pre>
+            </section>
+
+            <section className="miniCard">
+              <h3>Outputs</h3>
+              <pre>
+                {result?.outputs.length
+                  ? result.outputs
+                      .map((o) => `addr=${formatHex(o.address)} value=${formatHex(o.value)} (${o.value})`)
+                      .join('\n')
+                  : '-'}
+              </pre>
+            </section>
+
+            <section className="miniCard">
+              <h3>Final state</h3>
+              <pre>{result ? JSON.stringify(result.final_state, null, 2) : '-'}</pre>
+            </section>
+          </div>
+
+          <section className="traceBlock">
+            <h3>Execution trace {result ? `(${result.trace.length} steps)` : ''}</h3>
+            <div className="trace">
+              {result?.trace.length ? (
+                result.trace.slice(0, 300).map((entry) => (
+                  <div key={entry.step} className="traceRow">
+                    <strong>#{entry.step}</strong> op:{formatHex(entry.opcode, 2)} PC:
+                    {formatHex(entry.before.PC)} A:{formatHex(entry.before.A)} X:
+                    {formatHex(entry.before.X)} Y:{formatHex(entry.before.Y)}
+                    {entry.error ? ` ERROR: ${entry.error}` : ''}
+                    {entry.halted ? ' HALTED' : ''}
+                  </div>
+                ))
+              ) : (
+                <div className="traceEmpty">No trace yet. Click Run to execute program.</div>
+              )}
+            </div>
+          </section>
+        </article>
+      </section>
     </main>
   )
 }
