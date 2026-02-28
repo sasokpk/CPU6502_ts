@@ -235,6 +235,80 @@ button {
   font-weight: 600;
 }
 
+.helpPanel {
+  background: var(--surface-panel);
+  border: 1px solid var(--border-main);
+  border-radius: 24px;
+  padding: 16px 20px;
+}
+
+.helpPanel summary {
+  cursor: pointer;
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.instructionGrid {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.instructionGroup {
+  background: var(--surface-card);
+  border: 1px solid var(--border-main);
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.instructionGroup ul {
+  margin: 10px 0 0;
+  padding-left: 22px;
+  color: var(--text-muted);
+  font-size: 14px;
+  display: grid;
+  gap: 6px;
+}
+
+.editorWrap {
+  position: relative;
+}
+
+.hintBox {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 8px;
+  margin: 0 8px;
+  border: 1px solid var(--border-input);
+  background: var(--surface-panel);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  z-index: 10;
+}
+
+.hintItem {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-bottom: 1px solid var(--border-row);
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-main);
+  font-size: 16px;
+  padding: 8px 10px;
+}
+
+.hintItem:last-child {
+  border-bottom: 0;
+}
+
+.hintItem.active {
+  background: var(--surface-chip);
+}
+
 .outputPane {
   grid-template-rows: auto auto minmax(0, 1fr);
 }
@@ -310,6 +384,10 @@ pre {
   .workspace {
     grid-template-columns: 1fr;
     min-height: auto;
+  }
+
+  .instructionGrid {
+    grid-template-columns: 1fr;
   }
 
   .cardGrid {
