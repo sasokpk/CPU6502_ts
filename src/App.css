@@ -93,7 +93,7 @@ h1 {
 .workspace {
   min-height: calc(100vh - 190px);
   display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
+  grid-template-columns: 0.85fr 1.15fr;
   gap: 24px;
 }
 
@@ -174,10 +174,10 @@ textarea {
 }
 
 textarea {
-  min-height: 760px;
+  min-height: 520px;
   resize: vertical;
   font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", Menlo, monospace;
-  font-size: 24px;
+  font-size: 18px;
   line-height: 1.45;
 }
 
@@ -253,7 +253,7 @@ button {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   gap: 10px;
-  min-height: 560px;
+  min-height: 360px;
 }
 
 pre {
@@ -268,7 +268,7 @@ pre {
   white-space: pre-wrap;
   word-break: break-word;
   font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", Menlo, monospace;
-  font-size: 21px;
+  font-size: 16px;
 }
 
 .miniCard pre {
@@ -283,7 +283,7 @@ pre {
 }
 
 .trace {
-  height: 620px;
+  height: 440px;
   overflow: auto;
   border: 1px solid var(--border-input);
   border-radius: 16px;
@@ -294,7 +294,7 @@ pre {
 .traceRow {
   font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", Menlo, monospace;
   color: var(--text-main);
-  font-size: 20px;
+  font-size: 15px;
   line-height: 1.45;
   padding: 8px 4px;
   border-bottom: 1px solid var(--border-row);
@@ -302,7 +302,7 @@ pre {
 
 .traceEmpty {
   color: var(--text-muted);
-  font-size: 22px;
+  font-size: 16px;
   padding: 12px 6px;
 }
 
