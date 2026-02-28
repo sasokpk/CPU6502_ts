@@ -58,35 +58,99 @@ BRK`
 
 const INSTRUCTION_HELP = [
   {
+    title: 'Регистры CPU',
+    items: [
+      'A (Accumulator) — главный регистр для арифметики/логики',
+      'X, Y — индексные регистры для промежуточных значений',
+      'PC — счетчик команд (адрес следующей инструкции)',
+      'SP — указатель стека (в этом учебном наборе почти не используется)',
+      'P — флаговый регистр состояния',
+    ],
+  },
+  {
+    title: 'Флаги (P)',
+    items: [
+      'C (Carry) — перенос/заем после ADC/SBC/CMP/CPX/CMPC',
+      'Z (Zero) — 1, если результат операции равен 0',
+      'N (Negative) — 1, если установлен старший бит результата',
+      'V (Overflow) — переполнение знакового диапазона',
+      'I, D, B — служебные флаги (в учебной версии вторичны)',
+      'CLC — принудительно сбрасывает Carry (C=0)',
+    ],
+  },
+  {
     title: 'Загрузка регистров',
-    items: ['LDA nn — A <- nn', 'LDX nn — X <- nn', 'LDY nn — Y <- nn'],
+    items: [
+      'LDA nn — A <- nn (16-bit immediate)',
+      'LDX nn — X <- nn',
+      'LDY nn — Y <- nn',
+      'После загрузки обновляются Z и N',
+    ],
   },
   {
     title: 'Арифметика',
-    items: ['ADC nn — A <- A + nn + C', 'SBC nn — A <- A - nn - (1 - C)', 'MUL nn — A <- A * nn'],
+    items: [
+      'ADC nn — A <- A + nn + C (учитывает Carry как +1)',
+      'SBC nn — A <- A - nn - (1 - C)',
+      'MUL nn — A <- A * M[nn] (16-битный результат)',
+      'MULM aa — M[aa] <- A * M[aa], запись обратно в память',
+    ],
   },
   {
     title: 'Сравнение',
-    items: ['CMP nn — flags from A - nn', 'CPX nn — flags from X - nn', 'CMPC aa — flags from A - M[aa]'],
+    items: [
+      'CMP nn — сравнение A и nn (через A - nn, без изменения A)',
+      'CPX nn — сравнение X и nn',
+      'CMPC aa — сравнение A и значения из памяти M[aa]',
+      'Эти команды обновляют C/Z/N и влияют на ветвления',
+    ],
   },
   {
     title: 'Логика',
-    items: ['AND nn — A <- A AND nn', 'ORA nn — A <- A OR nn', 'EOR nn — A <- A XOR nn'],
+    items: [
+      'AND nn — A <- A AND nn',
+      'ORA nn — A <- A OR nn',
+      'EOR nn — A <- A XOR nn',
+      'После логики обновляются Z/N',
+    ],
   },
   {
     title: 'Память',
-    items: ['STA aa — M[aa] <- A', 'LSA aa — A <- M[aa]', 'STX aa — M[aa] <- X', 'LSX aa — X <- M[aa]'],
+    items: [
+      'STA aa — M[aa] <- A (запись 16-bit значения в память)',
+      'LSA aa — A <- M[aa] (чтение 16-bit из памяти)',
+      'STX aa — M[aa] <- X',
+      'LSX aa — X <- M[aa]',
+    ],
   },
   {
     title: 'Ввод/вывод',
-    items: ['CTA — A <- input', 'OTT aa — output M[aa]'],
+    items: [
+      'CTA — A <- input из очереди консоли',
+      'OTT aa — вывод значения M[aa] в консоль',
+      'Если очередь input пуста, берется 0',
+    ],
   },
   {
-    title: 'Переходы и служебные',
+    title: 'Переходы (branch/jump)',
     items: [
-      'BEQ/BNE/BCS/BCC/BMI/BPL/BVS/BVC label',
-      'JMP label/aa',
-      'CLC, NOP, BRK, TAX, label:',
+      'BEQ label — переход если Z=1 (результат был ноль)',
+      'BNE label — переход если Z=0',
+      'BCS/BCC — переход по Carry (C=1/C=0)',
+      'BMI/BPL — переход по знаку (N=1/N=0)',
+      'BVS/BVC — переход по Overflow (V=1/V=0)',
+      'JMP label/aa — безусловный переход',
+      'Branch использует относительное смещение (диапазон -128..127)',
+    ],
+  },
+  {
+    title: 'Служебные и синтаксис',
+    items: [
+      'NOP — пустая операция (ничего не делает)',
+      'BRK — завершение программы',
+      'TAX / XTA — перенос между A и X',
+      'label: — объявление метки',
+      'Комментарии: строки с # или ; игнорируются',
     ],
   },
 ]
