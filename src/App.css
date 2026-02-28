@@ -277,10 +277,7 @@ button {
 
 .hintBox {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 8px;
-  margin: 0 8px;
+  width: 240px;
   border: 1px solid var(--border-input);
   background: var(--surface-panel);
   border-radius: 12px;

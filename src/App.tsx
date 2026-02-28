@@ -153,6 +153,7 @@ function App() {
   const [hints, setHints] = useState<string[]>([])
   const [hintIndex, setHintIndex] = useState(0)
   const [hintRange, setHintRange] = useState<{ start: number; end: number } | null>(null)
+  const [hintPos, setHintPos] = useState<{ top: number; left: number } | null>(null)
 
   const socketRef = useRef<WebSocket | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
@@ -252,6 +253,56 @@ function App() {
 
   const formatHex = (value: number, width = 4) => value.toString(16).toUpperCase().padStart(width, '0')
 
+  const getCaretPositionInTextarea = (textarea: HTMLTextAreaElement, pos: number) => {
+    const mirror = document.createElement('div')
+    const style = window.getComputedStyle(textarea)
+    const copied = [
+      'fontFamily',
+      'fontSize',
+      'fontWeight',
+      'lineHeight',
+      'letterSpacing',
+      'paddingTop',
+      'paddingRight',
+      'paddingBottom',
+      'paddingLeft',
+      'borderTopWidth',
+      'borderRightWidth',
+      'borderBottomWidth',
+      'borderLeftWidth',
+      'boxSizing',
+      'textTransform',
+      'textIndent',
+      'whiteSpace',
+      'wordBreak',
+      'overflowWrap',
+    ] as const
+
+    mirror.style.position = 'absolute'
+    mirror.style.visibility = 'hidden'
+    mirror.style.whiteSpace = 'pre-wrap'
+    mirror.style.wordBreak = 'break-word'
+    mirror.style.overflowWrap = 'break-word'
+    mirror.style.width = `${textarea.clientWidth}px`
+
+    copied.forEach((key) => {
+      mirror.style[key] = style[key]
+    })
+
+    mirror.textContent = textarea.value.slice(0, pos)
+    const span = document.createElement('span')
+    span.textContent = textarea.value.slice(pos) || ' '
+    mirror.appendChild(span)
+    document.body.appendChild(mirror)
+
+    const coords = {
+      top: span.offsetTop - textarea.scrollTop,
+      left: span.offsetLeft - textarea.scrollLeft,
+    }
+    document.body.removeChild(mirror)
+    return coords
+  }
+
   const updateHints = (text: string, caret: number) => {
     const lineStart = text.lastIndexOf('\n', Math.max(0, caret - 1)) + 1
     const lineEndIndex = text.indexOf('\n', caret)
@@ -263,6 +314,7 @@ function App() {
     if (!token) {
       setHints([])
       setHintRange(null)
+      setHintPos(null)
       return
     }
 
@@ -270,12 +322,20 @@ function App() {
     if (!found.length) {
       setHints([])
       setHintRange(null)
+      setHintPos(null)
       return
     }
 
     setHints(found)
     setHintIndex(0)
     setHintRange({ start: lineStart + (tokenMatch?.[0].length ?? 0) - token.length, end: lineStart + (tokenMatch?.[0].length ?? 0) })
+
+    if (textareaRef.current) {
+      const caretPos = getCaretPositionInTextarea(textareaRef.current, caret)
+      const editorWidth = textareaRef.current.clientWidth
+      const nextLeft = Math.min(editorWidth - 250, caretPos.left + 24)
+      setHintPos({ top: Math.max(8, caretPos.top - 10), left: Math.max(8, nextLeft) })
+    }
   }
 
   const applyHint = (hint: string) => {
@@ -286,6 +346,7 @@ function App() {
     setSource(next)
     setHints([])
     setHintRange(null)
+    setHintPos(null)
 
     requestAnimationFrame(() => {
       const pos = hintRange.start + hint.length + 1
@@ -369,17 +430,18 @@ function App() {
                   } else if (e.key === 'ArrowUp') {
                     e.preventDefault()
                     setHintIndex((idx) => (idx - 1 + hints.length) % hints.length)
-                  } else if (e.key === 'Tab' || e.key === 'Enter') {
+                  } else if (e.key === 'Tab') {
                     e.preventDefault()
                     applyHint(hints[hintIndex])
                   } else if (e.key === 'Escape') {
                     setHints([])
+                    setHintPos(null)
                   }
                 }}
                 rows={20}
               />
               {hints.length ? (
-                <div className="hintBox">
+                <div className="hintBox" style={{ top: hintPos?.top ?? 8, left: hintPos?.left ?? 8 }}>
                   {hints.map((hint, idx) => (
                     <button
                       key={hint}
