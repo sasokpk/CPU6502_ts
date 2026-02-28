@@ -174,7 +174,7 @@ textarea {
 }
 
 textarea {
-  min-height: 520px;
+  min-height: 420px;
   resize: vertical;
   font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", Menlo, monospace;
   font-size: 18px;
@@ -253,7 +253,7 @@ button {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   gap: 10px;
-  min-height: 360px;
+  min-height: 290px;
 }
 
 pre {
@@ -283,7 +283,7 @@ pre {
 }
 
 .trace {
-  height: 440px;
+  height: 350px;
   overflow: auto;
   border: 1px solid var(--border-input);
   border-radius: 16px;
