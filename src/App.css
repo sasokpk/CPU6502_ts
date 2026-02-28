@@ -219,9 +219,9 @@ button {
 
 pre {
   margin: 0;
-  background: #26183f;
-  border: 1px solid #3b2660;
-  color: #efdfff;
+  background: #fcf8ff;
+  border: 1px solid #d2bbf3;
+  color: #26183f;
   border-radius: 8px;
   padding: 10px;
   overflow-x: auto;
@@ -237,26 +237,25 @@ pre {
 }
 
 .trace {
-  min-height: 220px;
-  max-height: 100%;
+  height: 320px;
   overflow: auto;
-  border: 1px solid #3b2660;
+  border: 1px solid #d2bbf3;
   border-radius: 10px;
   padding: 8px;
-  background: #26183f;
+  background: #fcf8ff;
 }
 
 .traceRow {
   font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", Menlo, monospace;
-  color: #f4e6ff;
+  color: #26183f;
   font-size: 12px;
   line-height: 1.45;
   padding: 3px 2px;
-  border-bottom: 1px solid rgba(196, 157, 255, 0.14);
+  border-bottom: 1px solid #ead9ff;
 }
 
 .traceEmpty {
-  color: #d7b4ff;
+  color: #7c5ba8;
   font-size: 13px;
   padding: 8px 4px;
 }
