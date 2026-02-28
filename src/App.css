@@ -23,6 +23,9 @@
   --warn-text: #8b5a00;
   --bad-bg: #ffe4ec;
   --bad-text: #9e1842;
+  --editor-height: clamp(220px, 40vh, 520px);
+  --console-height: clamp(170px, 26vh, 320px);
+  --trace-height: clamp(130px, 20vh, 240px);
 
   width: 100%;
   max-width: none;
@@ -176,7 +179,8 @@ textarea {
 }
 
 textarea {
-  min-height: 240px;
+  min-height: var(--editor-height);
+  max-height: 62vh;
   resize: vertical;
   font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", Menlo, monospace;
   font-size: 16px;
@@ -358,8 +362,8 @@ pre {
 }
 
 .consoleCard {
-  height: 210px;
-  min-height: 210px;
+  height: var(--console-height);
+  min-height: var(--console-height);
   grid-template-rows: auto minmax(0, 1fr) auto;
 }
 
@@ -421,7 +425,7 @@ pre {
 }
 
 .trace {
-  height: 140px;
+  height: var(--trace-height);
   overflow: auto;
   border: 1px solid var(--border-input);
   border-radius: 10px;
@@ -462,7 +466,17 @@ pre {
   }
 
   textarea {
-    min-height: 220px;
+    min-height: clamp(180px, 34vh, 300px);
+    max-height: 48vh;
+  }
+
+  .consoleCard {
+    height: clamp(160px, 24vh, 260px);
+    min-height: clamp(160px, 24vh, 260px);
+  }
+
+  .trace {
+    height: clamp(120px, 22vh, 200px);
   }
 
   .consoleControls {
