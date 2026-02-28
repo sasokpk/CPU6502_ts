@@ -30,6 +30,11 @@ type RunResult = {
   final_state: CpuState
 }
 
+type ConsoleEntry = {
+  kind: 'input' | 'output' | 'info' | 'error'
+  text: string
+}
+
 const DEFAULT_SOURCE = `CTA
 STA 60
 ADC 1
@@ -145,11 +150,15 @@ function App() {
     'disconnected',
   )
   const [source, setSource] = useState(DEFAULT_SOURCE)
-  const [inputs, setInputs] = useState('5')
+  const [consoleInput, setConsoleInput] = useState('')
+  const [inputQueue, setInputQueue] = useState<number[]>([0x5])
   const [maxSteps, setMaxSteps] = useState(1000)
   const [assembled, setAssembled] = useState<number[]>([])
   const [result, setResult] = useState<RunResult | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [consoleEntries, setConsoleEntries] = useState<ConsoleEntry[]>([
+    { kind: 'info', text: 'Console ready. Add hex input values and press Run.' },
+  ])
   const [hints, setHints] = useState<string[]>([])
   const [hintIndex, setHintIndex] = useState(0)
   const [hintRange, setHintRange] = useState<{ start: number; end: number } | null>(null)
@@ -216,12 +225,28 @@ function App() {
       }, 10000)
     })
 
-  const parseInputs = () =>
-    inputs
-      .split(',')
-      .map((v) => v.trim())
-      .filter(Boolean)
-      .map((v) => Number.parseInt(v, 16))
+  const parseConsoleNumber = (value: string) => {
+    const raw = value.trim()
+    if (!raw) return null
+    const normalized = raw.toLowerCase().startsWith('0x') ? raw.slice(2) : raw
+    if (!/^[0-9a-f]+$/i.test(normalized)) return null
+    return Number.parseInt(normalized, 16)
+  }
+
+  const pushConsoleEntry = (entry: ConsoleEntry) => {
+    setConsoleEntries((prev) => [...prev, entry].slice(-400))
+  }
+
+  const addConsoleInput = () => {
+    const parsed = parseConsoleNumber(consoleInput)
+    if (parsed === null) {
+      pushConsoleEntry({ kind: 'error', text: `Invalid input '${consoleInput}'. Use hex: 0A or 0x0A.` })
+      return
+    }
+    setInputQueue((prev) => [...prev, parsed & 0xffff])
+    pushConsoleEntry({ kind: 'input', text: `queued ${parsed.toString(16).toUpperCase()} (${parsed})` })
+    setConsoleInput('')
+  }
 
   const onAssemble = async () => {
     setError(null)
@@ -238,20 +263,41 @@ function App() {
     setError(null)
     setResult(null)
     try {
+      pushConsoleEntry({ kind: 'info', text: `Run started, queued inputs: ${inputQueue.length}` })
       const response = await request('run', {
         source,
         maxSteps,
-        inputs: parseInputs(),
+        inputs: inputQueue,
       })
       if (response.type === 'error') throw new Error(response.error)
-      setResult(response as RunResult)
-      setAssembled(response.program ?? [])
+      const runResult = response as RunResult
+      setResult(runResult)
+      setAssembled(runResult.program ?? [])
+      if (runResult.outputs.length) {
+        runResult.outputs.forEach((output) => {
+          pushConsoleEntry({
+            kind: 'output',
+            text: `${output.value.toString(16).toUpperCase()} (${output.value}) from ${output.address.toString(16).toUpperCase()}`,
+          })
+        })
+      } else {
+        pushConsoleEntry({ kind: 'info', text: 'Run finished with no output.' })
+      }
     } catch (e) {
       setError((e as Error).message)
+      pushConsoleEntry({ kind: 'error', text: (e as Error).message })
     }
   }
 
   const formatHex = (value: number, width = 4) => value.toString(16).toUpperCase().padStart(width, '0')
+  const formatStateLine = (state: CpuState | null) => {
+    if (!state) return '-'
+    const flags = Object.entries(state.flags)
+      .filter(([, active]) => active)
+      .map(([flag]) => flag)
+      .join('') || '-'
+    return `PC:${formatHex(state.PC)} A:${formatHex(state.A)} X:${formatHex(state.X)} Y:${formatHex(state.Y)} SP:${formatHex(state.SP, 2)} P:${formatHex(state.P, 2)} CYC:${state.cycles} FL:${flags}`
+  }
 
   const getCaretPositionInTextarea = (textarea: HTMLTextAreaElement, pos: number) => {
     const mirror = document.createElement('div')
@@ -462,10 +508,6 @@ function App() {
 
           <div className="controlRow">
             <label className="fieldLabel compact">
-              Inputs (hex)
-              <input value={inputs} onChange={(e) => setInputs(e.target.value)} />
-            </label>
-            <label className="fieldLabel compact">
               Max steps
               <input
                 type="number"
@@ -492,28 +534,48 @@ function App() {
             <span className="chip">runtime</span>
           </div>
 
-          <div className="cardGrid">
-            <section className="miniCard">
-              <h3>Program bytes</h3>
-              <pre>{assembled.map((x) => formatHex(x, 2)).join(' ') || '-'}</pre>
-            </section>
+          <section className="miniCard fullWidthCard">
+            <h3>Program bytes</h3>
+            <pre>{assembled.map((x) => formatHex(x, 2)).join(' ') || '-'}</pre>
+          </section>
 
-            <section className="miniCard">
-              <h3>Outputs</h3>
-              <pre>
-                {result?.outputs.length
-                  ? result.outputs
-                      .map((o) => `addr=${formatHex(o.address)} \n value=${formatHex(o.value)} (${o.value})`)
-                      .join('\n')
-                  : '-'}
-              </pre>
-            </section>
+          <section className="miniCard fullWidthCard slimCard">
+            <h3>Final state</h3>
+            <pre>{formatStateLine(result?.final_state ?? null)}</pre>
+          </section>
 
-            <section className="miniCard">
-              <h3>Final state</h3>
-              <pre>{result ? JSON.stringify(result.final_state, null, 2) : '-'}</pre>
-            </section>
-          </div>
+          <section className="miniCard fullWidthCard consoleCard">
+            <div className="consoleHeader">
+              <h3>Console</h3>
+              <span>queue: {inputQueue.length}</span>
+            </div>
+            <div className="consoleLog">
+              {consoleEntries.map((entry, idx) => (
+                <div key={`${entry.kind}-${idx}`} className={`consoleLine ${entry.kind}`}>
+                  {entry.kind.toUpperCase()}: {entry.text}
+                </div>
+              ))}
+            </div>
+            <div className="consoleControls">
+              <input
+                value={consoleInput}
+                onChange={(e) => setConsoleInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    addConsoleInput()
+                  }
+                }}
+                placeholder="hex input (0A / 0x0A)"
+              />
+              <button type="button" className="ghostButton" onClick={addConsoleInput}>
+                Add
+              </button>
+              <button type="button" className="ghostButton" onClick={() => setConsoleEntries([])}>
+                Clear
+              </button>
+            </div>
+          </section>
 
           <section className="traceBlock">
             <h3>Execution trace {result ? `(${result.trace.length} steps)` : ''}</h3>

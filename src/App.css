@@ -24,12 +24,13 @@
   --bad-bg: #ffe4ec;
   --bad-text: #9e1842;
 
-  width: min(1800px, 100%);
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
-  padding: 44px;
+  padding: 26px;
   display: grid;
   gap: 28px;
-  font-size: 2rem;
+  font-size: 1rem;
 }
 
 .ide[data-theme='dark'] {
@@ -93,8 +94,8 @@ h1 {
 .workspace {
   min-height: calc(100vh - 190px);
   display: grid;
-  grid-template-columns: 0.85fr 1.15fr;
-  gap: 24px;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
 }
 
 .pane {
@@ -114,14 +115,14 @@ h1 {
 
 h2 {
   margin: 0;
-  font-size: 2rem;
+  font-size: 1.35rem;
   color: var(--text-main);
 }
 
 h3 {
   margin: 0;
   color: var(--text-alt);
-  font-size: 1.45rem;
+  font-size: 1rem;
 }
 
 .chip {
@@ -140,12 +141,12 @@ h3 {
   display: grid;
   gap: 10px;
   color: var(--text-muted);
-  font-size: 24px;
+  font-size: 14px;
   font-weight: 600;
 }
 
 .fieldLabel.compact {
-  min-width: 320px;
+  min-width: 220px;
 }
 
 .controlRow,
@@ -177,15 +178,15 @@ textarea {
   min-height: 420px;
   resize: vertical;
   font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", Menlo, monospace;
-  font-size: 18px;
+  font-size: 14px;
   line-height: 1.45;
 }
 
 button {
   border: 1px solid transparent;
   border-radius: 16px;
-  padding: 16px 24px;
-  font-size: 24px;
+  padding: 10px 14px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
 }
@@ -203,7 +204,7 @@ button {
 
 .status {
   text-transform: uppercase;
-  font-size: 18px;
+  font-size: 12px;
   letter-spacing: 0.08em;
   padding: 10px 16px;
   border-radius: 999px;
@@ -307,13 +308,9 @@ button {
 }
 
 .outputPane {
-  grid-template-rows: auto auto minmax(0, 1fr);
-}
-
-.cardGrid {
   display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  grid-template-rows: auto auto auto minmax(0, 1fr);
 }
 
 .miniCard {
@@ -324,7 +321,7 @@ button {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   gap: 10px;
-  min-height: 290px;
+  min-height: 170px;
 }
 
 pre {
@@ -339,11 +336,77 @@ pre {
   white-space: pre-wrap;
   word-break: break-word;
   font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", Menlo, monospace;
-  font-size: 16px;
+  font-size: 13px;
 }
 
 .miniCard pre {
   height: 100%;
+}
+
+.fullWidthCard {
+  width: 100%;
+}
+
+.slimCard {
+  min-height: 96px;
+}
+
+.slimCard pre {
+  white-space: pre-wrap;
+}
+
+.consoleCard {
+  min-height: 220px;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+.consoleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.consoleLog {
+  border: 1px solid var(--border-input);
+  border-radius: 10px;
+  background: var(--surface-input);
+  padding: 8px;
+  min-height: 130px;
+  max-height: 180px;
+  overflow: auto;
+  display: grid;
+  gap: 4px;
+  font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", Menlo, monospace;
+  font-size: 12px;
+}
+
+.consoleLine {
+  color: var(--text-main);
+}
+
+.consoleLine.output {
+  color: #2b5ea7;
+}
+
+.consoleLine.input {
+  color: #7f4dd7;
+}
+
+.consoleLine.error {
+  color: var(--bad-text);
+}
+
+.consoleControls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.consoleControls input {
+  padding: 10px 12px;
 }
 
 .traceBlock {
@@ -354,7 +417,7 @@ pre {
 }
 
 .trace {
-  height: 350px;
+  height: 260px;
   overflow: auto;
   border: 1px solid var(--border-input);
   border-radius: 16px;
@@ -365,7 +428,7 @@ pre {
 .traceRow {
   font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", Menlo, monospace;
   color: var(--text-main);
-  font-size: 15px;
+  font-size: 12px;
   line-height: 1.45;
   padding: 8px 4px;
   border-bottom: 1px solid var(--border-row);
@@ -373,7 +436,7 @@ pre {
 
 .traceEmpty {
   color: var(--text-muted);
-  font-size: 16px;
+  font-size: 13px;
   padding: 12px 6px;
 }
 
@@ -387,11 +450,11 @@ pre {
     grid-template-columns: 1fr;
   }
 
-  .cardGrid {
-    grid-template-columns: 1fr;
-  }
-
   textarea {
     min-height: 280px;
+  }
+
+  .consoleControls {
+    grid-template-columns: 1fr;
   }
 }
