@@ -7,8 +7,8 @@
 }
 
 .panel {
-  background: #121c2b;
-  border: 1px solid #2b3b56;
+  background: #321533;
+  border: 1px solid #342b56;
   border-radius: 12px;
   padding: 14px;
 }
@@ -23,7 +23,7 @@
 label {
   display: grid;
   gap: 6px;
-  color: #d6e0f0;
+  color: #b8c0cd;
   font-size: 14px;
 }
 
@@ -36,9 +36,9 @@ pre {
 
 input,
 textarea {
-  background: #08111f;
+  background: #2a0d36;
   color: #f2f6ff;
-  border: 1px solid #30435f;
+  border: 1px solid #50305f;
   border-radius: 8px;
   padding: 8px 10px;
 }
@@ -48,7 +48,7 @@ textarea {
 }
 
 button {
-  background: #d5e6ff;
+  background: #e7d5ff;
   color: #0b1829;
   border: none;
   border-radius: 8px;
