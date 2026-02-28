@@ -175,7 +175,7 @@ textarea {
 }
 
 textarea {
-  min-height: 420px;
+  min-height: 300px;
   resize: vertical;
   font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", Menlo, monospace;
   font-size: 14px;
@@ -321,7 +321,7 @@ button {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   gap: 10px;
-  min-height: 170px;
+  min-height: 130px;
 }
 
 pre {
@@ -348,7 +348,7 @@ pre {
 }
 
 .slimCard {
-  min-height: 96px;
+  min-height: 74px;
 }
 
 .slimCard pre {
@@ -356,7 +356,7 @@ pre {
 }
 
 .consoleCard {
-  min-height: 220px;
+  min-height: 170px;
   grid-template-rows: auto minmax(0, 1fr) auto;
 }
 
@@ -373,8 +373,8 @@ pre {
   border-radius: 10px;
   background: var(--surface-input);
   padding: 8px;
-  min-height: 130px;
-  max-height: 180px;
+  min-height: 90px;
+  max-height: 130px;
   overflow: auto;
   display: grid;
   gap: 4px;
@@ -400,7 +400,7 @@ pre {
 
 .consoleControls {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
   gap: 8px;
   align-items: center;
 }
@@ -417,7 +417,7 @@ pre {
 }
 
 .trace {
-  height: 260px;
+  height: 190px;
   overflow: auto;
   border: 1px solid var(--border-input);
   border-radius: 16px;
@@ -451,7 +451,7 @@ pre {
   }
 
   textarea {
-    min-height: 280px;
+    min-height: 220px;
   }
 
   .consoleControls {

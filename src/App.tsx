@@ -145,7 +145,7 @@ function App() {
     const stored = window.localStorage.getItem('cpu6502-theme')
     return stored === 'dark' ? 'dark' : 'light'
   })
-  const [wsUrl, setWsUrl] = useState(resolveDefaultWsUrl)
+  const [wsUrl] = useState(resolveDefaultWsUrl)
   const [status, setStatus] = useState<'disconnected' | 'connecting' | 'connected'>(
     'disconnected',
   )
@@ -449,11 +449,6 @@ function App() {
           </div>
 
           <label className="fieldLabel">
-            WS endpoint
-            <input value={wsUrl} onChange={(e) => setWsUrl(e.target.value)} />
-          </label>
-
-          <label className="fieldLabel">
             Source code
             <div className="editorWrap">
               <textarea
@@ -570,6 +565,9 @@ function App() {
               />
               <button type="button" className="ghostButton" onClick={addConsoleInput}>
                 Add
+              </button>
+              <button type="button" className="ghostButton" onClick={() => setInputQueue([])}>
+                Clear Queue
               </button>
               <button type="button" className="ghostButton" onClick={() => setConsoleEntries([])}>
                 Clear
