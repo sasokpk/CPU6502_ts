@@ -334,7 +334,7 @@ button {
 .outputPane {
   display: grid;
   gap: 8px;
-  grid-template-rows: auto auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(160px, 1fr) minmax(140px, 1fr);
   min-height: 0;
 }
 
@@ -381,8 +381,7 @@ pre {
 }
 
 .consoleCard {
-  height: var(--console-height);
-  min-height: var(--console-height);
+  min-height: 0;
   grid-template-rows: auto minmax(0, 1fr) auto;
 }
 
@@ -444,7 +443,8 @@ pre {
 }
 
 .trace {
-  height: var(--trace-height);
+  min-height: 0;
+  height: 100%;
   overflow: auto;
   border: 1px solid var(--border-input);
   border-radius: 10px;
@@ -498,6 +498,10 @@ pre {
 
   .trace {
     height: clamp(120px, 22vh, 200px);
+  }
+
+  .outputPane {
+    grid-template-rows: auto auto auto auto;
   }
 
   .consoleControls {
