@@ -117,15 +117,7 @@ h1 {
 }
 
 .editorPane {
-  grid-template-rows: auto minmax(0, 1fr) auto auto;
-}
-
-.editorPane .fieldLabel {
-  min-height: 0;
-}
-
-.editorPane .editorWrap {
-  height: 100%;
+  grid-template-rows: auto auto auto auto;
 }
 
 .paneHead {
@@ -196,9 +188,9 @@ textarea {
 }
 
 textarea {
-  min-height: 0;
-  height: 100%;
-  max-height: none;
+  min-height: var(--editor-height);
+  height: auto;
+  max-height: 60vh;
   resize: vertical;
   font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", Menlo, monospace;
   font-size: 16px;
