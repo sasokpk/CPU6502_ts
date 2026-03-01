@@ -404,9 +404,12 @@ pre {
   overflow-y: auto;
   overflow-x: auto;
   display: grid;
-  gap: 4px;
+  gap: 2px;
+  align-content: start;
+  grid-auto-rows: max-content;
   font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", Menlo, monospace;
   font-size: 14px;
+  line-height: 1.2;
 }
 
 .consoleLine {
