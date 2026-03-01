@@ -514,7 +514,7 @@ pre {
 .memoryContent {
   border: 1px solid var(--border-input);
   border-radius: 8px;
-  color: white;
+  color: var(--text-main);
   padding: 8px;
   background: var(--surface-input);
   font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", Menlo, monospace;
