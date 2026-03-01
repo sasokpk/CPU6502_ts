@@ -402,7 +402,7 @@ pre {
   height: 170px;
   max-height: 170px;
   overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: auto;
   display: grid;
   gap: 4px;
   font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", Menlo, monospace;
@@ -411,6 +411,7 @@ pre {
 
 .consoleLine {
   color: var(--text-main);
+  white-space: pre;
 }
 
 .consoleLine.output {
