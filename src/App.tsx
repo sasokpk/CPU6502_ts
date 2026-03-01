@@ -224,6 +224,7 @@ function App() {
   const [consoleEntries, setConsoleEntries] = useState<ConsoleEntry[]>([
     { kind: 'info', text: 'Console ready. Add hex input values and press Run.' },
   ])
+  const [stepIndex, setStepIndex] = useState(0)
   const [hints, setHints] = useState<string[]>([])
   const [hintIndex, setHintIndex] = useState(0)
   const [hintRange, setHintRange] = useState<{ start: number; end: number } | null>(null)
@@ -269,6 +270,23 @@ function App() {
   useEffect(() => {
     window.localStorage.setItem('cpu6502-theme', theme)
   }, [theme])
+
+  useEffect(() => {
+    setStepIndex(0)
+  }, [result?.trace.length])
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (!result?.trace.length) return
+      if (event.key === 'ArrowLeft') {
+        setStepIndex((prev) => Math.max(0, prev - 1))
+      } else if (event.key === 'ArrowRight') {
+        setStepIndex((prev) => Math.min(result.trace.length - 1, prev + 1))
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [result?.trace.length])
 
   const request = (type: string, payload: Record<string, unknown>) =>
     new Promise<any>((resolve, reject) => {
@@ -363,6 +381,8 @@ function App() {
       .join('') || '-'
     return `PC:${formatHex(state.PC)} A:${formatHex(state.A)} X:${formatHex(state.X)} Y:${formatHex(state.Y)} SP:${formatHex(state.SP, 2)} P:${formatHex(state.P, 2)} CYC:${state.cycles} FL:${flags}`
   }
+
+  const currentStep = result?.trace.length ? result.trace[stepIndex] : null
 
   const getCaretPositionInTextarea = (textarea: HTMLTextAreaElement, pos: number) => {
     const mirror = document.createElement('div')
@@ -641,30 +661,72 @@ function App() {
           </section>
 
           <section className="traceBlock">
-            <h3>Execution trace {result ? `(${result.trace.length} steps)` : ''}</h3>
-            <div className="trace">
-              {result?.trace.length ? (
-                result.trace.slice(0, 300).map((entry) => (
-                  <div key={entry.step} className="traceRow">
-                    <div>
-                      <strong>#{entry.step}</strong> op:{formatHex(entry.opcode, 2)} PC:
-                      {formatHex(entry.before.PC)} A:{formatHex(entry.before.A)} X:
-                      {formatHex(entry.before.X)} Y:{formatHex(entry.before.Y)}
-                      {entry.error ? ` ERROR: ${entry.error}` : ''}
-                      {entry.halted ? ' HALTED' : ''}
-                    </div>
-                    <div className="memoryLine">
-                      MEM:{' '}
-                      {entry.memory_used?.length
-                        ? entry.memory_used.map((m) => `${formatHex(m.address)}:${formatHex(m.value, 2)}`).join(' ')
-                        : '-'}
-                    </div>
+            {result?.trace.length && currentStep ? (
+              <div className="stepper">
+                <div className="stepperTop">
+                  <button
+                    type="button"
+                    className="stepArrow"
+                    onClick={() => setStepIndex((prev) => Math.max(0, prev - 1))}
+                    disabled={stepIndex === 0}
+                  >
+                    ←
+                  </button>
+                  <h3>
+                    STEP {stepIndex + 1}/{result.trace.length}
+                  </h3>
+                  <button
+                    type="button"
+                    className="stepArrow"
+                    onClick={() => setStepIndex((prev) => Math.min(result.trace.length - 1, prev + 1))}
+                    disabled={stepIndex === result.trace.length - 1}
+                  >
+                    →
+                  </button>
+                </div>
+
+                <div className="registerGrid">
+                  <div className="regBox">
+                    <span>A</span>
+                    <strong>{formatHex(currentStep.before.A)}</strong>
                   </div>
-                ))
-              ) : (
-                <div className="traceEmpty">No trace yet. Click Run to execute program.</div>
-              )}
-            </div>
+                  <div className="regBox">
+                    <span>X</span>
+                    <strong>{formatHex(currentStep.before.X)}</strong>
+                  </div>
+                  <div className="regBox">
+                    <span>Y</span>
+                    <strong>{formatHex(currentStep.before.Y)}</strong>
+                  </div>
+                  <div className="regBox">
+                    <span>PC</span>
+                    <strong>{formatHex(currentStep.before.PC)}</strong>
+                  </div>
+                  <div className="regBox">
+                    <span>OP</span>
+                    <strong>{formatHex(currentStep.opcode, 2)}</strong>
+                  </div>
+                </div>
+
+                <div className="stepMeta">
+                  {currentStep.halted ? 'HALTED' : 'RUNNING'}
+                  {currentStep.error ? ` | ERROR: ${currentStep.error}` : ''}
+                </div>
+
+                <div className="memoryPanel">
+                  <h3>MEMORY</h3>
+                  <div className="memoryContent">
+                    {currentStep.memory_used?.length
+                      ? currentStep.memory_used
+                          .map((m) => `${formatHex(m.address)}:${formatHex(m.value, 2)}`)
+                          .join('  ')
+                      : '-'}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="traceEmpty">No trace yet. Click Run to execute program.</div>
+            )}
           </section>
         </article>
       </section>

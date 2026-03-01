@@ -438,40 +438,99 @@ pre {
 .traceBlock {
   min-height: 0;
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
   gap: 8px;
 }
 
-.trace {
-  min-height: 0;
-  height: 100%;
-  overflow: auto;
+.stepper {
   border: 1px solid var(--border-input);
-  border-radius: 10px;
-  padding: 8px;
+  border-radius: 12px;
   background: var(--surface-trace);
+  padding: 10px;
+  display: grid;
+  gap: 10px;
 }
 
-.traceRow {
-  font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", Menlo, monospace;
-  color: var(--text-main);
-  font-size: 14px;
-  line-height: 1.45;
-  padding: 8px 4px;
-  border-bottom: 1px solid var(--border-row);
+.stepperTop {
   display: grid;
-  gap: 4px;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.stepperTop h3 {
+  text-align: center;
+  margin: 0;
+}
+
+.stepArrow {
+  min-width: 40px;
+  padding: 6px 10px;
+  font-size: 16px;
+}
+
+.stepArrow:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.registerGrid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.regBox {
+  border: 1px solid var(--border-input);
+  border-radius: 8px;
+  padding: 8px;
+  background: var(--surface-input);
+  display: grid;
+  gap: 2px;
+}
+
+.regBox span {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.regBox strong {
+  font-size: 14px;
+  color: var(--text-main);
+  font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", Menlo, monospace;
+}
+
+.stepMeta {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", Menlo, monospace;
+}
+
+.memoryPanel {
+  display: grid;
+  gap: 6px;
+}
+
+.memoryContent {
+  border: 1px solid var(--border-input);
+  border-radius: 8px;
+  padding: 8px;
+  background: var(--surface-input);
+  font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", Menlo, monospace;
+  font-size: 12px;
+  min-height: 60px;
+  max-height: 130px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .traceEmpty {
   color: var(--text-muted);
   font-size: 14px;
   padding: 12px 6px;
-}
-
-.memoryLine {
-  color: var(--text-muted);
-  font-size: 13px;
+  border: 1px dashed var(--border-input);
+  border-radius: 10px;
 }
 
 @media (max-width: 1100px) {
@@ -502,6 +561,10 @@ pre {
 
   .outputPane {
     grid-template-rows: auto auto auto auto;
+  }
+
+  .registerGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .consoleControls {
