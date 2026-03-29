@@ -173,18 +173,22 @@ const FEATURE_CARDS = [
   {
     title: 'Assembler Playground',
     text: 'Пишите код 6502 прямо в браузере, собирайте байткод и сразу проверяйте поведение программы.',
+    meta: 'code -> bytes',
   },
   {
     title: 'Live Runtime Trace',
     text: 'Следите за регистрами, opcode и занятой памятью пошагово, как в интерактивном отладчике.',
+    meta: 'step / memory / flags',
   },
   {
     title: 'Console I/O',
     text: 'Подавайте hex-входы в очередь, запускайте сценарии и забирайте результаты без переключения экранов.',
+    meta: 'interactive queue',
   },
   {
     title: 'Educational Docs',
     text: 'Встроенная справка по регистрам, флагам, переходам и базовым инструкциям делает проект учебной платформой.',
+    meta: 'learn while running',
   },
 ]
 
@@ -539,6 +543,20 @@ function App() {
             <span className={`statusPill ${status}`}>{status}</span>
             <span>WebSocket: {wsUrl.replace(/^wss?:\/\//, '')}</span>
           </div>
+          <div className="metricStrip">
+            <article className="metricCard">
+              <span>Runtime</span>
+              <strong>{result?.halted ? 'HALTED' : 'LIVE'}</strong>
+            </article>
+            <article className="metricCard">
+              <span>Program bytes</span>
+              <strong>{assembled.length || 0}</strong>
+            </article>
+            <article className="metricCard">
+              <span>Trace steps</span>
+              <strong>{result?.trace.length ?? 0}</strong>
+            </article>
+          </div>
         </div>
 
         <aside className="heroTerminal" aria-label="runtime preview">
@@ -576,6 +594,7 @@ function App() {
         <div className="featureGrid">
           {FEATURE_CARDS.map((card) => (
             <article key={card.title} className="featureCard">
+              <p className="featureMeta">{card.meta}</p>
               <h3>{card.title}</h3>
               <p>{card.text}</p>
               <a href="#workspace">Explore</a>

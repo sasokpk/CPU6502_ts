@@ -20,11 +20,14 @@
   --danger-bg: rgba(136, 37, 69, 0.24);
   --danger-text: #ff9db8;
   --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+  --glow: radial-gradient(circle at top, rgba(93, 162, 255, 0.22), transparent 58%);
   --editor-height: 56vh;
 
   min-height: 100vh;
   padding: 24px;
   color: var(--text);
+  position: relative;
+  overflow: hidden;
 }
 
 .siteShell[data-theme='light'] {
@@ -49,6 +52,35 @@
   --danger-bg: rgba(224, 94, 132, 0.16);
   --danger-text: #a3214e;
   --shadow: 0 24px 80px rgba(46, 69, 113, 0.16);
+  --glow: radial-gradient(circle at top, rgba(63, 126, 240, 0.16), transparent 58%);
+}
+
+.siteShell::before,
+.siteShell::after {
+  content: '';
+  position: absolute;
+  inset: auto;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.siteShell::before {
+  top: -120px;
+  left: 8%;
+  width: 520px;
+  height: 520px;
+  background: var(--glow);
+  filter: blur(24px);
+}
+
+.siteShell::after {
+  right: -140px;
+  top: 140px;
+  width: 420px;
+  height: 420px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(103, 167, 255, 0.12), transparent 66%);
+  filter: blur(20px);
 }
 
 .topbar,
@@ -60,6 +92,8 @@
 .footer {
   width: min(1400px, 100%);
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .topbar {
@@ -76,6 +110,26 @@
   background: var(--panel);
   backdrop-filter: blur(18px);
   box-shadow: var(--shadow);
+}
+
+.topbar::after,
+.heroTerminal::after,
+.featureCard::after,
+.panel::after,
+.docCard::after,
+.ctaSection::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 32%, transparent 70%, rgba(93, 162, 255, 0.08));
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
 .brand,
@@ -144,6 +198,10 @@
   gap: 28px;
   align-items: center;
   padding: 72px 0 40px;
+}
+
+.heroCopy {
+  padding-right: 16px;
 }
 
 .eyebrow,
@@ -235,6 +293,38 @@ button:hover {
   font-size: 0.9rem;
 }
 
+.metricStrip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 26px;
+  max-width: 760px;
+}
+
+.metricCard {
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(12px);
+}
+
+.metricCard span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--soft);
+  font-family: "IBM Plex Mono", "Cascadia Code", monospace;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.metricCard strong {
+  font-size: 1.6rem;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
 .statusPill {
   display: inline-flex;
   align-items: center;
@@ -266,6 +356,7 @@ button:hover {
 .docCard,
 .ctaSection,
 .footer {
+  position: relative;
   border: 1px solid var(--border);
   border-radius: 24px;
   background: var(--panel);
@@ -302,6 +393,10 @@ button:hover {
   font-family: "IBM Plex Mono", "Cascadia Code", monospace;
   font-size: 0.95rem;
   color: #d9e7ff;
+}
+
+.terminalBody p {
+  margin: 0;
 }
 
 .siteShell[data-theme='light'] .terminalBody {
@@ -357,6 +452,15 @@ button:hover {
 .featureCard,
 .docCard {
   padding: 24px;
+}
+
+.featureMeta {
+  margin: 0 0 14px;
+  color: var(--link);
+  font-family: "IBM Plex Mono", "Cascadia Code", monospace;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
 }
 
 .featureCard h3,
@@ -450,6 +554,7 @@ textarea {
   resize: vertical;
   font-family: "IBM Plex Mono", "Cascadia Code", monospace;
   line-height: 1.55;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 input {
@@ -521,6 +626,7 @@ pre {
   border-radius: 20px;
   background: var(--card);
   border: 1px solid var(--border);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .stackCard.compact pre {
@@ -620,6 +726,7 @@ pre {
   border-radius: 16px;
   border: 1px solid var(--border);
   background: var(--panel-soft);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .regBox span {
@@ -717,6 +824,11 @@ pre {
 
   .heroTerminal {
     min-height: 320px;
+  }
+
+  .metricStrip {
+    grid-template-columns: 1fr;
+    max-width: 420px;
   }
 
   .docsGrid {
