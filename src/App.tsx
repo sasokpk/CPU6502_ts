@@ -776,55 +776,60 @@ function App() {
                     : 'RUNNING'}
               </p>
 
-              <div className="traceLayout">
-                <div className="traceTopRow">
-                  <div className="registerGrid registerGridDetailed">
-                    <div className="regBox">
-                      <span>A</span>
-                      <strong>{formatHex(currentStep.before.A)}</strong>
-                    </div>
-                    <div className="regBox">
-                      <span>X</span>
-                      <strong>{formatHex(currentStep.before.X)}</strong>
-                    </div>
-                    <div className="regBox">
-                      <span>Y</span>
-                      <strong>{formatHex(currentStep.before.Y)}</strong>
-                    </div>
-                    <div className="regBox">
-                      <span>PC</span>
-                      <strong>{formatHex(currentStep.before.PC)}</strong>
-                    </div>
-                    <div className="regBox">
-                      <span>SP</span>
-                      <strong>{formatHex(currentStep.before.SP, 2)}</strong>
-                    </div>
-                    <div className="regBox">
-                      <span>P</span>
-                      <strong>{formatHex(currentStep.before.P, 2)}</strong>
-                    </div>
-                    <div className="regBox">
-                      <span>OP</span>
-                      <strong>{formatHex(currentStep.opcode, 2)}</strong>
-                    </div>
-                    <div className="regBox">
-                      <span>Cycles</span>
-                      <strong>{currentStep.before.cycles}</strong>
-                    </div>
-                  </div>
-
-                  <section className="flagPanel">
-                    <h3>Flags</h3>
-                    <div className="flagGrid">
-                      {['C', 'Z', 'N', 'V', 'I', 'D', 'B'].map((flag) => (
-                        <div key={flag} className={`flagBox ${currentFlags[flag] ? 'active' : ''}`}>
-                          <span>{flag}</span>
-                          <strong>{currentFlags[flag] ? '1' : '0'}</strong>
+                <div className="traceLayout">
+                  <div className="traceTopRow">
+                    <div className="tracePrimary">
+                      <div className="registerGrid registerGridPrimary">
+                        <div className="regBox">
+                          <span>A</span>
+                          <strong>{formatHex(currentStep.before.A)}</strong>
                         </div>
-                      ))}
+                        <div className="regBox">
+                          <span>X</span>
+                          <strong>{formatHex(currentStep.before.X)}</strong>
+                        </div>
+                        <div className="regBox">
+                          <span>Y</span>
+                          <strong>{formatHex(currentStep.before.Y)}</strong>
+                        </div>
+                        <div className="regBox">
+                          <span>PC</span>
+                          <strong>{formatHex(currentStep.before.PC)}</strong>
+                        </div>
+                        <div className="regBox">
+                          <span>OP</span>
+                          <strong>{formatHex(currentStep.opcode, 2)}</strong>
+                        </div>
+                      </div>
+
+                      <div className="registerGrid registerGridSecondary">
+                        <div className="regBox">
+                          <span>SP</span>
+                          <strong>{formatHex(currentStep.before.SP, 2)}</strong>
+                        </div>
+                        <div className="regBox">
+                          <span>P</span>
+                          <strong>{formatHex(currentStep.before.P, 2)}</strong>
+                        </div>
+                        <div className="regBox">
+                          <span>Cycles</span>
+                          <strong>{currentStep.before.cycles}</strong>
+                        </div>
+                      </div>
                     </div>
-                  </section>
-                </div>
+
+                    <section className="flagPanel">
+                      <h3>Flags</h3>
+                      <div className="flagGrid">
+                        {['C', 'Z', 'N', 'V', 'I', 'D', 'B'].map((flag) => (
+                          <div key={flag} className={`flagBox ${currentFlags[flag] ? 'active' : ''}`}>
+                            <span>{flag}</span>
+                            <strong>{currentFlags[flag] ? '1' : '0'}</strong>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+                  </div>
 
                 <div className="traceBottomRow">
                   <section className="snapshotCard">

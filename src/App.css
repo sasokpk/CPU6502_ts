@@ -728,10 +728,6 @@ pre {
   gap: 12px;
 }
 
-.registerGridDetailed {
-  grid-template-columns: repeat(8, minmax(0, 1fr));
-}
-
 .regBox {
   padding: 14px;
   border-radius: 16px;
@@ -771,6 +767,19 @@ pre {
 .traceTopRow {
   grid-template-columns: minmax(0, 2fr) minmax(280px, 0.8fr);
   align-items: start;
+}
+
+.tracePrimary {
+  display: grid;
+  gap: 12px;
+}
+
+.registerGridPrimary {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.registerGridSecondary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .traceBottomRow {
@@ -962,13 +971,17 @@ pre {
   .consoleControls,
   .registerGrid,
   .traceLayout,
-  .registerGridDetailed,
   .flagGrid {
     grid-template-columns: 1fr;
   }
 
   .traceTopRow,
   .traceBottomRow {
+    grid-template-columns: 1fr;
+  }
+
+  .registerGridPrimary,
+  .registerGridSecondary {
     grid-template-columns: 1fr;
   }
 
