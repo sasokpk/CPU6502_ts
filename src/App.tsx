@@ -776,7 +776,7 @@ function App() {
                 </p>
 
                 <div className="traceLayout">
-                  <div className="traceColumn">
+                  <div className="traceTopRow">
                     <div className="registerGrid registerGridDetailed">
                       <div className="regBox">
                         <span>A</span>
@@ -812,19 +812,6 @@ function App() {
                       </div>
                     </div>
 
-                    <div className="snapshotGrid">
-                      <section className="snapshotCard">
-                        <h3>Before</h3>
-                        <pre>{formatStateLine(currentStep.before)}</pre>
-                      </section>
-                      <section className="snapshotCard">
-                        <h3>After</h3>
-                        <pre>{formatStateLine(currentStep.after ?? null)}</pre>
-                      </section>
-                    </div>
-                  </div>
-
-                  <aside className="traceSidebar">
                     <section className="flagPanel">
                       <h3>Flags</h3>
                       <div className="flagGrid">
@@ -836,12 +823,22 @@ function App() {
                         ))}
                       </div>
                     </section>
+                  </div>
 
+                  <div className="traceBottomRow">
+                    <section className="snapshotCard">
+                      <h3>Before</h3>
+                      <pre>{formatStateLine(currentStep.before)}</pre>
+                    </section>
+                    <section className="snapshotCard">
+                      <h3>After</h3>
+                      <pre>{formatStateLine(currentStep.after ?? null)}</pre>
+                    </section>
                     <div className="memoryPanel">
                       <h3>Memory</h3>
                       <div className="memoryContent">{memoryView}</div>
                     </div>
-                  </aside>
+                  </div>
                 </div>
               </div>
             ) : (

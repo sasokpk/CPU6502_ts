@@ -692,7 +692,7 @@ pre {
 
 .traceCard {
   min-height: 0;
-  min-height: 520px;
+  min-height: 360px;
 }
 
 .stepper {
@@ -725,7 +725,7 @@ pre {
 }
 
 .registerGridDetailed {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(8, minmax(0, 1fr));
 }
 
 .regBox {
@@ -751,23 +751,34 @@ pre {
 
 .traceLayout {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+  grid-template-rows: auto minmax(0, 1fr);
   gap: 16px;
   min-height: 0;
   height: 100%;
 }
 
-.traceColumn,
-.traceSidebar {
+.traceTopRow,
+.traceBottomRow {
   display: grid;
   gap: 14px;
   min-height: 0;
 }
 
-.snapshotGrid {
+.traceTopRow {
+  grid-template-columns: minmax(0, 2fr) minmax(280px, 0.8fr);
+  align-items: start;
+}
+
+.traceBottomRow {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.snapshotCard,
+.flagPanel,
+.memoryPanel {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: 14px;
+  min-height: 0;
 }
 
 .snapshotCard,
@@ -780,7 +791,7 @@ pre {
 }
 
 .snapshotCard pre {
-  min-height: 96px;
+  min-height: 110px;
   background: rgba(255, 255, 255, 0.02);
 }
 
@@ -821,19 +832,22 @@ pre {
 }
 
 .memoryPanel {
-  display: grid;
-  gap: 10px;
   min-height: 0;
-}
-
-.memoryContent {
-  min-height: 100%;
-  height: 100%;
-  overflow: auto;
   padding: 14px;
   border-radius: 18px;
   border: 1px solid var(--border);
   background: var(--panel-soft);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.memoryContent {
+  min-height: 110px;
+  height: 100%;
+  overflow: auto;
+  padding: 12px 0 0;
+  border-radius: 0;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
   color: var(--text);
   line-height: 1.55;
 }
@@ -943,10 +957,14 @@ pre {
 
   .consoleControls,
   .registerGrid,
-  .snapshotGrid,
   .traceLayout,
   .registerGridDetailed,
   .flagGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .traceTopRow,
+  .traceBottomRow {
     grid-template-columns: 1fr;
   }
 
