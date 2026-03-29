@@ -2,12 +2,23 @@
   font-family: "Manrope", "IBM Plex Sans", "Segoe UI", sans-serif;
   line-height: 1.4;
   font-weight: 400;
-  color: #231737;
-  background: radial-gradient(circle at 10% 8%, #f4e6ff 0%, #ead7ff 42%, #ddc4ff 100%);
+  color: #eef4ff;
+  background:
+    radial-gradient(circle at top left, rgba(47, 83, 167, 0.35), transparent 28%),
+    radial-gradient(circle at 85% 10%, rgba(40, 95, 192, 0.18), transparent 24%),
+    linear-gradient(180deg, #07101f 0%, #091223 38%, #0b1220 100%);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+:root[data-theme='light'] {
+  color: #142035;
+  background:
+    radial-gradient(circle at top left, rgba(96, 146, 255, 0.2), transparent 26%),
+    radial-gradient(circle at 85% 10%, rgba(126, 171, 255, 0.18), transparent 24%),
+    linear-gradient(180deg, #edf3fb 0%, #e7eef9 36%, #dfe9f8 100%);
 }
 
 * {

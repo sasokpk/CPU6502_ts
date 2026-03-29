@@ -60,97 +60,75 @@ const INSTRUCTION_HELP = [
   {
     title: 'Регистры CPU',
     items: [
-      'A (Accumulator) — главный регистр для арифметики/логики',
-      'X, Y — индексные регистры для промежуточных значений',
-      'PC — счетчик команд (адрес следующей инструкции)',
-      'SP — указатель стека (в этом учебном наборе почти не используется)',
-      'P — флаговый регистр состояния',
+      'A (Accumulator) — главный регистр для арифметики и логики',
+      'X, Y — индексные регистры для промежуточных вычислений',
+      'PC — счетчик команд, адрес следующей инструкции',
+      'SP — указатель стека',
+      'P — регистр флагов состояния',
     ],
   },
   {
-    title: 'Флаги (P)',
+    title: 'Флаги',
     items: [
-      'C (Carry) — перенос/заем после ADC/SBC/CMP/CPX/CMPC',
-      'Z (Zero) — 1, если результат операции равен 0',
-      'N (Negative) — 1, если установлен старший бит результата',
+      'C (Carry) — перенос или заем после арифметики и сравнений',
+      'Z (Zero) — устанавливается, если результат равен нулю',
+      'N (Negative) — отражает старший бит результата',
       'V (Overflow) — переполнение знакового диапазона',
-      'I, D, B — служебные флаги (в учебной версии вторичны)',
-      'CLC — принудительно сбрасывает Carry (C=0)',
+      'CLC — вручную сбрасывает Carry перед вычислениями',
     ],
   },
   {
-    title: 'Загрузка регистров',
+    title: 'Загрузка',
     items: [
-      'LDA nn — A <- nn (16-bit immediate)',
+      'LDA nn — A <- nn',
       'LDX nn — X <- nn',
       'LDY nn — Y <- nn',
-      'После загрузки обновляются Z и N',
+      'После загрузки пересчитываются Z и N',
     ],
   },
   {
     title: 'Арифметика',
     items: [
-      'ADC nn — A <- A + nn + C (учитывает Carry как +1)',
+      'ADC nn — A <- A + nn + C',
       'SBC nn — A <- A - nn - (1 - C)',
-      'MUL nn — A <- A * M[nn] (16-битный результат)',
-      'MULM aa — M[aa] <- A * M[aa], запись обратно в память',
+      'MUL nn — A <- A * M[nn]',
+      'MULM aa — M[aa] <- A * M[aa]',
     ],
   },
   {
     title: 'Сравнение',
     items: [
-      'CMP nn — сравнение A и nn (через A - nn, без изменения A)',
+      'CMP nn — сравнение A и nn без изменения A',
       'CPX nn — сравнение X и nn',
-      'CMPC aa — сравнение A и значения из памяти M[aa]',
-      'Эти команды обновляют C/Z/N и влияют на ветвления',
-    ],
-  },
-  {
-    title: 'Логика',
-    items: [
-      'AND nn — A <- A AND nn',
-      'ORA nn — A <- A OR nn',
-      'EOR nn — A <- A XOR nn',
-      'После логики обновляются Z/N',
+      'CMPC aa — сравнение A и M[aa]',
+      'Результат влияет на C, Z и N',
     ],
   },
   {
     title: 'Память',
     items: [
-      'STA aa — M[aa] <- A (запись 16-bit значения в память)',
-      'LSA aa — A <- M[aa] (чтение 16-bit из памяти)',
+      'STA aa — M[aa] <- A',
+      'LSA aa — A <- M[aa]',
       'STX aa — M[aa] <- X',
       'LSX aa — X <- M[aa]',
     ],
   },
   {
-    title: 'Ввод/вывод',
+    title: 'Переходы',
     items: [
-      'CTA — A <- input из очереди консоли',
+      'BEQ / BNE — переход по Zero',
+      'BCS / BCC — переход по Carry',
+      'BMI / BPL — переход по Negative',
+      'BVS / BVC — переход по Overflow',
+      'JMP — безусловный переход',
+    ],
+  },
+  {
+    title: 'Ввод и вывод',
+    items: [
+      'CTA — чтение следующего значения из input-очереди',
       'OTT aa — вывод значения M[aa] в консоль',
-      'Если очередь input пуста, берется 0',
-    ],
-  },
-  {
-    title: 'Переходы (branch/jump)',
-    items: [
-      'BEQ label — переход если Z=1 (результат был ноль)',
-      'BNE label — переход если Z=0',
-      'BCS/BCC — переход по Carry (C=1/C=0)',
-      'BMI/BPL — переход по знаку (N=1/N=0)',
-      'BVS/BVC — переход по Overflow (V=1/V=0)',
-      'JMP label/aa — безусловный переход',
-      'Branch использует относительное смещение (диапазон -128..127)',
-    ],
-  },
-  {
-    title: 'Служебные и синтаксис',
-    items: [
-      'NOP — пустая операция (ничего не делает)',
-      'BRK — завершение программы',
-      'TAX / XTA — перенос между A и X',
-      'label: — объявление метки',
-      'Комментарии: строки с # или ; игнорируются',
+      'Если очередь пустая, используется 0',
     ],
   },
 ]
@@ -191,6 +169,25 @@ const OPCODE_HINTS = [
   'MULM',
 ]
 
+const FEATURE_CARDS = [
+  {
+    title: 'Assembler Playground',
+    text: 'Пишите код 6502 прямо в браузере, собирайте байткод и сразу проверяйте поведение программы.',
+  },
+  {
+    title: 'Live Runtime Trace',
+    text: 'Следите за регистрами, opcode и занятой памятью пошагово, как в интерактивном отладчике.',
+  },
+  {
+    title: 'Console I/O',
+    text: 'Подавайте hex-входы в очередь, запускайте сценарии и забирайте результаты без переключения экранов.',
+  },
+  {
+    title: 'Educational Docs',
+    text: 'Встроенная справка по регистрам, флагам, переходам и базовым инструкциям делает проект учебной платформой.',
+  },
+]
+
 const resolveDefaultWsUrl = () => {
   const configured = import.meta.env.VITE_WS_URL
   if (configured) return configured
@@ -206,9 +203,9 @@ const resolveDefaultWsUrl = () => {
 
 function App() {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    if (typeof window === 'undefined') return 'light'
+    if (typeof window === 'undefined') return 'dark'
     const stored = window.localStorage.getItem('cpu6502-theme')
-    return stored === 'dark' ? 'dark' : 'light'
+    return stored === 'light' ? 'light' : 'dark'
   })
   const [wsUrl] = useState(resolveDefaultWsUrl)
   const [status, setStatus] = useState<'disconnected' | 'connecting' | 'connected'>(
@@ -269,6 +266,7 @@ function App() {
 
   useEffect(() => {
     window.localStorage.setItem('cpu6502-theme', theme)
+    document.documentElement.dataset.theme = theme
   }, [theme])
 
   useEffect(() => {
@@ -373,6 +371,7 @@ function App() {
   }
 
   const formatHex = (value: number, width = 4) => value.toString(16).toUpperCase().padStart(width, '0')
+
   const formatStateLine = (state: CpuState | null) => {
     if (!state) return '-'
     const flags = Object.entries(state.flags)
@@ -459,7 +458,10 @@ function App() {
 
     setHints(found)
     setHintIndex(0)
-    setHintRange({ start: lineStart + (tokenMatch?.[0].length ?? 0) - token.length, end: lineStart + (tokenMatch?.[0].length ?? 0) })
+    setHintRange({
+      start: lineStart + (tokenMatch?.[0].length ?? 0) - token.length,
+      end: lineStart + (tokenMatch?.[0].length ?? 0),
+    })
 
     if (textareaRef.current) {
       const caretPos = getCaretPositionInTextarea(textareaRef.current, caret)
@@ -486,51 +488,110 @@ function App() {
     })
   }
 
+  const memoryView = currentStep?.memory_used?.length
+    ? currentStep.memory_used.map((cell) => `${formatHex(cell.address)}:${formatHex(cell.value)}`).join('  ')
+    : '-'
+
   return (
-    <main className="ide" data-theme={theme}>
-      <header className="ideHeader">
-        <div>
-          <p className="kicker">6502 online workspace</p>
-          <h1>CPU6502 Assembly Runner</h1>
-        </div>
-        <div className="headerActions">
+    <main className="siteShell" data-theme={theme}>
+      <header className="topbar">
+        <a className="brand" href="#hero">
+          <span className="brandMark">6502</span>
+          <span className="brandText">Theoretical CPU Lab</span>
+        </a>
+        <nav className="navLinks">
+          <a href="#workspace">Workspace</a>
+          <a href="#modules">Modules</a>
+          <a href="#docs">Reference</a>
+          <a href="#about">About</a>
+        </nav>
+        <div className="navActions">
           <button
             type="button"
             className="ghostButton"
             onClick={() => setTheme((current) => (current === 'light' ? 'dark' : 'light'))}
           >
-            {theme === 'light' ? 'Dark theme' : 'Light theme'}
+            {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
           </button>
           <button type="button" className="ghostButton" onClick={connect}>
             Reconnect
           </button>
-          <span className={`status ${status}`}>{status}</span>
         </div>
       </header>
 
+      <section className="hero" id="hero">
+        <div className="heroCopy">
+          <p className="eyebrow">Theoretical informatics meets full-stack engineering</p>
+          <h1>Explore, assemble, and step through MOS 6502 programs in the browser.</h1>
+          <p className="heroText">
+            CPU6502_ts combines a Python-backed emulator, a React/TypeScript workspace, and a
+            live execution trace into one educational platform for low-level programming.
+          </p>
+          <div className="heroActions">
+            <a className="primaryLink" href="#workspace">
+              Get Started
+            </a>
+            <a className="secondaryLink" href="#modules">
+              View Modules
+            </a>
+          </div>
+          <div className="heroMeta">
+            <span className={`statusPill ${status}`}>{status}</span>
+            <span>WebSocket: {wsUrl.replace(/^wss?:\/\//, '')}</span>
+          </div>
+        </div>
+
+        <aside className="heroTerminal" aria-label="runtime preview">
+          <div className="terminalBar">
+            <span />
+            <span />
+            <span />
+          </div>
+          <div className="terminalBody">
+            <p className="terminalFile">cpu6502-simulator.exe</p>
+            <p>$ initialize_emulator</p>
+            <p>Loading MOS 6502 core...</p>
+            <p>$ attach_transport</p>
+            <p>protocol = WebSocket JSON bridge</p>
+            <p>$ runtime_snapshot</p>
+            <p>program_bytes = {assembled.length || DEFAULT_SOURCE.length}</p>
+            <p>queued_inputs = {inputQueue.length}</p>
+            <p>trace_steps = {result?.trace.length ?? 0}</p>
+            <p>mode = {theme}</p>
+          </div>
+        </aside>
+      </section>
+
       {error ? <p className="errorBanner">{error}</p> : null}
 
-      <details className="helpPanel">
-        <summary>Instruction reference (ASEMBLY.MD)</summary>
-        <div className="instructionGrid">
-          {INSTRUCTION_HELP.map((group) => (
-            <section key={group.title} className="instructionGroup">
-              <h3>{group.title}</h3>
-              <ul>
-                {group.items.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </section>
+      <section className="featureSection" id="modules">
+        <div className="sectionHeading">
+          <p className="sectionKicker">Explore Computational Models</p>
+          <h2>Everything important stays visible at the same time.</h2>
+          <p>
+            The interface is organized like a technical simulator: source on the left, runtime on
+            the right, and docs close enough that you can learn while you experiment.
+          </p>
+        </div>
+        <div className="featureGrid">
+          {FEATURE_CARDS.map((card) => (
+            <article key={card.title} className="featureCard">
+              <h3>{card.title}</h3>
+              <p>{card.text}</p>
+              <a href="#workspace">Explore</a>
+            </article>
           ))}
         </div>
-      </details>
+      </section>
 
-      <section className="workspace">
-        <article className="pane editorPane">
-          <div className="paneHead">
-            <h2>Editor</h2>
-            <span className="chip">assembly</span>
+      <section className="workspaceSection" id="workspace">
+        <article className="panel editorPanel">
+          <div className="panelHead">
+            <div>
+              <p className="panelKicker">Editor</p>
+              <h2>Assembly Workspace</h2>
+            </div>
+            <span className="tag">assembler</span>
           </div>
 
           <label className="fieldLabel">
@@ -586,8 +647,8 @@ function App() {
             </div>
           </label>
 
-          <div className="controlRow">
-            <label className="fieldLabel compact">
+          <div className="editorFooter">
+            <label className="fieldLabel compactField">
               Max steps
               <input
                 type="number"
@@ -596,42 +657,45 @@ function App() {
                 onChange={(e) => setMaxSteps(Number(e.target.value) || 1000)}
               />
             </label>
-          </div>
 
-          <div className="actionRow">
-            <button type="button" className="primaryButton" onClick={onRun}>
-              Run
-            </button>
-            <button type="button" className="ghostButton" onClick={onAssemble}>
-              Assemble
-            </button>
+            <div className="actionRow">
+              <button type="button" className="primaryButton" onClick={onRun}>
+                Run Simulation
+              </button>
+              <button type="button" className="ghostButton" onClick={onAssemble}>
+                Assemble Bytes
+              </button>
+            </div>
           </div>
         </article>
 
-        <article className="pane outputPane">
-          <div className="paneHead">
-            <h2>Output</h2>
-            <span className="chip">runtime</span>
+        <article className="panel runtimePanel">
+          <div className="panelHead">
+            <div>
+              <p className="panelKicker">Runtime</p>
+              <h2>Execution Output</h2>
+            </div>
+            <span className="tag">monitor</span>
           </div>
 
-          <section className="miniCard fullWidthCard">
+          <section className="stackCard compact">
             <h3>Program bytes</h3>
-            <pre>{assembled.map((x) => formatHex(x, 2)).join(' ') || '-'}</pre>
+            <pre>{assembled.map((value) => formatHex(value, 2)).join(' ') || '-'}</pre>
           </section>
 
-          <section className="miniCard fullWidthCard slimCard">
+          <section className="stackCard compact">
             <h3>Final state</h3>
             <pre>{formatStateLine(result?.final_state ?? null)}</pre>
           </section>
 
-          <section className="miniCard fullWidthCard consoleCard">
-            <div className="consoleHeader">
+          <section className="stackCard consoleCard">
+            <div className="consoleHead">
               <h3>Console</h3>
               <span>queue: {inputQueue.length}</span>
             </div>
             <div className="consoleLog">
-              {consoleEntries.map((entry, idx) => (
-                <div key={`${entry.kind}-${idx}`} className={`consoleLine ${entry.kind}`}>
+              {consoleEntries.map((entry, index) => (
+                <div key={`${entry.kind}-${index}`} className={`consoleLine ${entry.kind}`}>
                   {entry.kind.toUpperCase()}: {entry.text}
                 </div>
               ))}
@@ -640,12 +704,6 @@ function App() {
               <input
                 value={consoleInput}
                 onChange={(e) => setConsoleInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault()
-                    addConsoleInput()
-                  }
-                }}
                 placeholder="hex input (0A / 0x0A)"
               />
               <button type="button" className="ghostButton" onClick={addConsoleInput}>
@@ -654,32 +712,36 @@ function App() {
               <button type="button" className="ghostButton" onClick={() => setInputQueue([])}>
                 Clear Queue
               </button>
-              <button type="button" className="ghostButton" onClick={() => setConsoleEntries([])}>
+              <button
+                type="button"
+                className="ghostButton"
+                onClick={() => setConsoleEntries([{ kind: 'info', text: 'Console cleared.' }])}
+              >
                 Clear
               </button>
             </div>
           </section>
 
-          <section className="traceBlock">
-            {result?.trace.length && currentStep ? (
+          <section className="traceCard">
+            {currentStep ? (
               <div className="stepper">
                 <div className="stepperTop">
                   <button
                     type="button"
-                    className="stepArrow"
+                    className="stepArrow ghostButton"
                     onClick={() => setStepIndex((prev) => Math.max(0, prev - 1))}
                     disabled={stepIndex === 0}
                   >
                     ←
                   </button>
-                  <h3>
-                    STEP {stepIndex + 1}/{result.trace.length}
-                  </h3>
+                  <h3>STEP {stepIndex + 1}/{result?.trace.length}</h3>
                   <button
                     type="button"
-                    className="stepArrow"
-                    onClick={() => setStepIndex((prev) => Math.min(result.trace.length - 1, prev + 1))}
-                    disabled={stepIndex === result.trace.length - 1}
+                    className="stepArrow ghostButton"
+                    onClick={() =>
+                      setStepIndex((prev) => Math.min((result?.trace.length ?? 1) - 1, prev + 1))
+                    }
+                    disabled={stepIndex === (result?.trace.length ?? 1) - 1}
                   >
                     →
                   </button>
@@ -708,20 +770,17 @@ function App() {
                   </div>
                 </div>
 
-                <div className="stepMeta">
-                  {currentStep.halted ? 'HALTED' : 'RUNNING'}
-                  {currentStep.error ? ` | ERROR: ${currentStep.error}` : ''}
-                </div>
+                <p className="stepMeta">
+                  {currentStep.error
+                    ? `ERROR: ${currentStep.error}`
+                    : currentStep.halted
+                      ? 'HALTED'
+                      : 'RUNNING'}
+                </p>
 
                 <div className="memoryPanel">
-                  <h3>MEMORY</h3>
-                  <div className="memoryContent">
-                    {currentStep.memory_used?.length
-                      ? currentStep.memory_used
-                          .map((m) => `${formatHex(m.address)}:${formatHex(m.value, 2)}`)
-                          .join('  ')
-                      : '-'}
-                  </div>
+                  <h3>Memory</h3>
+                  <div className="memoryContent">{memoryView}</div>
                 </div>
               </div>
             ) : (
@@ -730,6 +789,56 @@ function App() {
           </section>
         </article>
       </section>
+
+      <section className="docsSection" id="docs">
+        <div className="sectionHeading narrow">
+          <p className="sectionKicker">Reference</p>
+          <h2>Instruction guide for the current educational ISA.</h2>
+        </div>
+        <div className="docsGrid">
+          {INSTRUCTION_HELP.map((group) => (
+            <article key={group.title} className="docCard">
+              <h3>{group.title}</h3>
+              <ul>
+                {group.items.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="ctaSection" id="about">
+        <div>
+          <p className="sectionKicker">Ready to explore 6502?</p>
+          <h2>Use the platform as a classroom demo, a self-study lab, or a portfolio project.</h2>
+          <p>
+            The app keeps historical CPU ideas and modern web engineering in one place: Python
+            backend, WebSocket transport, React runtime, and a browser-first workflow.
+          </p>
+        </div>
+        <div className="ctaActions">
+          <a className="primaryLink" href="#workspace">
+            Launch Workspace
+          </a>
+          <a className="secondaryLink" href="#docs">
+            Study Instructions
+          </a>
+        </div>
+      </section>
+
+      <footer className="footer">
+        <div>
+          <p className="footerBrand">CPU6502_ts</p>
+          <p>An interactive educational platform for studying assembler, CPU state, and runtime behavior.</p>
+        </div>
+        <div className="footerLinks">
+          <a href="#workspace">Workspace</a>
+          <a href="#modules">Modules</a>
+          <a href="#docs">Reference</a>
+        </div>
+      </footer>
     </main>
   )
 }
