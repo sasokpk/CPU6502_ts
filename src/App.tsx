@@ -741,111 +741,111 @@ function App() {
               </button>
             </div>
           </section>
+        </article>
 
-          <section className="traceCard">
-            {currentStep ? (
-              <div className="stepper">
-                <div className="stepperTop">
-                  <button
-                    type="button"
-                    className="stepArrow ghostButton"
-                    onClick={() => setStepIndex((prev) => Math.max(0, prev - 1))}
-                    disabled={stepIndex === 0}
-                  >
-                    ←
-                  </button>
-                  <h3>STEP {stepIndex + 1}/{result?.trace.length}</h3>
-                  <button
-                    type="button"
-                    className="stepArrow ghostButton"
-                    onClick={() =>
-                      setStepIndex((prev) => Math.min((result?.trace.length ?? 1) - 1, prev + 1))
-                    }
-                    disabled={stepIndex === (result?.trace.length ?? 1) - 1}
-                  >
-                    →
-                  </button>
-                </div>
+        <section className="traceCard tracePanel">
+          {currentStep ? (
+            <div className="stepper">
+              <div className="stepperTop">
+                <button
+                  type="button"
+                  className="stepArrow ghostButton"
+                  onClick={() => setStepIndex((prev) => Math.max(0, prev - 1))}
+                  disabled={stepIndex === 0}
+                >
+                  ←
+                </button>
+                <h3>STEP {stepIndex + 1}/{result?.trace.length}</h3>
+                <button
+                  type="button"
+                  className="stepArrow ghostButton"
+                  onClick={() =>
+                    setStepIndex((prev) => Math.min((result?.trace.length ?? 1) - 1, prev + 1))
+                  }
+                  disabled={stepIndex === (result?.trace.length ?? 1) - 1}
+                >
+                  →
+                </button>
+              </div>
 
-                <p className="stepMeta">
-                  {currentStep.error
-                    ? `ERROR: ${currentStep.error}`
-                    : currentStep.halted
-                      ? 'HALTED'
-                      : 'RUNNING'}
-                </p>
+              <p className="stepMeta">
+                {currentStep.error
+                  ? `ERROR: ${currentStep.error}`
+                  : currentStep.halted
+                    ? 'HALTED'
+                    : 'RUNNING'}
+              </p>
 
-                <div className="traceLayout">
-                  <div className="traceTopRow">
-                    <div className="registerGrid registerGridDetailed">
-                      <div className="regBox">
-                        <span>A</span>
-                        <strong>{formatHex(currentStep.before.A)}</strong>
-                      </div>
-                      <div className="regBox">
-                        <span>X</span>
-                        <strong>{formatHex(currentStep.before.X)}</strong>
-                      </div>
-                      <div className="regBox">
-                        <span>Y</span>
-                        <strong>{formatHex(currentStep.before.Y)}</strong>
-                      </div>
-                      <div className="regBox">
-                        <span>PC</span>
-                        <strong>{formatHex(currentStep.before.PC)}</strong>
-                      </div>
-                      <div className="regBox">
-                        <span>SP</span>
-                        <strong>{formatHex(currentStep.before.SP, 2)}</strong>
-                      </div>
-                      <div className="regBox">
-                        <span>P</span>
-                        <strong>{formatHex(currentStep.before.P, 2)}</strong>
-                      </div>
-                      <div className="regBox">
-                        <span>OP</span>
-                        <strong>{formatHex(currentStep.opcode, 2)}</strong>
-                      </div>
-                      <div className="regBox">
-                        <span>Cycles</span>
-                        <strong>{currentStep.before.cycles}</strong>
-                      </div>
+              <div className="traceLayout">
+                <div className="traceTopRow">
+                  <div className="registerGrid registerGridDetailed">
+                    <div className="regBox">
+                      <span>A</span>
+                      <strong>{formatHex(currentStep.before.A)}</strong>
                     </div>
-
-                    <section className="flagPanel">
-                      <h3>Flags</h3>
-                      <div className="flagGrid">
-                        {['C', 'Z', 'N', 'V', 'I', 'D', 'B'].map((flag) => (
-                          <div key={flag} className={`flagBox ${currentFlags[flag] ? 'active' : ''}`}>
-                            <span>{flag}</span>
-                            <strong>{currentFlags[flag] ? '1' : '0'}</strong>
-                          </div>
-                        ))}
-                      </div>
-                    </section>
+                    <div className="regBox">
+                      <span>X</span>
+                      <strong>{formatHex(currentStep.before.X)}</strong>
+                    </div>
+                    <div className="regBox">
+                      <span>Y</span>
+                      <strong>{formatHex(currentStep.before.Y)}</strong>
+                    </div>
+                    <div className="regBox">
+                      <span>PC</span>
+                      <strong>{formatHex(currentStep.before.PC)}</strong>
+                    </div>
+                    <div className="regBox">
+                      <span>SP</span>
+                      <strong>{formatHex(currentStep.before.SP, 2)}</strong>
+                    </div>
+                    <div className="regBox">
+                      <span>P</span>
+                      <strong>{formatHex(currentStep.before.P, 2)}</strong>
+                    </div>
+                    <div className="regBox">
+                      <span>OP</span>
+                      <strong>{formatHex(currentStep.opcode, 2)}</strong>
+                    </div>
+                    <div className="regBox">
+                      <span>Cycles</span>
+                      <strong>{currentStep.before.cycles}</strong>
+                    </div>
                   </div>
 
-                  <div className="traceBottomRow">
-                    <section className="snapshotCard">
-                      <h3>Before</h3>
-                      <pre>{formatStateLine(currentStep.before)}</pre>
-                    </section>
-                    <section className="snapshotCard">
-                      <h3>After</h3>
-                      <pre>{formatStateLine(currentStep.after ?? null)}</pre>
-                    </section>
-                    <div className="memoryPanel">
-                      <h3>Memory</h3>
-                      <div className="memoryContent">{memoryView}</div>
+                  <section className="flagPanel">
+                    <h3>Flags</h3>
+                    <div className="flagGrid">
+                      {['C', 'Z', 'N', 'V', 'I', 'D', 'B'].map((flag) => (
+                        <div key={flag} className={`flagBox ${currentFlags[flag] ? 'active' : ''}`}>
+                          <span>{flag}</span>
+                          <strong>{currentFlags[flag] ? '1' : '0'}</strong>
+                        </div>
+                      ))}
                     </div>
+                  </section>
+                </div>
+
+                <div className="traceBottomRow">
+                  <section className="snapshotCard">
+                    <h3>Before</h3>
+                    <pre>{formatStateLine(currentStep.before)}</pre>
+                  </section>
+                  <section className="snapshotCard">
+                    <h3>After</h3>
+                    <pre>{formatStateLine(currentStep.after ?? null)}</pre>
+                  </section>
+                  <div className="memoryPanel">
+                    <h3>Memory</h3>
+                    <div className="memoryContent">{memoryView}</div>
                   </div>
                 </div>
               </div>
-            ) : (
-              <div className="traceEmpty">No trace yet. Click Run to execute program.</div>
-            )}
-          </section>
-        </article>
+            </div>
+          ) : (
+            <div className="traceEmpty">No trace yet. Click Run to execute program.</div>
+          )}
+        </section>
       </section>
 
       <section className="docsSection" id="docs">

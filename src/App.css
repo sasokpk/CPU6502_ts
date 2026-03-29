@@ -616,7 +616,7 @@ pre {
 
 .runtimePanel {
   display: grid;
-  grid-template-rows: auto auto auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto auto auto;
   gap: 16px;
 }
 
@@ -693,6 +693,10 @@ pre {
 .traceCard {
   min-height: 0;
   min-height: 360px;
+}
+
+.tracePanel {
+  grid-column: 1 / -1;
 }
 
 .stepper {
