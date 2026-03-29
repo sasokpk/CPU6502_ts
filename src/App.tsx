@@ -386,6 +386,7 @@ function App() {
   }
 
   const currentStep = result?.trace.length ? result.trace[stepIndex] : null
+  const currentFlags = currentStep?.before.flags ?? {}
 
   const getCaretPositionInTextarea = (textarea: HTMLTextAreaElement, pos: number) => {
     const mirror = document.createElement('div')
@@ -766,29 +767,6 @@ function App() {
                   </button>
                 </div>
 
-                <div className="registerGrid">
-                  <div className="regBox">
-                    <span>A</span>
-                    <strong>{formatHex(currentStep.before.A)}</strong>
-                  </div>
-                  <div className="regBox">
-                    <span>X</span>
-                    <strong>{formatHex(currentStep.before.X)}</strong>
-                  </div>
-                  <div className="regBox">
-                    <span>Y</span>
-                    <strong>{formatHex(currentStep.before.Y)}</strong>
-                  </div>
-                  <div className="regBox">
-                    <span>PC</span>
-                    <strong>{formatHex(currentStep.before.PC)}</strong>
-                  </div>
-                  <div className="regBox">
-                    <span>OP</span>
-                    <strong>{formatHex(currentStep.opcode, 2)}</strong>
-                  </div>
-                </div>
-
                 <p className="stepMeta">
                   {currentStep.error
                     ? `ERROR: ${currentStep.error}`
@@ -797,9 +775,73 @@ function App() {
                       : 'RUNNING'}
                 </p>
 
-                <div className="memoryPanel">
-                  <h3>Memory</h3>
-                  <div className="memoryContent">{memoryView}</div>
+                <div className="traceLayout">
+                  <div className="traceColumn">
+                    <div className="registerGrid registerGridDetailed">
+                      <div className="regBox">
+                        <span>A</span>
+                        <strong>{formatHex(currentStep.before.A)}</strong>
+                      </div>
+                      <div className="regBox">
+                        <span>X</span>
+                        <strong>{formatHex(currentStep.before.X)}</strong>
+                      </div>
+                      <div className="regBox">
+                        <span>Y</span>
+                        <strong>{formatHex(currentStep.before.Y)}</strong>
+                      </div>
+                      <div className="regBox">
+                        <span>PC</span>
+                        <strong>{formatHex(currentStep.before.PC)}</strong>
+                      </div>
+                      <div className="regBox">
+                        <span>SP</span>
+                        <strong>{formatHex(currentStep.before.SP, 2)}</strong>
+                      </div>
+                      <div className="regBox">
+                        <span>P</span>
+                        <strong>{formatHex(currentStep.before.P, 2)}</strong>
+                      </div>
+                      <div className="regBox">
+                        <span>OP</span>
+                        <strong>{formatHex(currentStep.opcode, 2)}</strong>
+                      </div>
+                      <div className="regBox">
+                        <span>Cycles</span>
+                        <strong>{currentStep.before.cycles}</strong>
+                      </div>
+                    </div>
+
+                    <div className="snapshotGrid">
+                      <section className="snapshotCard">
+                        <h3>Before</h3>
+                        <pre>{formatStateLine(currentStep.before)}</pre>
+                      </section>
+                      <section className="snapshotCard">
+                        <h3>After</h3>
+                        <pre>{formatStateLine(currentStep.after ?? null)}</pre>
+                      </section>
+                    </div>
+                  </div>
+
+                  <aside className="traceSidebar">
+                    <section className="flagPanel">
+                      <h3>Flags</h3>
+                      <div className="flagGrid">
+                        {['C', 'Z', 'N', 'V', 'I', 'D', 'B'].map((flag) => (
+                          <div key={flag} className={`flagBox ${currentFlags[flag] ? 'active' : ''}`}>
+                            <span>{flag}</span>
+                            <strong>{currentFlags[flag] ? '1' : '0'}</strong>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+
+                    <div className="memoryPanel">
+                      <h3>Memory</h3>
+                      <div className="memoryContent">{memoryView}</div>
+                    </div>
+                  </aside>
                 </div>
               </div>
             ) : (
