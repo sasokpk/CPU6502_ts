@@ -428,7 +428,21 @@ class CPU6502:
 
         self.cycles += 4
 
+    def clear_all_flags(self):
+        
+        self.C = False
 
+        self.Z = False
+
+        self.I = False
+
+        self.D = False
+
+        self.B = False
+
+        self.V = False
+
+        self.N = False
 
     def from_store_to_X(self, addr):
 
@@ -585,7 +599,9 @@ class CPU6502:
 
             self.branch(not self.N)
 
+        elif op == 0x11:
 
+            self.clear_all_flags()
 
         elif op == 0x14:
 

@@ -15,6 +15,7 @@ OPCODES = {
     "CPX": 0xE0,
     "AND": 0x29,
     "ORA": 0x09,
+    "CLA": 0x11,
     "EOR": 0x49,
     "NOP": 0xEA,
     "BRK": 0x00,
@@ -41,7 +42,7 @@ OPCODES = {
     "XTA": 0x08,
 }
 
-NO_ARG = {"BRK", "NOP", "XTA", "CLC", "CTA", "TAX"}
+NO_ARG = {"BRK", "NOP", "XTA", "CLC", "CTA", "TAX", "CLA"}
 ABSOLUTE_ADDR = {"JMP"}
 IMM16_OPS = {"LDA", "LDX", "LDY", "ADC", "SBC", "CMP", "CPX", "AND", "ORA", "EOR"}
 BRANCH_OPS = {"BNE", "BEQ", "BCC", "BCS", "BMI", "BPL", "BVS", "BVC"}
