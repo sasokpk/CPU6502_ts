@@ -54,3 +54,19 @@ npm run build
 systemctl restart cpu6502-backend
 systemctl restart caddy
 ```
+
+## 6. Ready-made scripts
+
+First setup:
+
+```bash
+chmod +x /opt/cpu6502/deploy/linux/setup_server.sh
+/opt/cpu6502/deploy/linux/setup_server.sh your-domain.example.com
+```
+
+Update existing server:
+
+```bash
+chmod +x /opt/cpu6502/deploy/linux/update_server.sh
+/opt/cpu6502/deploy/linux/update_server.sh
+```
