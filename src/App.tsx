@@ -23,9 +23,11 @@ type TraceEntry = {
 }
 
 type RunResult = {
+  session_id?: string
   program: number[]
   trace: TraceEntry[]
   halted: boolean
+  waiting_input?: boolean
   error: string | null
   outputs: Array<{ value: number; address: number }>
   final_state: CpuState
@@ -127,9 +129,9 @@ const INSTRUCTION_HELP = [
   {
     title: 'Ввод и вывод',
     items: [
-      'CTA — чтение следующего значения из input-очереди',
+      'CTA — выполнение ставится на паузу и приложение просит число в консоли',
       'OTT aa — вывод значения M[aa] в консоль',
-      'Если очередь пустая, используется 0',
+      'После ввода программа продолжает выполнение с того же места',
     ],
   },
 ]
@@ -212,7 +214,6 @@ function App() {
   )
   const [source, setSource] = useState(DEFAULT_SOURCE)
   const [consoleInput, setConsoleInput] = useState('')
-  const [inputQueue, setInputQueue] = useState<number[]>([0x5])
   const [maxSteps, setMaxSteps] = useState(1000)
   const [assembled, setAssembled] = useState<number[]>([])
   const [result, setResult] = useState<RunResult | null>(null)
@@ -225,6 +226,9 @@ function App() {
   const [hintIndex, setHintIndex] = useState(0)
   const [hintRange, setHintRange] = useState<{ start: number; end: number } | null>(null)
   const [hintPos, setHintPos] = useState<{ top: number; left: number } | null>(null)
+  const [sessionId, setSessionId] = useState<string | null>(null)
+  const [waitingInput, setWaitingInput] = useState(false)
+  const [seenOutputCount, setSeenOutputCount] = useState(0)
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
 
@@ -271,7 +275,10 @@ function App() {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [result?.trace.length])
 
-  const request = async <T,>(path: 'assemble' | 'run', payload: Record<string, unknown>) => {
+  const request = async <T,>(
+    path: 'assemble' | 'run' | 'session/start' | 'session/input',
+    payload: Record<string, unknown>,
+  ) => {
     const response = await fetch(`${apiUrl}/${path}`, {
       method: 'POST',
       headers: {
@@ -305,9 +312,58 @@ function App() {
       pushConsoleEntry({ kind: 'error', text: `Invalid input '${consoleInput}'. Use hex: 0A or 0x0A.` })
       return
     }
-    setInputQueue((prev) => [...prev, parsed & 0xffff])
-    pushConsoleEntry({ kind: 'input', text: `queued ${parsed.toString(16).toUpperCase()} (${parsed})` })
-    setConsoleInput('')
+
+    if (!waitingInput || !sessionId) {
+      pushConsoleEntry({ kind: 'info', text: 'Program is not waiting for input right now.' })
+      return
+    }
+
+    void sendInteractiveInput(parsed & 0xffff)
+  }
+
+  const applyRunResponse = (runResult: RunResult, mode: 'start' | 'resume') => {
+    setResult(runResult)
+    setAssembled(runResult.program ?? [])
+    setSessionId(runResult.session_id ?? null)
+    setWaitingInput(Boolean(runResult.waiting_input))
+
+    const newOutputs = runResult.outputs.slice(seenOutputCount)
+    if (newOutputs.length) {
+      newOutputs.forEach((output) => {
+        pushConsoleEntry({
+          kind: 'output',
+          text: `${output.value.toString(16).toUpperCase()} (${output.value}) from ${output.address.toString(16).toUpperCase()}`,
+        })
+      })
+    }
+    setSeenOutputCount(runResult.outputs.length)
+
+    if (runResult.waiting_input) {
+      pushConsoleEntry({
+        kind: 'info',
+        text: mode === 'start' ? 'Program paused: enter a hex number to continue.' : 'Input consumed. Enter next value if requested.',
+      })
+    } else if (runResult.halted) {
+      pushConsoleEntry({ kind: 'info', text: 'Run finished.' })
+      setSessionId(null)
+    } else if (!runResult.outputs.length && mode === 'start') {
+      pushConsoleEntry({ kind: 'info', text: 'Run finished with no output.' })
+    }
+  }
+
+  const sendInteractiveInput = async (value: number) => {
+    try {
+      pushConsoleEntry({ kind: 'input', text: `${value.toString(16).toUpperCase()} (${value})` })
+      setConsoleInput('')
+      const response = await request<RunResult>('session/input', {
+        sessionId,
+        value,
+      })
+      applyRunResponse(response, 'resume')
+    } catch (e) {
+      setError((e as Error).message)
+      pushConsoleEntry({ kind: 'error', text: (e as Error).message })
+    }
   }
 
   const onAssemble = async () => {
@@ -323,26 +379,16 @@ function App() {
   const onRun = async () => {
     setError(null)
     setResult(null)
+    setSessionId(null)
+    setWaitingInput(false)
+    setSeenOutputCount(0)
     try {
-      pushConsoleEntry({ kind: 'info', text: `Run started, queued inputs: ${inputQueue.length}` })
-      const response = await request<RunResult>('run', {
+      pushConsoleEntry({ kind: 'info', text: 'Run started.' })
+      const response = await request<RunResult>('session/start', {
         source,
         maxSteps,
-        inputs: inputQueue,
       })
-      const runResult = response as RunResult
-      setResult(runResult)
-      setAssembled(runResult.program ?? [])
-      if (runResult.outputs.length) {
-        runResult.outputs.forEach((output) => {
-          pushConsoleEntry({
-            kind: 'output',
-            text: `${output.value.toString(16).toUpperCase()} (${output.value}) from ${output.address.toString(16).toUpperCase()}`,
-          })
-        })
-      } else {
-        pushConsoleEntry({ kind: 'info', text: 'Run finished with no output.' })
-      }
+      applyRunResponse(response, 'start')
     } catch (e) {
       setError((e as Error).message)
       pushConsoleEntry({ kind: 'error', text: (e as Error).message })
@@ -549,7 +595,7 @@ function App() {
             <p>protocol = Django JSON API</p>
             <p>$ runtime_snapshot</p>
             <p>program_bytes = {assembled.length || DEFAULT_SOURCE.length}</p>
-            <p>queued_inputs = {inputQueue.length}</p>
+            <p>input_mode = {waitingInput ? 'waiting' : 'idle'}</p>
             <p>trace_steps = {result?.trace.length ?? 0}</p>
             <p>mode = {theme}</p>
           </div>
@@ -686,7 +732,7 @@ function App() {
           <section className="stackCard consoleCard">
             <div className="consoleHead">
               <h3>Console</h3>
-              <span>queue: {inputQueue.length}</span>
+              <span>{waitingInput ? 'awaiting input' : 'ready'}</span>
             </div>
             <div className="consoleLog">
               {consoleEntries.map((entry, index) => (
@@ -699,13 +745,10 @@ function App() {
               <input
                 value={consoleInput}
                 onChange={(e) => setConsoleInput(e.target.value)}
-                placeholder="hex input (0A / 0x0A)"
+                placeholder={waitingInput ? 'enter hex input (0A / 0x0A)' : 'program input will be requested here'}
               />
               <button type="button" className="ghostButton" onClick={addConsoleInput}>
-                Add
-              </button>
-              <button type="button" className="ghostButton" onClick={() => setInputQueue([])}>
-                Clear Queue
+                Send
               </button>
               <button
                 type="button"

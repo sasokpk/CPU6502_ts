@@ -2,6 +2,10 @@
 from typing import Final
 
 
+class InputRequired(Exception):
+    pass
+
+
 class CPU6502:
     CARRY: Final = 0x01
 
@@ -466,7 +470,10 @@ class CPU6502:
         self.cycles += 4
 
     def from_console_to_A(self):
-        self._A = int(self._input_provider()) & 0xFFFF
+        value = self._input_provider()
+        if value is None:
+            raise InputRequired("Input required")
+        self._A = int(value) & 0xFFFF
         self.update_zn_flags(self._A)
         self.cycles += 2
 
