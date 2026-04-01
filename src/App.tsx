@@ -53,6 +53,7 @@ ADC 1
 STA 64
 CMPC 62
 BNE loop
+CLA
 OTT 66
 BRK`
 
@@ -192,17 +193,11 @@ const FEATURE_CARDS = [
   },
 ]
 
-const resolveDefaultWsUrl = () => {
-  const configured = import.meta.env.VITE_WS_URL
+const resolveDefaultApiUrl = () => {
+  const configured = import.meta.env.VITE_API_URL
   if (configured) return configured
 
-  if (typeof window !== 'undefined') {
-    const isHttps = window.location.protocol === 'https:'
-    const protocol = isHttps ? 'wss' : 'ws'
-    return `${protocol}://${window.location.host}/ws`
-  }
-
-  return 'ws://127.0.0.1:8765'
+  return '/api'
 }
 
 function App() {
@@ -211,7 +206,7 @@ function App() {
     const stored = window.localStorage.getItem('cpu6502-theme')
     return stored === 'light' ? 'light' : 'dark'
   })
-  const [wsUrl] = useState(resolveDefaultWsUrl)
+  const [apiUrl] = useState(resolveDefaultApiUrl)
   const [status, setStatus] = useState<'disconnected' | 'connecting' | 'connected'>(
     'disconnected',
   )
@@ -231,40 +226,26 @@ function App() {
   const [hintRange, setHintRange] = useState<{ start: number; end: number } | null>(null)
   const [hintPos, setHintPos] = useState<{ top: number; left: number } | null>(null)
 
-  const socketRef = useRef<WebSocket | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
-  const pendingRef = useRef(new Map<string, (data: any) => void>())
 
-  const connect = () => {
-    socketRef.current?.close()
+  const connect = async () => {
     setStatus('connecting')
     setError(null)
 
-    const socket = new WebSocket(wsUrl)
-    socketRef.current = socket
-
-    socket.onopen = () => setStatus('connected')
-    socket.onclose = () => setStatus('disconnected')
-    socket.onerror = () => setError('WebSocket connection failed')
-    socket.onmessage = (event) => {
-      try {
-        const payload = JSON.parse(event.data)
-        const requestId = payload.id as string | undefined
-        if (requestId && pendingRef.current.has(requestId)) {
-          const resolve = pendingRef.current.get(requestId)!
-          pendingRef.current.delete(requestId)
-          resolve(payload)
-          return
-        }
-      } catch {
-        setError('Failed to parse server response')
+    try {
+      const response = await fetch(`${apiUrl}/health`)
+      if (!response.ok) {
+        throw new Error(`Backend healthcheck failed (${response.status})`)
       }
+      setStatus('connected')
+    } catch (err) {
+      setStatus('disconnected')
+      setError((err as Error).message)
     }
   }
 
   useEffect(() => {
-    connect()
-    return () => socketRef.current?.close()
+    void connect()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -290,25 +271,21 @@ function App() {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [result?.trace.length])
 
-  const request = (type: string, payload: Record<string, unknown>) =>
-    new Promise<any>((resolve, reject) => {
-      const socket = socketRef.current
-      if (!socket || socket.readyState !== WebSocket.OPEN) {
-        reject(new Error('WebSocket is not connected'))
-        return
-      }
-
-      const id = `${Date.now()}-${Math.random().toString(16).slice(2)}`
-      pendingRef.current.set(id, resolve)
-      socket.send(JSON.stringify({ id, type, ...payload }))
-
-      setTimeout(() => {
-        if (pendingRef.current.has(id)) {
-          pendingRef.current.delete(id)
-          reject(new Error(`Request timeout for '${type}'`))
-        }
-      }, 10000)
+  const request = async <T,>(path: 'assemble' | 'run', payload: Record<string, unknown>) => {
+    const response = await fetch(`${apiUrl}/${path}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
     })
+
+    const data = (await response.json()) as T & { error?: string }
+    if (!response.ok) {
+      throw new Error(data.error || `Request failed (${response.status})`)
+    }
+    return data
+  }
 
   const parseConsoleNumber = (value: string) => {
     const raw = value.trim()
@@ -336,8 +313,7 @@ function App() {
   const onAssemble = async () => {
     setError(null)
     try {
-      const response = await request('assemble', { source })
-      if (response.type === 'error') throw new Error(response.error)
+      const response = await request<{ program: number[] }>('assemble', { source })
       setAssembled(response.program ?? [])
     } catch (e) {
       setError((e as Error).message)
@@ -349,12 +325,11 @@ function App() {
     setResult(null)
     try {
       pushConsoleEntry({ kind: 'info', text: `Run started, queued inputs: ${inputQueue.length}` })
-      const response = await request('run', {
+      const response = await request<RunResult>('run', {
         source,
         maxSteps,
         inputs: inputQueue,
       })
-      if (response.type === 'error') throw new Error(response.error)
       const runResult = response as RunResult
       setResult(runResult)
       setAssembled(runResult.program ?? [])
@@ -542,7 +517,7 @@ function App() {
           </div>
           <div className="heroMeta">
             <span className={`statusPill ${status}`}>{status}</span>
-            <span>WebSocket: {wsUrl.replace(/^wss?:\/\//, '')}</span>
+            <span>API: {apiUrl}</span>
           </div>
           <div className="metricStrip">
             <article className="metricCard">
@@ -571,7 +546,7 @@ function App() {
             <p>$ initialize_emulator</p>
             <p>Loading MOS 6502 core...</p>
             <p>$ attach_transport</p>
-            <p>protocol = WebSocket JSON bridge</p>
+            <p>protocol = Django JSON API</p>
             <p>$ runtime_snapshot</p>
             <p>program_bytes = {assembled.length || DEFAULT_SOURCE.length}</p>
             <p>queued_inputs = {inputQueue.length}</p>
@@ -878,7 +853,7 @@ function App() {
           <h2>Use the platform as a classroom demo, a self-study lab, or a portfolio project.</h2>
           <p>
             The app keeps historical CPU ideas and modern web engineering in one place: Python
-            backend, WebSocket transport, React runtime, and a browser-first workflow.
+            backend, Django HTTP API, React runtime, and a browser-first workflow.
           </p>
         </div>
         <div className="ctaActions">

@@ -1,30 +1,28 @@
-# CPU6502 React + WebSocket
+# CPU6502 React + Django
 
-React UI connects to Python CPU6502 emulator over WebSocket.
+React UI connects to a Django backend that runs the Python CPU6502 emulator over plain HTTP JSON endpoints.
 
 ## Local start
 
 ```bash
 npm install
 python3 -m pip install -r python/requirements.txt
-npm run dev:ws
+npm run dev:backend
 # second terminal:
 npm run dev
 ```
 
-Default local WS URL: `ws://127.0.0.1:8765`.
+Default local API URL: `/api` proxied by Vite to `http://127.0.0.1:8000`.
 
 ## Production-ready changes in project
 
-- Frontend auto-detects WS endpoint:
-  - if `VITE_WS_URL` set -> uses it
-  - otherwise uses `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws`
-- Python WebSocket server reads:
-  - `CPU6502_WS_HOST` (default `127.0.0.1`)
-  - `CPU6502_WS_PORT` (default `8765`)
+- Frontend auto-detects API endpoint:
+  - if `VITE_API_URL` set -> uses it
+  - otherwise uses `/api`
+- Django backend runs on `127.0.0.1:8000` by default in local/dev mode
 - Windows deploy configs:
   - `deploy/windows/Caddyfile`
-  - `deploy/windows/start_ws_server.ps1`
+  - `deploy/windows/start_backend.ps1`
 
 ## Windows public hosting (any network)
 
@@ -83,13 +81,13 @@ cd C:\path\to\caddy
 
 Caddy will issue TLS cert automatically and serve HTTPS.
 
-### 6. Run WebSocket backend
+### 6. Run Django backend
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File C:\cpu6502\CPU6502_ts\deploy\windows\start_ws_server.ps1
+powershell -ExecutionPolicy Bypass -File C:\cpu6502\CPU6502_ts\deploy\windows\start_backend.ps1
 ```
 
-Backend listens on `127.0.0.1:8765`, Caddy proxies `/ws` to it.
+Backend listens on `127.0.0.1:8000`, Caddy proxies `/api` to it.
 
 ### 7. Check from external network
 
@@ -97,9 +95,9 @@ Open:
 
 - `https://your-domain.example.com`
 
-In browser devtools, websocket should connect to:
+In browser devtools, app requests should go to:
 
-- `wss://your-domain.example.com/ws`
+- `https://your-domain.example.com/api/*`
 
 ## Optional env
 
@@ -108,7 +106,7 @@ For fixed frontend endpoint:
 Create `.env.production`:
 
 ```bash
-VITE_WS_URL=wss://your-domain.example.com/ws
+VITE_API_URL=https://your-domain.example.com/api
 ```
 
 Then rebuild:
@@ -117,20 +115,22 @@ Then rebuild:
 npm run build
 ```
 
-## WebSocket protocol
+## HTTP API
 
-Request:
+`POST /api/assemble`
 
 ```json
-{ "id": "1", "type": "assemble", "source": "LDA 1\nBRK" }
+{ "source": "LDA 1\nBRK" }
 ```
 
+`POST /api/run`
+
 ```json
-{ "id": "2", "type": "run", "source": "CTA\nBRK", "inputs": [5], "maxSteps": 1000 }
+{ "source": "CTA\nBRK", "inputs": [5], "maxSteps": 1000 }
 ```
 
 Response:
 
 ```json
-{ "id": "2", "type": "result", "program": [...], "trace": [...], "final_state": {...} }
+{ "program": [...], "trace": [...], "final_state": {...} }
 ```
