@@ -38,6 +38,13 @@ type ConsoleEntry = {
   text: string
 }
 
+type HintItem = {
+  label: string
+  value: string
+  detail: string
+  kind: 'opcode' | 'label' | 'value'
+}
+
 const DEFAULT_SOURCE = `CTA
 STA 60
 ADC 1
@@ -136,40 +143,57 @@ const INSTRUCTION_HELP = [
   },
 ]
 
-const OPCODE_HINTS = [
-  'LDA',
-  'LDX',
-  'LDY',
-  'ADC',
-  'SBC',
-  'CMP',
-  'CPX',
-  'CMPC',
-  'AND',
-  'ORA',
-  'EOR',
-  'STA',
-  'LSA',
-  'STX',
-  'LSX',
-  'CTA',
-  'OTT',
-  'CLC',
-  'BEQ',
-  'BNE',
-  'BCS',
-  'BCC',
-  'BMI',
-  'BPL',
-  'BVS',
-  'BVC',
-  'JMP',
-  'NOP',
-  'BRK',
-  'TAX',
-  'XTA',
-  'MUL',
-  'MULM',
+const OPCODE_HINTS: HintItem[] = [
+  { label: 'LDA', value: 'LDA', detail: 'Load accumulator with immediate 16-bit value', kind: 'opcode' },
+  { label: 'LDX', value: 'LDX', detail: 'Load X register with immediate 16-bit value', kind: 'opcode' },
+  { label: 'LDY', value: 'LDY', detail: 'Load Y register with immediate 16-bit value', kind: 'opcode' },
+  { label: 'ADC', value: 'ADC', detail: 'Add immediate value to A with Carry', kind: 'opcode' },
+  { label: 'SBC', value: 'SBC', detail: 'Subtract immediate value from A', kind: 'opcode' },
+  { label: 'CMP', value: 'CMP', detail: 'Compare A with immediate value', kind: 'opcode' },
+  { label: 'CPX', value: 'CPX', detail: 'Compare X with immediate value', kind: 'opcode' },
+  { label: 'CMPC', value: 'CMPC', detail: 'Compare A with 16-bit value in memory', kind: 'opcode' },
+  { label: 'AND', value: 'AND', detail: 'Bitwise AND with A', kind: 'opcode' },
+  { label: 'ORA', value: 'ORA', detail: 'Bitwise OR with A', kind: 'opcode' },
+  { label: 'EOR', value: 'EOR', detail: 'Bitwise XOR with A', kind: 'opcode' },
+  { label: 'STA', value: 'STA', detail: 'Store A into 16-bit memory cell', kind: 'opcode' },
+  { label: 'LSA', value: 'LSA', detail: 'Load A from 16-bit memory cell', kind: 'opcode' },
+  { label: 'STX', value: 'STX', detail: 'Store X into memory', kind: 'opcode' },
+  { label: 'LSX', value: 'LSX', detail: 'Load X from memory', kind: 'opcode' },
+  { label: 'CTA', value: 'CTA', detail: 'Pause and request console input into A', kind: 'opcode' },
+  { label: 'OTT', value: 'OTT', detail: 'Output a 16-bit value from memory', kind: 'opcode' },
+  { label: 'CLC', value: 'CLC', detail: 'Clear Carry flag', kind: 'opcode' },
+  { label: 'CLA', value: 'CLA', detail: 'Clear all flags', kind: 'opcode' },
+  { label: 'BEQ', value: 'BEQ', detail: 'Branch if Zero flag is set', kind: 'opcode' },
+  { label: 'BNE', value: 'BNE', detail: 'Branch if Zero flag is clear', kind: 'opcode' },
+  { label: 'BCS', value: 'BCS', detail: 'Branch if Carry flag is set', kind: 'opcode' },
+  { label: 'BCC', value: 'BCC', detail: 'Branch if Carry flag is clear', kind: 'opcode' },
+  { label: 'BMI', value: 'BMI', detail: 'Branch if Negative flag is set', kind: 'opcode' },
+  { label: 'BPL', value: 'BPL', detail: 'Branch if Negative flag is clear', kind: 'opcode' },
+  { label: 'BVS', value: 'BVS', detail: 'Branch if Overflow flag is set', kind: 'opcode' },
+  { label: 'BVC', value: 'BVC', detail: 'Branch if Overflow flag is clear', kind: 'opcode' },
+  { label: 'JMP', value: 'JMP', detail: 'Jump to label or absolute address', kind: 'opcode' },
+  { label: 'NOP', value: 'NOP', detail: 'No operation', kind: 'opcode' },
+  { label: 'BRK', value: 'BRK', detail: 'Stop program execution', kind: 'opcode' },
+  { label: 'TAX', value: 'TAX', detail: 'Copy A into X', kind: 'opcode' },
+  { label: 'XTA', value: 'XTA', detail: 'Copy X into A', kind: 'opcode' },
+  { label: 'MUL', value: 'MUL', detail: 'Multiply A by 16-bit memory value', kind: 'opcode' },
+  { label: 'MULM', value: 'MULM', detail: 'Multiply A and memory, write back to memory', kind: 'opcode' },
+]
+
+const BRANCH_OPS = new Set(['BEQ', 'BNE', 'BCS', 'BCC', 'BMI', 'BPL', 'BVS', 'BVC', 'JMP'])
+const ADDRESS_OPS = new Set(['STA', 'LSA', 'STX', 'LSX', 'OTT', 'MUL', 'MULM', 'CMPC'])
+const IMMEDIATE_OPS = new Set(['LDA', 'LDX', 'LDY', 'ADC', 'SBC', 'CMP', 'CPX', 'AND', 'ORA', 'EOR'])
+const COMMON_ADDRESS_HINTS: HintItem[] = [
+  { label: '60', value: '60', detail: 'Hex memory address example', kind: 'value' },
+  { label: '62', value: '62', detail: 'Hex memory address example', kind: 'value' },
+  { label: '64', value: '64', detail: 'Hex memory address example', kind: 'value' },
+  { label: '66', value: '66', detail: 'Hex memory address example', kind: 'value' },
+]
+const COMMON_IMMEDIATE_HINTS: HintItem[] = [
+  { label: '1', value: '1', detail: 'Hex immediate value example', kind: 'value' },
+  { label: '5', value: '5', detail: 'Hex immediate value example', kind: 'value' },
+  { label: '0A', value: '0A', detail: 'Hex immediate value example', kind: 'value' },
+  { label: '10', value: '10', detail: 'Hex immediate value example', kind: 'value' },
 ]
 
 const FEATURE_CARDS = [
@@ -222,7 +246,7 @@ function App() {
     { kind: 'info', text: 'Console ready. Add hex input values and press Run.' },
   ])
   const [stepIndex, setStepIndex] = useState(0)
-  const [hints, setHints] = useState<string[]>([])
+  const [hints, setHints] = useState<HintItem[]>([])
   const [hintIndex, setHintIndex] = useState(0)
   const [hintRange, setHintRange] = useState<{ start: number; end: number } | null>(null)
   const [hintPos, setHintPos] = useState<{ top: number; left: number } | null>(null)
@@ -459,22 +483,83 @@ function App() {
     return coords
   }
 
+  const rankHints = (items: HintItem[], token: string) => {
+    const normalized = token.toUpperCase()
+    return items
+      .map((item) => {
+        const candidate = item.value.toUpperCase()
+        let score = 1000
+        if (!normalized) score = 0
+        else if (candidate === normalized) score = 0
+        else if (candidate.startsWith(normalized)) score = 1
+        else if (candidate.includes(normalized)) score = 2
+        else {
+          let pos = 0
+          let matched = true
+          for (const char of normalized) {
+            pos = candidate.indexOf(char, pos)
+            if (pos === -1) {
+              matched = false
+              break
+            }
+            pos += 1
+          }
+          if (!matched) return null
+          score = 3
+        }
+        return { item, score }
+      })
+      .filter((entry): entry is { item: HintItem; score: number } => entry !== null)
+      .sort((a, b) => a.score - b.score || a.item.value.localeCompare(b.item.value))
+      .map((entry) => entry.item)
+      .slice(0, 10)
+  }
+
+  const extractLabels = (text: string): HintItem[] => {
+    const labels = new Set<string>()
+    text.split('\n').forEach((rawLine) => {
+      const line = rawLine.split(';', 1)[0].split('#', 1)[0].trim()
+      if (!line.includes(':')) return
+      const label = line.split(':', 1)[0].trim()
+      if (label) labels.add(label)
+    })
+
+    return Array.from(labels).map((label) => ({
+      label,
+      value: label,
+      detail: 'Label defined in current source',
+      kind: 'label',
+    }))
+  }
+
   const updateHints = (text: string, caret: number) => {
     const lineStart = text.lastIndexOf('\n', Math.max(0, caret - 1)) + 1
-    const lineEndIndex = text.indexOf('\n', caret)
-    const lineEnd = lineEndIndex === -1 ? text.length : lineEndIndex
-    const line = text.slice(lineStart, lineEnd)
-    const tokenMatch = /^\s*([A-Za-z]*)/.exec(line)
-    const token = (tokenMatch?.[1] ?? '').toUpperCase()
+    const prefix = text.slice(lineStart, caret)
+    const tokenStart = prefix.search(/[^\s]*$/)
+    const activeToken = prefix.slice(tokenStart === -1 ? prefix.length : tokenStart)
+    const leading = prefix.slice(0, tokenStart === -1 ? prefix.length : tokenStart)
+    const partsBeforeToken = leading.trim().split(/\s+/).filter(Boolean)
+    const opcode = (partsBeforeToken[0] ?? '').toUpperCase()
+    const token = activeToken.trim()
 
-    if (!token) {
-      setHints([])
-      setHintRange(null)
-      setHintPos(null)
-      return
+    const isOpcodePosition = partsBeforeToken.length === 0 && !leading.includes(':')
+    const labels = extractLabels(text)
+    let candidateHints: HintItem[] = []
+
+    if (isOpcodePosition) {
+      candidateHints = OPCODE_HINTS
+    } else if (BRANCH_OPS.has(opcode)) {
+      candidateHints = labels
+    } else if (ADDRESS_OPS.has(opcode)) {
+      candidateHints = [...labels, ...COMMON_ADDRESS_HINTS]
+    } else if (IMMEDIATE_OPS.has(opcode)) {
+      candidateHints = COMMON_IMMEDIATE_HINTS
+    } else if (!opcode && leading.includes(':')) {
+      candidateHints = OPCODE_HINTS
     }
 
-    const found = OPCODE_HINTS.filter((op) => op.startsWith(token)).slice(0, 8)
+    const found = rankHints(candidateHints, token)
+
     if (!found.length) {
       setHints([])
       setHintRange(null)
@@ -485,8 +570,8 @@ function App() {
     setHints(found)
     setHintIndex(0)
     setHintRange({
-      start: lineStart + (tokenMatch?.[0].length ?? 0) - token.length,
-      end: lineStart + (tokenMatch?.[0].length ?? 0),
+      start: lineStart + (tokenStart === -1 ? prefix.length : tokenStart),
+      end: caret,
     })
 
     if (textareaRef.current) {
@@ -497,18 +582,19 @@ function App() {
     }
   }
 
-  const applyHint = (hint: string) => {
+  const applyHint = (hint: HintItem) => {
     if (!hintRange) return
     const before = source.slice(0, hintRange.start)
     const after = source.slice(hintRange.end)
-    const next = `${before}${hint} ${after}`
+    const needsTrailingSpace = hint.kind === 'opcode'
+    const next = `${before}${hint.value}${needsTrailingSpace ? ' ' : ''}${after}`
     setSource(next)
     setHints([])
     setHintRange(null)
     setHintPos(null)
 
     requestAnimationFrame(() => {
-      const pos = hintRange.start + hint.length + 1
+      const pos = hintRange.start + hint.value.length + (needsTrailingSpace ? 1 : 0)
       textareaRef.current?.focus()
       textareaRef.current?.setSelectionRange(pos, pos)
     })
@@ -650,6 +736,12 @@ function App() {
                   const target = e.currentTarget
                   updateHints(target.value, target.selectionStart)
                 }}
+                onKeyUp={(e) => {
+                  const target = e.currentTarget
+                  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                    updateHints(target.value, target.selectionStart)
+                  }
+                }}
                 onKeyDown={(e) => {
                   if (!hints.length) return
                   if (e.key === 'ArrowDown') {
@@ -664,6 +756,9 @@ function App() {
                   } else if (e.key === 'Escape') {
                     setHints([])
                     setHintPos(null)
+                  } else if (e.key === ' ') {
+                    setHints([])
+                    setHintPos(null)
                   }
                 }}
                 rows={20}
@@ -672,7 +767,7 @@ function App() {
                 <div className="hintBox" style={{ top: hintPos?.top ?? 8, left: hintPos?.left ?? 8 }}>
                   {hints.map((hint, idx) => (
                     <button
-                      key={hint}
+                      key={`${hint.kind}-${hint.value}`}
                       type="button"
                       className={`hintItem ${idx === hintIndex ? 'active' : ''}`}
                       onMouseDown={(e) => {
@@ -680,7 +775,8 @@ function App() {
                         applyHint(hint)
                       }}
                     >
-                      {hint}
+                      <span className="hintLabel">{hint.label}</span>
+                      <span className="hintDetail">{hint.detail}</span>
                     </button>
                   ))}
                 </div>

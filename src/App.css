@@ -574,7 +574,7 @@ pre {
 
 .hintBox {
   position: absolute;
-  width: 240px;
+  width: 320px;
   z-index: 10;
   border-radius: 16px;
   overflow: hidden;
@@ -586,12 +586,14 @@ pre {
 .hintItem {
   width: 100%;
   justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
   border-radius: 0;
   border: 0;
   border-bottom: 1px solid var(--border);
   background: transparent;
   color: var(--text);
-  padding: 12px 14px;
+  padding: 12px 14px 11px;
 }
 
 .hintItem:last-child {
@@ -600,6 +602,19 @@ pre {
 
 .hintItem.active {
   background: rgba(93, 162, 255, 0.14);
+}
+
+.hintLabel {
+  font-family: "IBM Plex Mono", "Cascadia Code", monospace;
+  font-size: 0.95rem;
+}
+
+.hintDetail {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+  white-space: normal;
 }
 
 .editorFooter {
