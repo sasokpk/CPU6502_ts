@@ -1,0 +1,16 @@
+your-domain.example.com {
+  encode gzip zstd
+
+  root * /opt/cpu6502/dist
+  file_server
+
+  @api path /api*
+  reverse_proxy @api 127.0.0.1:8000
+
+  header {
+    Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    X-Content-Type-Options "nosniff"
+    X-Frame-Options "DENY"
+    Referrer-Policy "same-origin"
+  }
+}

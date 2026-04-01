@@ -1,0 +1,16 @@
+[Unit]
+Description=CPU6502 Django Backend
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/cpu6502/python
+Environment=DJANGO_DEBUG=0
+Environment=DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost
+ExecStart=/usr/bin/python3 -m gunicorn backend.wsgi:application --bind 127.0.0.1:8000 --workers 2 --threads 2 --timeout 120
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
