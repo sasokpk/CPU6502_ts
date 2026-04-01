@@ -101,7 +101,8 @@ const INSTRUCTION_HELP = [
     items: [
       'ADC nn — A <- A + nn + C',
       'SBC nn — A <- A - nn - (1 - C)',
-      'MUL nn — A <- A * M[nn]',
+      'MUL nn — A <- A * M[nn], результат сохраняется как 32-битное число',
+      'MULL aa — A <- A * M[aa..aa+3], умножение на длинное число',
       'MULM aa — M[aa] <- A * M[aa]',
     ],
   },
@@ -119,6 +120,8 @@ const INSTRUCTION_HELP = [
     items: [
       'STA aa — M[aa] <- A',
       'LSA aa — A <- M[aa]',
+      'STAL aa — M[aa..aa+3] <- A (32-bit)',
+      'LSAL aa — A <- M[aa..aa+3] (32-bit)',
       'STX aa — M[aa] <- X',
       'LSX aa — X <- M[aa]',
     ],
@@ -136,8 +139,9 @@ const INSTRUCTION_HELP = [
   {
     title: 'Ввод и вывод',
     items: [
-      'CTA — выполнение ставится на паузу и приложение просит число в консоли',
+      'CTA — выполнение ставится на паузу и приложение просит 32-битное число в консоли',
       'OTT aa — вывод значения M[aa] в консоль',
+      'OTTL aa — вывод длинного 32-битного значения M[aa..aa+3]',
       'После ввода программа продолжает выполнение с того же места',
     ],
   },
@@ -157,10 +161,13 @@ const OPCODE_HINTS: HintItem[] = [
   { label: 'EOR', value: 'EOR', detail: 'Bitwise XOR with A', kind: 'opcode' },
   { label: 'STA', value: 'STA', detail: 'Store A into 16-bit memory cell', kind: 'opcode' },
   { label: 'LSA', value: 'LSA', detail: 'Load A from 16-bit memory cell', kind: 'opcode' },
+  { label: 'STAL', value: 'STAL', detail: 'Store 32-bit A into 4 memory bytes', kind: 'opcode' },
+  { label: 'LSAL', value: 'LSAL', detail: 'Load 32-bit A from 4 memory bytes', kind: 'opcode' },
   { label: 'STX', value: 'STX', detail: 'Store X into memory', kind: 'opcode' },
   { label: 'LSX', value: 'LSX', detail: 'Load X from memory', kind: 'opcode' },
   { label: 'CTA', value: 'CTA', detail: 'Pause and request console input into A', kind: 'opcode' },
   { label: 'OTT', value: 'OTT', detail: 'Output a 16-bit value from memory', kind: 'opcode' },
+  { label: 'OTTL', value: 'OTTL', detail: 'Output a 32-bit value from memory', kind: 'opcode' },
   { label: 'CLC', value: 'CLC', detail: 'Clear Carry flag', kind: 'opcode' },
   { label: 'CLA', value: 'CLA', detail: 'Clear all flags', kind: 'opcode' },
   { label: 'BEQ', value: 'BEQ', detail: 'Branch if Zero flag is set', kind: 'opcode' },
@@ -176,12 +183,13 @@ const OPCODE_HINTS: HintItem[] = [
   { label: 'BRK', value: 'BRK', detail: 'Stop program execution', kind: 'opcode' },
   { label: 'TAX', value: 'TAX', detail: 'Copy A into X', kind: 'opcode' },
   { label: 'XTA', value: 'XTA', detail: 'Copy X into A', kind: 'opcode' },
-  { label: 'MUL', value: 'MUL', detail: 'Multiply A by 16-bit memory value', kind: 'opcode' },
+  { label: 'MUL', value: 'MUL', detail: 'Multiply A by 16-bit memory value and keep 32-bit result', kind: 'opcode' },
+  { label: 'MULL', value: 'MULL', detail: 'Multiply A by 32-bit memory value', kind: 'opcode' },
   { label: 'MULM', value: 'MULM', detail: 'Multiply A and memory, write back to memory', kind: 'opcode' },
 ]
 
 const BRANCH_OPS = new Set(['BEQ', 'BNE', 'BCS', 'BCC', 'BMI', 'BPL', 'BVS', 'BVC', 'JMP'])
-const ADDRESS_OPS = new Set(['STA', 'LSA', 'STX', 'LSX', 'OTT', 'MUL', 'MULM', 'CMPC'])
+const ADDRESS_OPS = new Set(['STA', 'LSA', 'STAL', 'LSAL', 'STX', 'LSX', 'OTT', 'OTTL', 'MUL', 'MULL', 'MULM', 'CMPC'])
 const IMMEDIATE_OPS = new Set(['LDA', 'LDX', 'LDY', 'ADC', 'SBC', 'CMP', 'CPX', 'AND', 'ORA', 'EOR'])
 const COMMON_ADDRESS_HINTS: HintItem[] = [
   { label: '60', value: '60', detail: 'Hex memory address example', kind: 'value' },
@@ -209,8 +217,8 @@ const FEATURE_CARDS = [
   },
   {
     title: 'Console I/O',
-    text: 'Подавайте hex-входы в очередь, запускайте сценарии и забирайте результаты без переключения экранов.',
-    meta: 'interactive queue',
+    text: 'Во время CTA программа сама ставится на паузу и просит следующий hex-ввод прямо в консоли.',
+    meta: 'interactive input',
   },
   {
     title: 'Educational Docs',
@@ -243,7 +251,7 @@ function App() {
   const [result, setResult] = useState<RunResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [consoleEntries, setConsoleEntries] = useState<ConsoleEntry[]>([
-    { kind: 'info', text: 'Console ready. Add hex input values and press Run.' },
+    { kind: 'info', text: 'Console ready. Run the program; when CTA is reached, enter a hex value here.' },
   ])
   const [stepIndex, setStepIndex] = useState(0)
   const [hints, setHints] = useState<HintItem[]>([])
@@ -323,7 +331,9 @@ function App() {
     if (!raw) return null
     const normalized = raw.toLowerCase().startsWith('0x') ? raw.slice(2) : raw
     if (!/^[0-9a-f]+$/i.test(normalized)) return null
-    return Number.parseInt(normalized, 16)
+    const parsed = Number.parseInt(normalized, 16)
+    if (!Number.isFinite(parsed) || parsed < 0 || parsed > 0xffffffff) return null
+    return parsed
   }
 
   const pushConsoleEntry = (entry: ConsoleEntry) => {
@@ -333,7 +343,7 @@ function App() {
   const addConsoleInput = () => {
     const parsed = parseConsoleNumber(consoleInput)
     if (parsed === null) {
-      pushConsoleEntry({ kind: 'error', text: `Invalid input '${consoleInput}'. Use hex: 0A or 0x0A.` })
+      pushConsoleEntry({ kind: 'error', text: `Invalid input '${consoleInput}'. Use 32-bit hex: 0A, 0x0A, 1C8CFC00.` })
       return
     }
 
@@ -342,7 +352,7 @@ function App() {
       return
     }
 
-    void sendInteractiveInput(parsed & 0xffff)
+    void sendInteractiveInput(parsed)
   }
 
   const applyRunResponse = (runResult: RunResult, mode: 'start' | 'resume') => {

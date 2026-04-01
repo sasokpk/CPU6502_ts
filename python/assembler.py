@@ -18,6 +18,10 @@ OPCODES = {
     "AND": 0x29,
     "ORA": 0x09,
     "CLA": 0x11,
+    "STAL": 0x12,
+    "LSAL": 0x13,
+    "OTTL": 0x15,
+    "MULL": 0x16,
     "EOR": 0x49,
     "NOP": 0xEA,
     "BRK": 0x00,
@@ -98,25 +102,25 @@ def assemble_source(source: str) -> list[int]:
     labels: dict[str, int] = {}
     addr = 0
 
-    for st in statements:
-        if st["type"] == "label":
-            labels[st["value"]] = addr
+    for statement in statements:
+        if statement["type"] == "label":
+            labels[statement["value"]] = addr
             continue
-        if st["type"] == "instruction":
-            addr += _instruction_size(st["op"])
+        if statement["type"] == "instruction":
+            addr += _instruction_size(statement["op"])
             continue
         addr += 1
 
     program: list[int] = []
     addr = 0
 
-    for st in statements:
-        if st["type"] == "label":
+    for statement in statements:
+        if statement["type"] == "label":
             continue
 
-        if st["type"] == "instruction":
-            op = st["op"]
-            arg = st["arg"]
+        if statement["type"] == "instruction":
+            op = statement["op"]
+            arg = statement["arg"]
             program.append(OPCODES[op])
             addr += 1
 
@@ -153,7 +157,7 @@ def assemble_source(source: str) -> list[int]:
                 addr += 1
             continue
 
-        value = _parse_number(st["value"])
+        value = _parse_number(statement["value"])
         program.append(value & 0xFF)
         addr += 1
 
@@ -191,7 +195,7 @@ class ProgramSession:
         ]
 
     def provide_input(self, value: int) -> None:
-        self.input_values.append(int(value) & 0xFFFF)
+        self.input_values.append(int(value) & CPU6502.MASK32)
         self.waiting_input = False
 
     def execute_until_pause(self) -> None:
@@ -203,10 +207,14 @@ class ProgramSession:
                 self.waiting_input = True
                 break
 
-            if op in {0x01, 0x03, 0x14}:  # STA/STX/MULM write two bytes to memory
+            if op in {0x01, 0x03, 0x14}:
                 target = self.cpu.memory[(self.cpu._PC + 1) & 0xFFFF]
                 self.occupied_addresses.add(target & 0xFFFF)
                 self.occupied_addresses.add((target + 1) & 0xFFFF)
+            elif op == 0x12:
+                target = self.cpu.memory[(self.cpu._PC + 1) & 0xFFFF]
+                for offset in range(4):
+                    self.occupied_addresses.add((target + offset) & 0xFFFF)
 
             try:
                 cont = self.cpu.execute_instructions()
@@ -262,7 +270,6 @@ class ProgramSession:
 def create_session(source: str, max_steps: int = 1000) -> ProgramSession:
     program = assemble_source(source)
     outputs: list[dict[str, int]] = []
-
     input_values: list[int] = []
 
     def input_provider() -> int | None:
@@ -271,11 +278,11 @@ def create_session(source: str, max_steps: int = 1000) -> ProgramSession:
         return None
 
     def output_handler(value: int, addr: int) -> None:
-        outputs.append({"value": value & 0xFFFF, "address": addr & 0xFFFF})
+        outputs.append({"value": value & CPU6502.MASK32, "address": addr & 0xFFFF})
 
     cpu = CPU6502(input_provider=input_provider, output_handler=output_handler)
-    for idx, byte in enumerate(program):
-        cpu.memory[idx] = byte & 0xFF
+    for index, byte in enumerate(program):
+        cpu.memory[index] = byte & 0xFF
     cpu._PC = 0x0000
 
     return ProgramSession(
