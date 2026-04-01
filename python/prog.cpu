@@ -1,37 +1,20 @@
 CTA
-
 STA 60
-
-ADC 1
-
+LDA 2
 STA 62
-
 LDA 1
-
-STA 64
-
-STA 66
-
-CLC
-
 loop:
-
-    LSA 66
-
-    MUL 64
-
-    STA 66
-
-    LSA 64
-
+    MUL 62
+    STAL 70
+    LSA 62
+    CMPC 60
+    BEQ done
+    CLC
     ADC 1
-
-    STA 64
-
-    CMPC 62
-
-    BNE loop
-
-    OTT 66
-
+    STA 62
+    LSAL 70
+    JMP loop
+done:
+    LSAL 70
+    OTTL 70
     BRK
