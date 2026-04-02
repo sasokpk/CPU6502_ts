@@ -227,6 +227,13 @@ const FEATURE_CARDS = [
   },
 ]
 
+const HERO_SIGNALS = [
+  'Python emulator core',
+  'React + TypeScript workspace',
+  'Interactive runtime trace',
+  'Long integer support',
+]
+
 const resolveDefaultApiUrl = () => {
   const configured = import.meta.env.VITE_API_URL
   if (configured) return configured
@@ -649,6 +656,13 @@ function App() {
             CPU6502_ts combines a Python-backed emulator, a React/TypeScript workspace, and a
             live execution trace into one educational platform for low-level programming.
           </p>
+          <div className="heroSignals" aria-label="platform capabilities">
+            {HERO_SIGNALS.map((signal) => (
+              <span key={signal} className="heroSignal">
+                {signal}
+              </span>
+            ))}
+          </div>
           <div className="heroActions">
             <a className="primaryLink" href="#workspace">
               Get Started

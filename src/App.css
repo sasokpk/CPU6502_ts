@@ -1,33 +1,37 @@
 .siteShell {
-  --bg: #0a0f1c;
-  --bg-accent: #131a2e;
-  --panel: rgba(13, 18, 32, 0.82);
-  --panel-strong: rgba(15, 21, 36, 0.94);
-  --panel-soft: rgba(18, 25, 43, 0.76);
-  --card: rgba(12, 18, 31, 0.88);
-  --border: rgba(120, 150, 210, 0.18);
-  --border-strong: rgba(130, 164, 234, 0.28);
-  --text: #eef4ff;
-  --muted: #9fb0d0;
-  --soft: #6f84aa;
-  --link: #9ac3ff;
-  --accent: #5da2ff;
-  --accent-strong: #2d6cdf;
+  --bg: #07111f;
+  --bg-accent: #101a30;
+  --panel: rgba(10, 17, 30, 0.72);
+  --panel-strong: rgba(9, 16, 29, 0.9);
+  --panel-soft: rgba(18, 27, 48, 0.82);
+  --card: rgba(11, 18, 33, 0.92);
+  --border: rgba(122, 168, 255, 0.14);
+  --border-strong: rgba(138, 178, 255, 0.28);
+  --text: #f3f7ff;
+  --muted: #afbdd8;
+  --soft: #7d90b4;
+  --link: #9fd3ff;
+  --accent: #6f7cff;
+  --accent-strong: #4e5ce8;
   --success-bg: rgba(26, 103, 59, 0.25);
   --success-text: #73f0a1;
   --warn-bg: rgba(153, 107, 30, 0.24);
   --warn-text: #ffd788;
   --danger-bg: rgba(136, 37, 69, 0.24);
   --danger-text: #ff9db8;
-  --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
-  --glow: radial-gradient(circle at top, rgba(93, 162, 255, 0.22), transparent 58%);
+  --shadow: 0 26px 90px rgba(0, 0, 0, 0.38);
+  --glow: radial-gradient(circle at top, rgba(111, 124, 255, 0.26), transparent 58%);
   --editor-height: 56vh;
 
   min-height: 100vh;
-  padding: 24px;
+  padding: 22px;
   color: var(--text);
   position: relative;
   overflow: hidden;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(111, 124, 255, 0.12), transparent 28%),
+    radial-gradient(circle at 100% 0%, rgba(77, 176, 255, 0.12), transparent 22%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.015), rgba(255, 255, 255, 0));
 }
 
 .siteShell[data-theme='light'] {
@@ -43,8 +47,8 @@
   --muted: #536784;
   --soft: #7185a5;
   --link: #2056c9;
-  --accent: #3f7ef0;
-  --accent-strong: #2f63bd;
+  --accent: #6366f1;
+  --accent-strong: #4450cf;
   --success-bg: rgba(75, 181, 120, 0.16);
   --success-text: #167446;
   --warn-bg: rgba(232, 188, 93, 0.22);
@@ -65,22 +69,22 @@
 }
 
 .siteShell::before {
-  top: -120px;
-  left: 8%;
-  width: 520px;
-  height: 520px;
+  top: -140px;
+  left: 5%;
+  width: 620px;
+  height: 620px;
   background: var(--glow);
-  filter: blur(24px);
+  filter: blur(30px);
 }
 
 .siteShell::after {
-  right: -140px;
-  top: 140px;
-  width: 420px;
-  height: 420px;
+  right: -100px;
+  top: 120px;
+  width: 500px;
+  height: 500px;
   border-radius: 999px;
-  background: radial-gradient(circle, rgba(103, 167, 255, 0.12), transparent 66%);
-  filter: blur(20px);
+  background: radial-gradient(circle, rgba(103, 167, 255, 0.1), transparent 66%);
+  filter: blur(26px);
 }
 
 .topbar,
@@ -104,11 +108,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 16px 20px;
-  border: 1px solid var(--border);
-  border-radius: 18px;
+  padding: 14px 18px;
+  border: 1px solid var(--border-strong);
+  border-radius: 22px;
   background: var(--panel);
-  backdrop-filter: blur(18px);
+  backdrop-filter: blur(24px) saturate(140%);
   box-shadow: var(--shadow);
 }
 
@@ -156,7 +160,10 @@
   height: 42px;
   border-radius: 12px;
   border: 1px solid var(--border-strong);
-  background: linear-gradient(135deg, rgba(93, 162, 255, 0.2), rgba(45, 108, 223, 0.38));
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.22), transparent 34%),
+    linear-gradient(135deg, rgba(111, 124, 255, 0.45), rgba(70, 168, 255, 0.3));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 10px 30px rgba(88, 105, 255, 0.24);
   font-family: "IBM Plex Mono", "Cascadia Code", monospace;
   font-weight: 700;
 }
@@ -195,9 +202,9 @@
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
-  gap: 28px;
+  gap: 34px;
   align-items: center;
-  padding: 72px 0 40px;
+  padding: 74px 0 46px;
 }
 
 .heroCopy {
@@ -226,16 +233,48 @@
 
 .hero h1 {
   margin-top: 14px;
-  font-size: clamp(3.4rem, 6vw, 6.2rem);
-  max-width: 12ch;
+  font-size: clamp(3.7rem, 6vw, 6.4rem);
+  max-width: 11ch;
+  text-wrap: balance;
 }
 
 .heroText {
   max-width: 60ch;
-  margin: 20px 0 0;
+  margin: 22px 0 0;
   color: var(--muted);
-  font-size: 1.12rem;
-  line-height: 1.75;
+  font-size: 1.14rem;
+  line-height: 1.78;
+}
+
+.heroSignals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.heroSignal {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  font-family: "IBM Plex Mono", "Cascadia Code", monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+}
+
+.heroSignal::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #8be7ff, #6f7cff);
+  box-shadow: 0 0 16px rgba(111, 124, 255, 0.5);
 }
 
 .heroActions,
@@ -265,14 +304,16 @@ button {
 
 .primaryLink,
 .primaryButton {
-  background: linear-gradient(180deg, var(--accent), var(--accent-strong));
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.24), transparent 28%),
+    linear-gradient(180deg, var(--accent), var(--accent-strong));
   color: white;
-  box-shadow: 0 10px 26px rgba(45, 108, 223, 0.3);
+  box-shadow: 0 14px 32px rgba(78, 92, 232, 0.34);
 }
 
 .secondaryLink,
 .ghostButton {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.035);
   border-color: var(--border-strong);
   color: var(--text);
 }
@@ -297,16 +338,19 @@ button:hover {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
-  margin-top: 26px;
+  margin-top: 28px;
   max-width: 760px;
 }
 
 .metricCard {
-  padding: 16px 18px;
-  border-radius: 18px;
+  padding: 18px 18px 16px;
+  border-radius: 22px;
   border: 1px solid var(--border);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.02));
-  backdrop-filter: blur(12px);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.02)),
+    linear-gradient(135deg, rgba(111, 124, 255, 0.06), transparent 60%);
+  backdrop-filter: blur(16px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .metricCard span {
@@ -320,7 +364,7 @@ button:hover {
 }
 
 .metricCard strong {
-  font-size: 1.6rem;
+  font-size: 1.72rem;
   line-height: 1;
   letter-spacing: -0.04em;
 }
@@ -357,16 +401,19 @@ button:hover {
 .ctaSection,
 .footer {
   position: relative;
-  border: 1px solid var(--border);
-  border-radius: 24px;
+  border: 1px solid var(--border-strong);
+  border-radius: 28px;
   background: var(--panel);
-  backdrop-filter: blur(18px);
+  backdrop-filter: blur(24px) saturate(130%);
   box-shadow: var(--shadow);
 }
 
 .heroTerminal {
-  padding: 16px;
-  min-height: 420px;
+  padding: 18px;
+  min-height: 446px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015)),
+    var(--panel);
 }
 
 .terminalBar {
@@ -385,14 +432,17 @@ button:hover {
 .terminalBody {
   display: grid;
   gap: 8px;
-  padding: 18px;
+  padding: 22px;
   height: calc(100% - 28px);
-  border-radius: 20px;
-  background: linear-gradient(180deg, rgba(10, 15, 28, 0.9), rgba(8, 12, 22, 0.98));
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at top right, rgba(111, 124, 255, 0.14), transparent 30%),
+    linear-gradient(180deg, rgba(9, 14, 26, 0.94), rgba(7, 11, 20, 0.99));
+  border: 1px solid rgba(255, 255, 255, 0.06);
   font-family: "IBM Plex Mono", "Cascadia Code", monospace;
   font-size: 0.95rem;
   color: #d9e7ff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .terminalBody p {
@@ -420,7 +470,7 @@ button:hover {
 
 .featureSection,
 .docsSection {
-  padding: 26px 0 10px;
+  padding: 34px 0 12px;
 }
 
 .sectionHeading {
@@ -451,7 +501,15 @@ button:hover {
 
 .featureCard,
 .docCard {
-  padding: 24px;
+  padding: 26px;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.featureCard:hover,
+.docCard:hover,
+.panel:hover {
+  transform: translateY(-2px);
+  border-color: rgba(146, 184, 255, 0.34);
 }
 
 .featureMeta {
@@ -487,12 +545,15 @@ button:hover {
 .workspaceSection {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 22px;
-  padding: 24px 0 12px;
+  gap: 24px;
+  padding: 28px 0 14px;
 }
 
 .panel {
-  padding: 22px;
+  padding: 24px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.01)),
+    var(--panel);
 }
 
 .panelHead {
@@ -505,7 +566,7 @@ button:hover {
 
 .panelHead h2 {
   margin-top: 6px;
-  font-size: 2rem;
+  font-size: 2.1rem;
 }
 
 .tag {
@@ -538,7 +599,7 @@ textarea,
 pre {
   width: 100%;
   border: 1px solid var(--border);
-  border-radius: 18px;
+  border-radius: 20px;
   background: var(--panel-soft);
   color: var(--text);
   font: inherit;
@@ -554,7 +615,17 @@ textarea {
   resize: vertical;
   font-family: "IBM Plex Mono", "Cascadia Code", monospace;
   line-height: 1.55;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02)),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0,
+      transparent 31px,
+      rgba(255, 255, 255, 0.025) 31px,
+      rgba(255, 255, 255, 0.025) 32px
+    ),
+    var(--panel-soft);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 input {
@@ -622,7 +693,7 @@ pre {
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 18px;
-  margin-top: 18px;
+  margin-top: 20px;
 }
 
 .compactField {
@@ -632,16 +703,16 @@ pre {
 .runtimePanel {
   display: grid;
   grid-template-rows: auto auto auto auto;
-  gap: 16px;
+  gap: 18px;
 }
 
 .stackCard,
 .traceCard {
   padding: 18px;
-  border-radius: 20px;
+  border-radius: 22px;
   background: var(--card);
   border: 1px solid var(--border);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .stackCard.compact pre {
@@ -672,9 +743,11 @@ pre {
   max-height: 220px;
   overflow: auto;
   padding: 14px;
-  border-radius: 18px;
+  border-radius: 20px;
   border: 1px solid var(--border);
-  background: var(--panel-soft);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0)),
+    var(--panel-soft);
   font-family: "IBM Plex Mono", "Cascadia Code", monospace;
   line-height: 1.35;
 }
@@ -707,7 +780,7 @@ pre {
 
 .traceCard {
   min-height: 0;
-  min-height: 360px;
+  min-height: 390px;
 }
 
 .tracePanel {
@@ -744,10 +817,12 @@ pre {
 }
 
 .regBox {
-  padding: 14px;
-  border-radius: 16px;
+  padding: 14px 14px 12px;
+  border-radius: 18px;
   border: 1px solid var(--border);
-  background: var(--panel-soft);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0)),
+    var(--panel-soft);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
@@ -812,9 +887,11 @@ pre {
 .snapshotCard,
 .flagPanel {
   padding: 14px;
-  border-radius: 18px;
+  border-radius: 20px;
   border: 1px solid var(--border);
-  background: var(--panel-soft);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
+    var(--panel-soft);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
@@ -862,9 +939,11 @@ pre {
 .memoryPanel {
   min-height: 0;
   padding: 14px;
-  border-radius: 18px;
+  border-radius: 20px;
   border: 1px solid var(--border);
-  background: var(--panel-soft);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
+    var(--panel-soft);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
@@ -872,10 +951,10 @@ pre {
   min-height: 110px;
   height: 100%;
   overflow: auto;
-  padding: 12px 0 0;
+  padding: 14px 16px;
   border-radius: 0;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.025);
   color: var(--text);
   line-height: 1.55;
 }
@@ -902,12 +981,16 @@ pre {
 }
 
 .ctaSection {
-  margin-top: 22px;
-  padding: 30px;
+  margin-top: 26px;
+  padding: 34px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
+  background:
+    radial-gradient(circle at top right, rgba(111, 124, 255, 0.12), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012)),
+    var(--panel);
 }
 
 .ctaSection p:last-of-type,
@@ -917,7 +1000,7 @@ pre {
 }
 
 .footer {
-  margin-top: 18px;
+  margin-top: 22px;
   margin-bottom: 24px;
   padding: 24px 28px;
   display: flex;
@@ -940,7 +1023,7 @@ pre {
   }
 
   .hero {
-    padding-top: 52px;
+    padding-top: 54px;
   }
 
   .heroTerminal {
@@ -967,6 +1050,20 @@ pre {
   .footer,
   .panel {
     padding: 18px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.8rem, 10vw, 4.2rem);
+  }
+
+  .heroSignals {
+    gap: 8px;
+  }
+
+  .heroSignal {
+    min-height: 34px;
+    padding: 0 12px;
+    font-size: 0.74rem;
   }
 
   .topbar,
