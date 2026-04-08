@@ -32,30 +32,30 @@
 
 [data-theme='dark'] {
   color-scheme: dark;
-  --bg-top: #061423;
-  --bg-mid: #0a1d30;
-  --bg-bottom: #102945;
-  --page-glow: radial-gradient(circle at 12% 8%, rgba(14, 88, 123, 0.5), transparent 24%), radial-gradient(circle at 85% 0%, rgba(51, 154, 196, 0.34), transparent 20%), radial-gradient(circle at 50% 100%, rgba(38, 109, 160, 0.26), transparent 30%);
-  --surface: rgba(10, 25, 44, 0.72);
-  --surface-strong: rgba(12, 31, 51, 0.92);
-  --surface-soft: rgba(10, 27, 47, 0.86);
-  --surface-ink: rgba(149, 221, 255, 0.08);
-  --line: rgba(115, 201, 255, 0.14);
-  --line-strong: rgba(115, 201, 255, 0.26);
-  --text: #d6efff;
-  --text-soft: #8db1cb;
-  --heading: #eef8ff;
-  --accent: #57d0f0;
-  --accent-strong: #73e7ff;
-  --accent-soft: rgba(87, 208, 240, 0.14);
-  --green: #70d798;
-  --warning: #ffc95f;
-  --danger: #ff89a0;
-  --console-bg: linear-gradient(180deg, rgba(7, 19, 35, 0.96), rgba(11, 28, 49, 0.96));
-  --editor-bg: linear-gradient(180deg, rgba(10, 23, 40, 0.98), rgba(13, 32, 54, 0.98));
-  --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 12px 30px rgba(0, 0, 0, 0.28);
-  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --bg-top: #09111d;
+  --bg-mid: #101826;
+  --bg-bottom: #152130;
+  --page-glow: radial-gradient(circle at 12% 8%, rgba(65, 90, 112, 0.18), transparent 24%), radial-gradient(circle at 85% 0%, rgba(76, 107, 134, 0.14), transparent 20%), radial-gradient(circle at 50% 100%, rgba(34, 62, 90, 0.14), transparent 30%);
+  --surface: rgba(15, 24, 36, 0.78);
+  --surface-strong: rgba(17, 28, 42, 0.94);
+  --surface-soft: rgba(16, 26, 39, 0.88);
+  --surface-ink: rgba(176, 210, 232, 0.04);
+  --line: rgba(133, 160, 181, 0.12);
+  --line-strong: rgba(143, 173, 196, 0.18);
+  --text: #d7e2ec;
+  --text-soft: #91a3b3;
+  --heading: #f0f5f9;
+  --accent: #8ab7ca;
+  --accent-strong: #a9ccda;
+  --accent-soft: rgba(138, 183, 202, 0.08);
+  --green: #75b58e;
+  --warning: #cfb06d;
+  --danger: #c98696;
+  --console-bg: linear-gradient(180deg, rgba(14, 21, 31, 0.98), rgba(17, 26, 38, 0.98));
+  --editor-bg: linear-gradient(180deg, rgba(16, 24, 35, 0.98), rgba(18, 29, 42, 0.98));
+  --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.26);
+  --shadow-md: 0 12px 30px rgba(0, 0, 0, 0.18);
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.14);
 }
 
 * {
@@ -182,6 +182,10 @@ button {
   box-shadow: var(--shadow-sm);
 }
 
+[data-theme='dark'] .modeTab.active {
+  background: linear-gradient(180deg, rgba(55, 70, 87, 0.94), rgba(37, 49, 62, 0.94));
+}
+
 .desktopActions {
   display: flex;
   align-items: center;
@@ -239,6 +243,28 @@ button {
   transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
 }
 
+[data-theme='dark'] .desktopHeader,
+[data-theme='dark'] .workspaceRibbon,
+[data-theme='dark'] .panel,
+[data-theme='dark'] .railPanel {
+  background: linear-gradient(180deg, rgba(18, 28, 40, 0.92), rgba(14, 22, 33, 0.9));
+}
+
+[data-theme='dark'] .modeTabs,
+[data-theme='dark'] .editorToolbar,
+[data-theme='dark'] .manualDisclosure,
+[data-theme='dark'] .runtimeBlock,
+[data-theme='dark'] .consolePanel,
+[data-theme='dark'] .tracePanelCard,
+[data-theme='dark'] .registerCard,
+[data-theme='dark'] .flagChip,
+[data-theme='dark'] .runtimeCode,
+[data-theme='dark'] .runtimeMemo pre,
+[data-theme='dark'] .traceEmpty {
+  background: rgba(22, 33, 47, 0.82);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02), var(--shadow-md);
+}
+
 .toolbarButton:hover,
 .primaryButton:hover,
 .ghostButton:hover {
@@ -256,6 +282,17 @@ button {
   background: linear-gradient(180deg, #faffff 0%, #a2f1ff 18%, #47d0ea 52%, #199abf 100%);
   color: #093148;
   font-weight: 700;
+}
+
+[data-theme='dark'] .toolbarButton,
+[data-theme='dark'] .ghostButton {
+  background: linear-gradient(180deg, rgba(48, 63, 79, 0.92), rgba(32, 44, 57, 0.92));
+  color: var(--text);
+}
+
+[data-theme='dark'] .primaryButton {
+  background: linear-gradient(180deg, #4d6278 0%, #41556a 50%, #344658 100%);
+  color: #f0f5f9;
 }
 
 .workspaceRibbon {
@@ -514,6 +551,11 @@ button {
   box-shadow: 0 0 10px rgba(67, 213, 248, 0.7);
 }
 
+[data-theme='dark'] .windowDots i {
+  background: linear-gradient(180deg, #bcc7d0, #647382);
+  box-shadow: none;
+}
+
 .editorPath,
 .editorMeta {
   font-size: 0.84rem;
@@ -535,6 +577,10 @@ button {
   border: 1px solid rgba(92, 176, 209, 0.24);
   background: var(--editor-bg);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -10px 30px rgba(63, 170, 214, 0.08);
+}
+
+[data-theme='dark'] .editorSurface {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02), inset 0 -10px 30px rgba(0, 0, 0, 0.12);
 }
 
 .editorSurface textarea,
@@ -583,6 +629,12 @@ button {
   color: var(--heading);
   outline: none;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.84);
+}
+
+[data-theme='dark'] .stepsControl input,
+[data-theme='dark'] .consoleControls input {
+  background: rgba(18, 28, 40, 0.96);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
 }
 
 .stepsControl input {
@@ -806,6 +858,10 @@ button {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(188, 244, 255, 0.54));
 }
 
+[data-theme='dark'] .registerCard.emphasis {
+  background: linear-gradient(180deg, rgba(47, 60, 74, 0.96), rgba(34, 45, 57, 0.96));
+}
+
 .tracePanelGrid {
   flex-wrap: wrap;
   gap: 14px;
@@ -855,6 +911,10 @@ button {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(174, 240, 255, 0.64));
 }
 
+[data-theme='dark'] .flagChip.active {
+  background: linear-gradient(180deg, rgba(62, 77, 92, 0.96), rgba(43, 55, 68, 0.96));
+}
+
 .tracePanelCard pre,
 .memoryContent {
   margin: 0;
@@ -889,6 +949,10 @@ button {
   backdrop-filter: blur(12px);
 }
 
+[data-theme='dark'] .hintBox {
+  background: linear-gradient(180deg, rgba(30, 41, 54, 0.98), rgba(21, 30, 41, 0.98));
+}
+
 .hintItem {
   width: 100%;
   display: grid;
@@ -904,6 +968,11 @@ button {
 .hintItem.active,
 .hintItem:hover {
   background: rgba(112, 221, 248, 0.2);
+}
+
+[data-theme='dark'] .hintItem.active,
+[data-theme='dark'] .hintItem:hover {
+  background: rgba(138, 183, 202, 0.12);
 }
 
 .hintLabel {

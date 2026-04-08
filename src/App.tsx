@@ -604,7 +604,7 @@ function App() {
   const runtimeState = result?.halted ? 'halted' : waitingInput ? 'input required' : 'running'
 
   return (
-    <main className="siteShell" data-theme={theme}>
+    <main className="siteShell" data-theme={theme} data-connection-state={status}>
       <header className="desktopHeader">
         <div className="brandCluster">
           <div className="brandBubble">
@@ -624,7 +624,6 @@ function App() {
         </nav>
 
         <div className="desktopActions">
-          <span className={`statusBadge ${status}`}>{status}</span>
           <button
             type="button"
             className="toolbarButton"
@@ -645,7 +644,6 @@ function App() {
           <span>assemble, run and inspect 6502 programs in one view</span>
         </div>
         <div className="ribbonStats">
-          <span>api: {apiUrl}</span>
           <span>bytes: {assembled.length || 0}</span>
           <span>trace: {result?.trace.length ?? 0}</span>
           <span>{waitingInput ? 'cta waiting for input' : 'console ready'}</span>
@@ -664,30 +662,6 @@ function App() {
               editor stays primary, the runtime stays readable, and the CPU details stay one click
               away.
             </p>
-          </section>
-
-          <section className="railPanel outlinePanel">
-            <div className="railPanelHeader">
-              <h3>Quick facts</h3>
-            </div>
-            <ul className="factList">
-              <li>
-                <span>core</span>
-                <strong>python emulator</strong>
-              </li>
-              <li>
-                <span>ui</span>
-                <strong>react + typescript</strong>
-              </li>
-              <li>
-                <span>transport</span>
-                <strong>django http api</strong>
-              </li>
-              <li>
-                <span>numbers</span>
-                <strong>16-bit + 32-bit long ops</strong>
-              </li>
-            </ul>
           </section>
 
           <section className="railPanel manualPreviewPanel">
