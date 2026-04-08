@@ -204,36 +204,6 @@ const COMMON_IMMEDIATE_HINTS: HintItem[] = [
   { label: '10', value: '10', detail: 'Hex immediate value example', kind: 'value' },
 ]
 
-const FEATURE_CARDS = [
-  {
-    title: 'Assembler Playground',
-    text: 'Пишите код 6502 прямо в браузере, собирайте байткод и сразу проверяйте поведение программы.',
-    meta: 'code -> bytes',
-  },
-  {
-    title: 'Live Runtime Trace',
-    text: 'Следите за регистрами, opcode и занятой памятью пошагово, как в интерактивном отладчике.',
-    meta: 'step / memory / flags',
-  },
-  {
-    title: 'Console I/O',
-    text: 'Во время CTA программа сама ставится на паузу и просит следующий hex-ввод прямо в консоли.',
-    meta: 'interactive input',
-  },
-  {
-    title: 'Educational Docs',
-    text: 'Встроенная справка по регистрам, флагам, переходам и базовым инструкциям делает проект учебной платформой.',
-    meta: 'learn while running',
-  },
-]
-
-const HERO_SIGNALS = [
-  'Python emulator core',
-  'React + TypeScript workspace',
-  'Interactive runtime trace',
-  'Long integer support',
-]
-
 const resolveDefaultApiUrl = () => {
   const configured = import.meta.env.VITE_API_URL
   if (configured) return configured
@@ -243,9 +213,9 @@ const resolveDefaultApiUrl = () => {
 
 function App() {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    if (typeof window === 'undefined') return 'dark'
+    if (typeof window === 'undefined') return 'light'
     const stored = window.localStorage.getItem('cpu6502-theme')
-    return stored === 'light' ? 'light' : 'dark'
+    return stored === 'dark' ? 'dark' : 'light'
   })
   const [apiUrl] = useState(resolveDefaultApiUrl)
   const [status, setStatus] = useState<'disconnected' | 'connecting' | 'connected'>(
@@ -630,257 +600,302 @@ function App() {
   const activeFlags = currentStep
     ? Object.entries(currentStep.before.flags).filter(([, active]) => active).map(([flag]) => flag)
     : []
+  const currentAfterFlags = currentStep?.after?.flags ?? {}
+  const runtimeState = result?.halted ? 'halted' : waitingInput ? 'input required' : 'running'
 
   return (
     <main className="siteShell" data-theme={theme}>
-      <header className="utilityBar">
-        <div className="utilityBrand">
-          <span className="utilityStamp">6502</span>
-          <div>
-            <p className="utilityKicker">Interactive emulator studio</p>
-            <h1>Assembly Workbench</h1>
+      <header className="desktopHeader">
+        <div className="brandCluster">
+          <div className="brandBubble">
+            <span>6502</span>
+          </div>
+          <div className="brandCopy">
+            <p className="brandEyebrow">frutiger aero compiler desk</p>
+            <h1>CPU6502 Online Compiler</h1>
           </div>
         </div>
-        <div className="utilityActions">
-          <span className={`statusPill ${status}`}>{status}</span>
+
+        <nav className="modeTabs" aria-label="workspace sections">
+          <span className="modeTab active">Editor</span>
+          <span className="modeTab">Runtime</span>
+          <span className="modeTab">Trace</span>
+          <span className="modeTab">Manual</span>
+        </nav>
+
+        <div className="desktopActions">
+          <span className={`statusBadge ${status}`}>{status}</span>
           <button
             type="button"
-            className="ghostButton"
+            className="toolbarButton"
             onClick={() => setTheme((current) => (current === 'light' ? 'dark' : 'light'))}
           >
-            {theme === 'light' ? 'Dark mode' : 'Light mode'}
+            {theme === 'light' ? 'Dark' : 'Light'}
           </button>
-          <button type="button" className="ghostButton" onClick={connect}>
+          <button type="button" className="toolbarButton" onClick={connect}>
             Reconnect
           </button>
         </div>
       </header>
 
-      <section className="overviewSection">
-        <div className="overviewIntro">
-          <p className="overviewEyebrow">MOS 6502 emulator / long integer mode / browser runtime</p>
-          <h2>Write assembler like a lab experiment, not like a form.</h2>
-          <p className="overviewText">
-            The interface is now built as a focused workstation: code on the left, live machine
-            state on the right, and the trace spread wide enough that you can actually read what
-            the CPU is doing step by step.
-          </p>
-          <div className="heroSignals" aria-label="platform capabilities">
-            {HERO_SIGNALS.map((signal) => (
-              <span key={signal} className="heroSignal">
-                {signal}
-              </span>
-            ))}
-          </div>
-          <div className="overviewMeta">
-            <span>API {apiUrl}</span>
-            <span>{waitingInput ? 'Input requested by CTA' : 'Console idle'}</span>
-            <span>{result?.trace.length ?? 0} trace steps</span>
-          </div>
+      <section className="workspaceRibbon">
+        <div className="ribbonCapsule">
+          <span className="ribbonDot" />
+          <strong>compiler</strong>
+          <span>assemble, run and inspect 6502 programs in one view</span>
         </div>
-
-        <aside className="overviewTelemetry">
-          <div className="telemetryGrid">
-            <article className="telemetryCard">
-              <span>Runtime</span>
-              <strong>{result?.halted ? 'HALTED' : 'LIVE'}</strong>
-            </article>
-            <article className="telemetryCard">
-              <span>Program bytes</span>
-              <strong>{assembled.length || 0}</strong>
-            </article>
-            <article className="telemetryCard">
-              <span>Flags</span>
-              <strong>{activeFlags.join(' ') || '—'}</strong>
-            </article>
-          </div>
-          <div className="signalBoard">
-            <div className="signalBoardHeader">
-              <span className="signalBoardLabel">Runtime memo</span>
-              <span className="signalBoardMode">{theme}</span>
-            </div>
-            <pre className="signalBoardBody">
-{`$ boot monitor
-transport = django http api
-mode = ${theme}
-trace = ${result?.trace.length ?? 0} steps
-waiting_input = ${waitingInput ? 'yes' : 'no'}
-current_step = ${currentStep ? `${stepIndex + 1}/${result?.trace.length}` : 'idle'}
-
-${outputPreview}`}
-            </pre>
-          </div>
-        </aside>
+        <div className="ribbonStats">
+          <span>api: {apiUrl}</span>
+          <span>bytes: {assembled.length || 0}</span>
+          <span>trace: {result?.trace.length ?? 0}</span>
+          <span>{waitingInput ? 'cta waiting for input' : 'console ready'}</span>
+        </div>
       </section>
 
       {error ? <p className="errorBanner">{error}</p> : null}
 
-      <section className="layoutGrid">
-        <article className="workCard editorCard">
-          <div className="cardHeader">
-            <div>
-              <p className="cardKicker">Program bay</p>
-              <h3>Source editor</h3>
-            </div>
-            <div className="cardBadges">
-              <span className="chip">autocomplete</span>
-              <span className="chip">assembly</span>
-            </div>
-          </div>
+      <section className="compilerDesktop">
+        <aside className="sideRail">
+          <section className="railPanel welcomePanel">
+            <p className="railEyebrow">workspace</p>
+            <h2>Build, run, inspect.</h2>
+            <p>
+              This layout behaves like an online compiler first and a learning tool second. The
+              editor stays primary, the runtime stays readable, and the CPU details stay one click
+              away.
+            </p>
+          </section>
 
-          <div className="editorFrame">
-            <div className="editorFrameBar">
-              <span>program.asm</span>
-              <span>{assembled.length || DEFAULT_SOURCE.length} bytes in view</span>
+          <section className="railPanel outlinePanel">
+            <div className="railPanelHeader">
+              <h3>Quick facts</h3>
             </div>
-            <label className="fieldLabel editorLabel">
-              <span>Source code</span>
-              <textarea
-                ref={textareaRef}
-                value={source}
-                onChange={(e) => {
-                  const next = e.target.value
-                  setSource(next)
-                  updateHints(next, e.target.selectionStart)
-                }}
-                onClick={(e) => {
-                  const target = e.currentTarget
-                  updateHints(target.value, target.selectionStart)
-                }}
-                onKeyUp={(e) => {
-                  const target = e.currentTarget
-                  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-                    updateHints(target.value, target.selectionStart)
-                  }
-                }}
-                onKeyDown={(e) => {
-                  if (!hints.length) return
-                  if (e.key === 'ArrowDown') {
-                    e.preventDefault()
-                    setHintIndex((idx) => (idx + 1) % hints.length)
-                  } else if (e.key === 'ArrowUp') {
-                    e.preventDefault()
-                    setHintIndex((idx) => (idx - 1 + hints.length) % hints.length)
-                  } else if (e.key === 'Tab') {
-                    e.preventDefault()
-                    applyHint(hints[hintIndex])
-                  } else if (e.key === 'Escape') {
-                    setHints([])
-                    setHintPos(null)
-                  } else if (e.key === ' ') {
-                    setHints([])
-                    setHintPos(null)
-                  }
-                }}
-                rows={20}
-              />
-              {hints.length ? (
-                <div className="hintBox" style={{ top: hintPos?.top ?? 8, left: hintPos?.left ?? 8 }}>
-                  {hints.map((hint, idx) => (
-                    <button
-                      key={`${hint.kind}-${hint.value}`}
-                      type="button"
-                      className={`hintItem ${idx === hintIndex ? 'active' : ''}`}
-                      onMouseDown={(e) => {
-                        e.preventDefault()
-                        applyHint(hint)
-                      }}
-                    >
-                      <span className="hintLabel">{hint.label}</span>
-                      <span className="hintDetail">{hint.detail}</span>
-                    </button>
-                  ))}
-                </div>
-              ) : null}
-            </label>
-          </div>
+            <ul className="factList">
+              <li>
+                <span>core</span>
+                <strong>python emulator</strong>
+              </li>
+              <li>
+                <span>ui</span>
+                <strong>react + typescript</strong>
+              </li>
+              <li>
+                <span>transport</span>
+                <strong>django http api</strong>
+              </li>
+              <li>
+                <span>numbers</span>
+                <strong>16-bit + 32-bit long ops</strong>
+              </li>
+            </ul>
+          </section>
 
-          <div className="controlBar">
-            <label className="fieldLabel compactField">
-              <span>Max steps</span>
-              <input
-                type="number"
-                min={1}
-                value={maxSteps}
-                onChange={(e) => setMaxSteps(Number(e.target.value) || 1000)}
-              />
-            </label>
-
-            <div className="actionRow">
-              <button type="button" className="primaryButton" onClick={onRun}>
-                Run simulation
-              </button>
-              <button type="button" className="ghostButton" onClick={onAssemble}>
-                Assemble only
-              </button>
+          <section className="railPanel manualPreviewPanel">
+            <div className="railPanelHeader">
+              <h3>Instruction atlas</h3>
             </div>
-          </div>
-        </article>
-
-        <article className="workCard runtimeCard">
-          <div className="cardHeader">
-            <div>
-              <p className="cardKicker">Machine side</p>
-              <h3>Runtime monitor</h3>
-            </div>
-            <div className="cardBadges">
-              <span className="chip">live state</span>
-              <span className="chip">console</span>
-            </div>
-          </div>
-
-          <div className="monitorGrid">
-            <section className="monitorCard">
-              <span className="monitorLabel">Program bytes</span>
-              <pre className="monitorPre">{bytesPreview}</pre>
-            </section>
-            <section className="monitorCard">
-              <span className="monitorLabel">Final state</span>
-              <pre className="monitorPre">{formatStateLine(result?.final_state ?? null)}</pre>
-            </section>
-          </div>
-
-          <section className="consoleDeck">
-            <div className="consoleDeckHead">
-              <div>
-                <p className="cardKicker">Machine I/O</p>
-                <h3>Interactive console</h3>
-              </div>
-              <span className={`consoleStatus ${waitingInput ? 'pending' : 'idle'}`}>
-                {waitingInput ? 'awaiting input' : 'idle'}
-              </span>
-            </div>
-            <div className="consoleLog">
-              {consoleEntries.map((entry, index) => (
-                <div key={`${entry.kind}-${index}`} className={`consoleLine ${entry.kind}`}>
-                  {entry.kind.toUpperCase()}: {entry.text}
-                </div>
+            <div className="manualPreviewList">
+              {INSTRUCTION_HELP.map((group) => (
+                <details key={group.title} className="manualDisclosure">
+                  <summary>{group.title}</summary>
+                  <ul>
+                    {group.items.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </details>
               ))}
             </div>
-            <div className="consoleControls">
-              <input
-                value={consoleInput}
-                onChange={(e) => setConsoleInput(e.target.value)}
-                placeholder={waitingInput ? 'enter hex input (0A / 0x0A)' : 'console waits until CTA asks for input'}
-              />
-              <button type="button" className="ghostButton" onClick={addConsoleInput}>
-                Send
-              </button>
-              <button
-                type="button"
-                className="ghostButton"
-                onClick={() => setConsoleEntries([{ kind: 'info', text: 'Console cleared.' }])}
-              >
-                Clear
-              </button>
-            </div>
           </section>
-        </article>
+        </aside>
 
-        <section className="workCard traceDeck">
+        <div className="workspaceStack">
+          <section className="editorRuntimeGrid">
+            <article className="panel editorPanel">
+              <div className="panelHeader">
+                <div>
+                  <p className="panelEyebrow">source editor</p>
+                  <h3>Program.asm</h3>
+                </div>
+                <div className="panelHeaderMeta">
+                  <span className="glassTag">autocomplete</span>
+                  <span className="glassTag">assembly</span>
+                </div>
+              </div>
+
+              <div className="editorToolbar">
+                <span className="windowDots" aria-hidden="true">
+                  <i />
+                  <i />
+                  <i />
+                </span>
+                <span className="editorPath">workspace / cpu6502 / factorial-long.asm</span>
+                <span className="editorMeta">{assembled.length || DEFAULT_SOURCE.length} units loaded</span>
+              </div>
+
+              <label className="editorSurface">
+                <span className="srOnly">Source code</span>
+                <textarea
+                  ref={textareaRef}
+                  value={source}
+                  onChange={(e) => {
+                    const next = e.target.value
+                    setSource(next)
+                    updateHints(next, e.target.selectionStart)
+                  }}
+                  onClick={(e) => {
+                    const target = e.currentTarget
+                    updateHints(target.value, target.selectionStart)
+                  }}
+                  onKeyUp={(e) => {
+                    const target = e.currentTarget
+                    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                      updateHints(target.value, target.selectionStart)
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (!hints.length) return
+                    if (e.key === 'ArrowDown') {
+                      e.preventDefault()
+                      setHintIndex((idx) => (idx + 1) % hints.length)
+                    } else if (e.key === 'ArrowUp') {
+                      e.preventDefault()
+                      setHintIndex((idx) => (idx - 1 + hints.length) % hints.length)
+                    } else if (e.key === 'Tab') {
+                      e.preventDefault()
+                      applyHint(hints[hintIndex])
+                    } else if (e.key === 'Escape') {
+                      setHints([])
+                      setHintPos(null)
+                    } else if (e.key === ' ') {
+                      setHints([])
+                      setHintPos(null)
+                    }
+                  }}
+                  rows={20}
+                />
+                {hints.length ? (
+                  <div className="hintBox" style={{ top: hintPos?.top ?? 8, left: hintPos?.left ?? 8 }}>
+                    {hints.map((hint, idx) => (
+                      <button
+                        key={`${hint.kind}-${hint.value}`}
+                        type="button"
+                        className={`hintItem ${idx === hintIndex ? 'active' : ''}`}
+                        onMouseDown={(e) => {
+                          e.preventDefault()
+                          applyHint(hint)
+                        }}
+                      >
+                        <span className="hintLabel">{hint.label}</span>
+                        <span className="hintDetail">{hint.detail}</span>
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
+              </label>
+
+              <div className="editorFooter">
+                <label className="stepsControl">
+                  <span>Max steps</span>
+                  <input
+                    type="number"
+                    min={1}
+                    value={maxSteps}
+                    onChange={(e) => setMaxSteps(Number(e.target.value) || 1000)}
+                  />
+                </label>
+                <div className="editorActions">
+                  <button type="button" className="primaryButton" onClick={onRun}>
+                    Run
+                  </button>
+                  <button type="button" className="toolbarButton" onClick={onAssemble}>
+                    Assemble
+                  </button>
+                </div>
+              </div>
+            </article>
+
+            <article className="panel runtimePanel">
+              <div className="panelHeader">
+                <div>
+                  <p className="panelEyebrow">runtime monitor</p>
+                  <h3>Compiler output</h3>
+                </div>
+                <div className="panelHeaderMeta">
+                  <span className={`runtimeState ${result?.halted ? 'halted' : waitingInput ? 'waiting' : 'active'}`}>
+                    {runtimeState}
+                  </span>
+                </div>
+              </div>
+
+              <div className="runtimeTopRow">
+                <section className="runtimeBlock bytesBlock">
+                  <div className="runtimeBlockHead">
+                    <span>Program bytes</span>
+                    <strong>{assembled.length || 0}</strong>
+                  </div>
+                  <pre className="runtimeCode">{bytesPreview}</pre>
+                </section>
+
+                <section className="runtimeBlock stateBlock">
+                  <div className="runtimeBlockHead">
+                    <span>Final state</span>
+                    <strong>{activeFlags.join(' ') || '—'}</strong>
+                  </div>
+                  <pre className="runtimeCode">{formatStateLine(result?.final_state ?? null)}</pre>
+                </section>
+              </div>
+
+              <section className="consolePanel">
+                <div className="consolePanelHead">
+                  <div>
+                    <p className="panelEyebrow">interactive input / output</p>
+                    <h3>Console</h3>
+                  </div>
+                  <span className={`consoleState ${waitingInput ? 'pending' : 'idle'}`}>
+                    {waitingInput ? 'input required' : 'standby'}
+                  </span>
+                </div>
+
+                <div className="consoleLog">
+                  {consoleEntries.map((entry, index) => (
+                    <div key={`${entry.kind}-${index}`} className={`consoleLine ${entry.kind}`}>
+                      <span className="consolePrefix">{entry.kind.toUpperCase()}</span>
+                      <span>{entry.text}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="consoleControls">
+                  <input
+                    value={consoleInput}
+                    onChange={(e) => setConsoleInput(e.target.value)}
+                    placeholder={waitingInput ? 'type next hex value here' : 'run program, console will ask only when CTA is reached'}
+                  />
+                  <button type="button" className="primaryButton slimButton" onClick={addConsoleInput}>
+                    Send
+                  </button>
+                  <button
+                    type="button"
+                    className="toolbarButton slimButton"
+                    onClick={() => setConsoleEntries([{ kind: 'info', text: 'Console cleared.' }])}
+                  >
+                    Clear
+                  </button>
+                </div>
+
+                <div className="runtimeMemo">
+                  <span>last output</span>
+                  <pre>{outputPreview}</pre>
+                </div>
+              </section>
+            </article>
+          </section>
+
+          <section className="panel traceDeck">
           <div className="cardHeader">
             <div>
-              <p className="cardKicker">Step inspector</p>
+              <p className="cardKicker">step inspector</p>
               <h3>Trace + occupied memory</h3>
             </div>
             <div className="traceNav">
@@ -955,12 +970,24 @@ ${outputPreview}`}
 
               <div className="tracePanelGrid">
                 <section className="tracePanelCard">
-                  <h4>Flags</h4>
+                  <h4>Flags before</h4>
                   <div className="flagRail">
                     {['C', 'Z', 'N', 'V', 'I', 'D', 'B'].map((flag) => (
                       <div key={flag} className={`flagChip ${currentFlags[flag] ? 'active' : ''}`}>
                         <span>{flag}</span>
                         <strong>{currentFlags[flag] ? '1' : '0'}</strong>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="tracePanelCard">
+                  <h4>Flags after</h4>
+                  <div className="flagRail">
+                    {['C', 'Z', 'N', 'V', 'I', 'D', 'B'].map((flag) => (
+                      <div key={`after-${flag}`} className={`flagChip ${currentAfterFlags[flag] ? 'active' : ''}`}>
+                        <span>{flag}</span>
+                        <strong>{currentAfterFlags[flag] ? '1' : '0'}</strong>
                       </div>
                     ))}
                   </div>
@@ -985,36 +1012,8 @@ ${outputPreview}`}
           ) : (
             <div className="traceEmpty">No trace yet. Click Run to execute the current program.</div>
           )}
-        </section>
-
-        <section className="manualDeck">
-          <div className="cardHeader">
-            <div>
-              <p className="cardKicker">Manual</p>
-              <h3>Instruction reference</h3>
-            </div>
-            <div className="cardBadges">
-              {FEATURE_CARDS.map((card) => (
-                <span key={card.title} className="chip muted">
-                  {card.meta}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="manualGrid">
-            {INSTRUCTION_HELP.map((group) => (
-              <article key={group.title} className="manualCard">
-                <h4>{group.title}</h4>
-                <ul>
-                  {group.items.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </article>
-            ))}
-          </div>
-        </section>
+          </section>
+        </div>
       </section>
     </main>
   )

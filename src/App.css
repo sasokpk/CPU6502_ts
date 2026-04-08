@@ -1,888 +1,1024 @@
-.siteShell {
-  --bg: #121110;
-  --bg-soft: #1c1917;
-  --panel: rgba(27, 24, 22, 0.9);
-  --panel-raised: rgba(35, 31, 28, 0.94);
-  --panel-muted: rgba(49, 43, 39, 0.9);
-  --text: #f4eee8;
-  --muted: #b7aca2;
-  --soft: #8e8177;
-  --line: rgba(214, 183, 144, 0.16);
-  --line-strong: rgba(214, 183, 144, 0.32);
-  --accent: #d67a2d;
-  --accent-deep: #a85018;
-  --accent-alt: #3f9d95;
-  --ok: #9dd08e;
-  --warn: #e7bc63;
-  --danger: #f38c86;
-  --shadow: 0 28px 60px rgba(0, 0, 0, 0.35);
-  --editor-height: 58vh;
-
-  min-height: 100vh;
-  padding: 22px;
-  color: var(--text);
-  position: relative;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 14% 10%, rgba(214, 122, 45, 0.16), transparent 24%),
-    radial-gradient(circle at 86% 0%, rgba(63, 157, 149, 0.12), transparent 18%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0)),
-    repeating-linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0.01) 0,
-      rgba(255, 255, 255, 0.01) 1px,
-      transparent 1px,
-      transparent 96px
-    ),
-    linear-gradient(180deg, #0f0d0c 0%, #151210 46%, #191512 100%);
+:root {
+  color-scheme: light;
+  --bg-top: #dff7ff;
+  --bg-mid: #c6ebff;
+  --bg-bottom: #eefbff;
+  --page-glow: radial-gradient(circle at 12% 8%, rgba(255, 255, 255, 0.92), transparent 28%), radial-gradient(circle at 85% 0%, rgba(145, 241, 255, 0.8), transparent 24%), radial-gradient(circle at 50% 100%, rgba(120, 220, 255, 0.3), transparent 35%);
+  --surface: rgba(255, 255, 255, 0.46);
+  --surface-strong: rgba(255, 255, 255, 0.72);
+  --surface-soft: rgba(240, 252, 255, 0.68);
+  --surface-ink: rgba(19, 79, 110, 0.08);
+  --line: rgba(65, 155, 194, 0.28);
+  --line-strong: rgba(73, 176, 204, 0.45);
+  --text: #18415c;
+  --text-soft: #4d7085;
+  --heading: #0d2d49;
+  --accent: #1ebad6;
+  --accent-strong: #118fb1;
+  --accent-soft: rgba(58, 201, 235, 0.18);
+  --green: #59c88d;
+  --warning: #ffbf4b;
+  --danger: #ff6f8a;
+  --console-bg: linear-gradient(180deg, rgba(232, 250, 255, 0.98), rgba(210, 239, 247, 0.98));
+  --editor-bg: linear-gradient(180deg, rgba(250, 254, 255, 0.98), rgba(228, 244, 255, 0.98));
+  --shadow-lg: 0 24px 64px rgba(52, 136, 177, 0.22);
+  --shadow-md: 0 12px 30px rgba(78, 152, 190, 0.18);
+  --shadow-sm: 0 4px 12px rgba(45, 123, 160, 0.12);
+  --radius-xl: 30px;
+  --radius-lg: 22px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
 }
 
-.siteShell[data-theme='light'] {
-  --bg: #f5f0e8;
-  --bg-soft: #ebe4da;
-  --panel: rgba(255, 251, 245, 0.92);
-  --panel-raised: rgba(255, 253, 249, 0.97);
-  --panel-muted: rgba(242, 234, 224, 0.92);
-  --text: #241d18;
-  --muted: #6f655c;
-  --soft: #8f8477;
-  --line: rgba(121, 92, 59, 0.12);
-  --line-strong: rgba(121, 92, 59, 0.24);
-  --accent: #c8661e;
-  --accent-deep: #9b4814;
-  --accent-alt: #2c8a82;
-  --ok: #538745;
-  --warn: #a47210;
-  --danger: #c45450;
-  --shadow: 0 24px 44px rgba(104, 84, 58, 0.12);
-  background:
-    radial-gradient(circle at 12% 8%, rgba(214, 122, 45, 0.12), transparent 23%),
-    radial-gradient(circle at 92% 0%, rgba(63, 157, 149, 0.08), transparent 18%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.08)),
-    repeating-linear-gradient(
-      90deg,
-      rgba(121, 92, 59, 0.03) 0,
-      rgba(121, 92, 59, 0.03) 1px,
-      transparent 1px,
-      transparent 96px
-    ),
-    linear-gradient(180deg, #f6f2ea 0%, #eee6db 48%, #e8ddd0 100%);
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg-top: #061423;
+  --bg-mid: #0a1d30;
+  --bg-bottom: #102945;
+  --page-glow: radial-gradient(circle at 12% 8%, rgba(14, 88, 123, 0.5), transparent 24%), radial-gradient(circle at 85% 0%, rgba(51, 154, 196, 0.34), transparent 20%), radial-gradient(circle at 50% 100%, rgba(38, 109, 160, 0.26), transparent 30%);
+  --surface: rgba(10, 25, 44, 0.72);
+  --surface-strong: rgba(12, 31, 51, 0.92);
+  --surface-soft: rgba(10, 27, 47, 0.86);
+  --surface-ink: rgba(149, 221, 255, 0.08);
+  --line: rgba(115, 201, 255, 0.14);
+  --line-strong: rgba(115, 201, 255, 0.26);
+  --text: #d6efff;
+  --text-soft: #8db1cb;
+  --heading: #eef8ff;
+  --accent: #57d0f0;
+  --accent-strong: #73e7ff;
+  --accent-soft: rgba(87, 208, 240, 0.14);
+  --green: #70d798;
+  --warning: #ffc95f;
+  --danger: #ff89a0;
+  --console-bg: linear-gradient(180deg, rgba(7, 19, 35, 0.96), rgba(11, 28, 49, 0.96));
+  --editor-bg: linear-gradient(180deg, rgba(10, 23, 40, 0.98), rgba(13, 32, 54, 0.98));
+  --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 12px 30px rgba(0, 0, 0, 0.28);
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 * {
   box-sizing: border-box;
 }
 
-.utilityBar,
-.overviewSection,
-.layoutGrid {
-  width: min(1480px, 100%);
-  margin: 0 auto;
-  position: relative;
-  z-index: 1;
-}
-
-.utilityBar,
-.overviewIntro,
-.overviewTelemetry,
-.workCard,
-.manualCard {
-  border: 1px solid var(--line);
-  background: var(--panel);
-  box-shadow: var(--shadow);
-}
-
-.utilityBar {
-  position: sticky;
-  top: 14px;
-  z-index: 20;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  padding: 14px 18px;
-  border-radius: 20px;
-  backdrop-filter: blur(22px) saturate(120%);
-}
-
-.utilityBrand,
-.utilityActions,
-.cardBadges,
-.overviewMeta,
-.heroSignals,
-.actionRow,
-.traceNav {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.utilityBrand {
-  gap: 14px;
-}
-
-.utilityStamp {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  border: 1px solid var(--line-strong);
+body {
+  margin: 0;
+  min-width: 320px;
   background:
-    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.2), transparent 32%),
-    linear-gradient(145deg, var(--accent), var(--accent-deep));
-  color: #fff6ed;
-  font: 700 0.86rem/1 "IBM Plex Mono", "Cascadia Code", monospace;
-  letter-spacing: 0.08em;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 52%, var(--bg-bottom) 100%),
+    var(--page-glow);
+  color: var(--text);
+  font-family: 'Trebuchet MS', 'Segoe UI', Tahoma, sans-serif;
 }
 
-.utilityKicker,
-.cardKicker,
-.overviewEyebrow,
-.monitorLabel,
-.signalBoardLabel {
-  margin: 0;
-  color: var(--soft);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font: 700 0.72rem/1.2 "IBM Plex Mono", "Cascadia Code", monospace;
-}
-
-.utilityBrand h1,
-.overviewIntro h2,
-.cardHeader h3,
-.consoleDeckHead h3 {
-  margin: 0;
-  letter-spacing: -0.03em;
-}
-
-.utilityBrand h1 {
-  font-size: clamp(1.3rem, 2vw, 1.75rem);
-}
-
-.utilityActions {
-  justify-content: flex-end;
-  gap: 10px;
-}
-
-button {
+button,
+input,
+textarea {
   font: inherit;
 }
 
-.ghostButton,
-.primaryButton {
-  min-height: 46px;
-  padding: 0 16px;
-  border-radius: 14px;
-  border: 1px solid var(--line-strong);
+button {
   cursor: pointer;
-  transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease;
 }
 
-.ghostButton {
-  background: rgba(255, 255, 255, 0.035);
-  color: var(--text);
+.siteShell {
+  min-height: 100vh;
+  padding: 18px;
+  background: var(--page-glow);
 }
 
-.primaryButton {
-  background: linear-gradient(180deg, var(--accent), var(--accent-deep));
-  color: #fff8f1;
-  border-color: transparent;
-  box-shadow: 0 10px 24px rgba(168, 80, 24, 0.28);
-}
-
-.ghostButton:hover,
-.primaryButton:hover {
-  transform: translateY(-1px);
-}
-
-.statusPill,
-.chip,
-.consoleStatus,
-.traceCounter {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 34px;
-  padding: 0 12px;
-  border-radius: 999px;
-  font: 700 0.75rem/1 "IBM Plex Mono", "Cascadia Code", monospace;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.statusPill.connected {
-  background: rgba(157, 208, 142, 0.14);
-  color: var(--ok);
-}
-
-.statusPill.connecting {
-  background: rgba(231, 188, 99, 0.14);
-  color: var(--warn);
-}
-
-.statusPill.disconnected {
-  background: rgba(243, 140, 134, 0.14);
-  color: var(--danger);
-}
-
-.overviewSection {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
-  gap: 22px;
-  padding-top: 28px;
-}
-
-.overviewIntro,
-.overviewTelemetry,
-.workCard {
-  border-radius: 28px;
-  padding: 26px;
-  backdrop-filter: blur(20px) saturate(116%);
-}
-
-.overviewIntro {
-  background:
-    radial-gradient(circle at top left, rgba(214, 122, 45, 0.13), transparent 28%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015)),
-    var(--panel);
-}
-
-.overviewIntro h2 {
-  margin-top: 16px;
-  font-size: clamp(3rem, 6vw, 5.9rem);
-  line-height: 0.96;
-  max-width: 10ch;
-  text-wrap: balance;
-}
-
-.overviewText {
-  max-width: 62ch;
-  margin: 22px 0 0;
-  color: var(--muted);
-  font-size: 1.08rem;
-  line-height: 1.85;
-}
-
-.heroSignals {
-  gap: 10px;
-  margin-top: 24px;
-}
-
-.heroSignal,
-.chip {
-  gap: 8px;
+.desktopHeader,
+.workspaceRibbon,
+.panel,
+.railPanel {
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.035);
-  color: var(--text);
+  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
-.heroSignal {
-  display: inline-flex;
-  align-items: center;
-  min-height: 36px;
-  padding: 0 13px;
-  border-radius: 999px;
-  font: 700 0.76rem/1 "IBM Plex Mono", "Cascadia Code", monospace;
-  letter-spacing: 0.04em;
-}
-
-.heroSignal::before {
-  content: '';
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: var(--accent-alt);
-  box-shadow: 0 0 16px rgba(63, 157, 149, 0.42);
-}
-
-.overviewMeta {
-  gap: 16px;
-  margin-top: 22px;
-  color: var(--muted);
-  font: 500 0.92rem/1.5 "IBM Plex Mono", "Cascadia Code", monospace;
-}
-
-.overviewTelemetry {
+.desktopHeader {
   display: grid;
+  grid-template-columns: auto 1fr auto;
   gap: 18px;
-  background:
-    radial-gradient(circle at top right, rgba(63, 157, 149, 0.1), transparent 30%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015)),
-    var(--panel);
+  align-items: center;
+  padding: 18px 22px;
+  margin-bottom: 14px;
+  border-radius: var(--radius-xl);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.66), rgba(210, 239, 252, 0.52));
+  backdrop-filter: blur(22px) saturate(160%);
 }
 
-.telemetryGrid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.telemetryCard,
-.monitorCard,
-.registerCard,
-.tracePanelCard,
-.manualCard,
-.editorFrame,
-.consoleDeck {
-  border: 1px solid var(--line);
-  background: var(--panel-raised);
-}
-
-.telemetryCard {
-  padding: 16px;
-  border-radius: 20px;
-}
-
-.telemetryCard span {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--soft);
-  font: 700 0.7rem/1.2 "IBM Plex Mono", "Cascadia Code", monospace;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.telemetryCard strong {
-  display: block;
-  font-size: 1.25rem;
-  letter-spacing: -0.03em;
-}
-
-.signalBoard {
-  min-height: 100%;
-  padding: 16px;
-  border-radius: 22px;
-  border: 1px solid var(--line);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0)),
-    rgba(15, 14, 13, 0.9);
-}
-
-.siteShell[data-theme='light'] .signalBoard {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.12)),
-    rgba(243, 237, 228, 0.92);
-}
-
-.signalBoardHeader {
+.brandCluster {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.signalBoardMode {
-  color: var(--muted);
-  font: 700 0.78rem/1 "IBM Plex Mono", "Cascadia Code", monospace;
-  text-transform: uppercase;
-}
-
-.signalBoardBody,
-.monitorPre,
-.tracePanelCard pre,
-.consoleLog,
-textarea,
-input,
-.memoryContent {
-  font-family: "IBM Plex Mono", "Cascadia Code", "SFMono-Regular", monospace;
-}
-
-.signalBoardBody {
-  margin: 0;
-  white-space: pre-wrap;
-  color: var(--text);
-  line-height: 1.62;
-  font-size: 0.94rem;
-}
-
-.layoutGrid {
-  display: grid;
-  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
-  gap: 22px;
-  margin-top: 22px;
-}
-
-.workCard {
-  min-width: 0;
-}
-
-.editorCard,
-.runtimeCard {
-  align-self: start;
-}
-
-.traceDeck,
-.manualDeck {
-  grid-column: 1 / -1;
-}
-
-.cardHeader,
-.consoleDeckHead,
-.editorFrameBar,
-.controlBar,
-.monitorGrid,
-.traceWorkspace,
-.registerWall,
-.tracePanelGrid,
-.manualGrid,
-.consoleControls {
-  display: grid;
   gap: 14px;
 }
 
-.cardHeader {
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: start;
-  margin-bottom: 18px;
-}
-
-.cardBadges {
-  justify-content: flex-end;
-  gap: 8px;
-}
-
-.chip {
-  padding: 0 11px;
-}
-
-.chip.muted {
-  color: var(--muted);
-}
-
-.cardHeader h3,
-.consoleDeckHead h3 {
-  margin-top: 6px;
-  font-size: 2rem;
-}
-
-.editorFrame {
+.brandBubble {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
   border-radius: 24px;
+  color: #ffffff;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  background: linear-gradient(180deg, #8cefff 0%, #2fc2dc 52%, #1281aa 100%);
+  box-shadow: inset 0 2px 10px rgba(255, 255, 255, 0.45), 0 16px 30px rgba(21, 148, 182, 0.26);
+}
+
+.brandBubble::after {
+  content: '';
+  position: absolute;
+  inset: 4px 6px auto 6px;
+  height: 18px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0));
+}
+
+.brandCopy h1,
+.brandCopy p {
+  margin: 0;
+}
+
+.brandEyebrow {
+  margin-bottom: 4px;
+  color: var(--text-soft);
+  font-size: 0.76rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.brandCopy h1 {
+  color: var(--heading);
+  font-size: clamp(1.5rem, 2vw, 2.1rem);
+  line-height: 1.05;
+}
+
+.modeTabs {
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px;
+  border-radius: 999px;
+  background: rgba(242, 252, 255, 0.72);
+  border: 1px solid rgba(138, 208, 233, 0.34);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.modeTab {
+  padding: 9px 16px;
+  border-radius: 999px;
+  color: var(--text-soft);
+  font-size: 0.92rem;
+  white-space: nowrap;
+}
+
+.modeTab.active {
+  color: var(--heading);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(205, 243, 255, 0.8));
+  box-shadow: var(--shadow-sm);
+}
+
+.desktopActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.statusBadge,
+.toolbarButton,
+.primaryButton,
+.glassTag,
+.consoleState,
+.runtimeState,
+.statusPill,
+.chip {
+  border-radius: 999px;
+}
+
+.statusBadge {
+  padding: 9px 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.68);
+}
+
+.statusBadge.connected,
+.runtimeState.active,
+.consoleState.idle {
+  color: #0f6643;
+  background: linear-gradient(180deg, rgba(217, 255, 230, 0.98), rgba(157, 235, 184, 0.92));
+}
+
+.statusBadge.connecting,
+.consoleState.pending,
+.runtimeState.waiting {
+  color: #785200;
+  background: linear-gradient(180deg, rgba(255, 245, 207, 0.98), rgba(255, 214, 122, 0.88));
+}
+
+.statusBadge.disconnected,
+.runtimeState.halted {
+  color: #7b1732;
+  background: linear-gradient(180deg, rgba(255, 224, 233, 0.98), rgba(255, 160, 182, 0.88));
+}
+
+.toolbarButton,
+.primaryButton,
+.ghostButton {
+  border: 1px solid var(--line-strong);
+  color: var(--heading);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(219, 244, 255, 0.75));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88), var(--shadow-sm);
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.toolbarButton:hover,
+.primaryButton:hover,
+.ghostButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 18px rgba(44, 139, 183, 0.18);
+}
+
+.toolbarButton,
+.ghostButton {
+  padding: 10px 16px;
+}
+
+.primaryButton {
+  padding: 12px 20px;
+  background: linear-gradient(180deg, #faffff 0%, #a2f1ff 18%, #47d0ea 52%, #199abf 100%);
+  color: #093148;
+  font-weight: 700;
+}
+
+.workspaceRibbon {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+  padding: 13px 18px;
+  margin-bottom: 16px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(221, 247, 255, 0.42));
+  backdrop-filter: blur(20px) saturate(160%);
+}
+
+.ribbonCapsule {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--heading);
+}
+
+.ribbonCapsule strong {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.78rem;
+}
+
+.ribbonCapsule span:last-child,
+.ribbonStats {
+  color: var(--text-soft);
+  font-size: 0.92rem;
+}
+
+.ribbonDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffffff, #67edff);
+  box-shadow: 0 0 14px rgba(69, 210, 245, 0.8);
+}
+
+.ribbonStats {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.compilerDesktop {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.sideRail,
+.workspaceStack,
+.editorRuntimeGrid,
+.tracePanelGrid,
+.runtimeTopRow,
+.registerWall,
+.flagRail,
+.consoleControls,
+.editorFooter,
+.traceNav,
+.panelHeader,
+.railPanelHeader,
+.controlBar,
+.actionRow,
+.monitorGrid,
+.cardHeader {
+  display: flex;
+}
+
+.sideRail {
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: 18px;
+}
+
+.railPanel,
+.panel {
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(225, 246, 255, 0.5));
+  backdrop-filter: blur(26px) saturate(165%);
+}
+
+.railPanel {
+  padding: 18px;
+}
+
+.welcomePanel {
+  min-height: 180px;
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.95), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(210, 241, 255, 0.5));
+}
+
+.railEyebrow,
+.panelEyebrow,
+.cardKicker {
+  margin: 0 0 6px;
+  color: var(--text-soft);
+  font-size: 0.74rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.welcomePanel h2,
+.railPanel h3,
+.panelHeader h3,
+.cardHeader h3 {
+  margin: 0;
+  color: var(--heading);
+}
+
+.welcomePanel p:last-child,
+.railPanel p,
+.manualDisclosure li,
+.factList li,
+.traceEmpty,
+.traceStatusLine,
+.runtimeMemo pre,
+.monitorPre,
+.runtimeCode,
+.consoleLine,
+.tracePanelCard pre,
+.memoryContent {
+  color: var(--text);
+}
+
+.factList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.factList li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(89, 171, 201, 0.16);
+  font-size: 0.9rem;
+}
+
+.factList li span {
+  color: var(--text-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+}
+
+.manualPreviewList {
+  display: grid;
+  gap: 10px;
+  max-height: 44rem;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.manualDisclosure {
+  border-radius: 16px;
+  border: 1px solid rgba(93, 176, 207, 0.18);
+  background: rgba(255, 255, 255, 0.38);
   overflow: hidden;
 }
 
-.editorFrameBar {
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  padding: 14px 16px;
-  background: rgba(255, 255, 255, 0.035);
-  color: var(--muted);
-  font: 700 0.74rem/1.2 "IBM Plex Mono", "Cascadia Code", monospace;
+.manualDisclosure summary {
+  padding: 12px 14px;
+  font-weight: 700;
+  color: var(--heading);
+  cursor: pointer;
+}
+
+.manualDisclosure ul {
+  margin: 0;
+  padding: 0 18px 16px 28px;
+  display: grid;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.workspaceStack {
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+
+.editorRuntimeGrid {
+  gap: 18px;
+  align-items: stretch;
+}
+
+.editorRuntimeGrid > .panel {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.panel {
+  padding: 18px;
+}
+
+.panelHeader,
+.cardHeader,
+.railPanelHeader {
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.panelHeaderMeta,
+.cardBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.glassTag,
+.chip {
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.42);
+  color: var(--text-soft);
+  font-size: 0.76rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
 
-.editorLabel {
+.editorToolbar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
   gap: 12px;
-  padding: 16px;
-  color: var(--muted);
-}
-
-textarea,
-input {
-  width: 100%;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  color: var(--text);
-  background: var(--panel-muted);
-}
-
-textarea {
-  min-height: var(--editor-height);
-  resize: vertical;
-  padding: 18px;
-  line-height: 1.58;
-  font-size: 0.98rem;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.015), rgba(255, 255, 255, 0.015)),
-    repeating-linear-gradient(
-      180deg,
-      transparent 0,
-      transparent 30px,
-      rgba(255, 255, 255, 0.02) 30px,
-      rgba(255, 255, 255, 0.02) 31px
-    ),
-    var(--panel-muted);
-}
-
-input {
-  min-height: 52px;
-  padding: 0 16px;
-  font-size: 0.96rem;
-}
-
-.hintBox {
-  position: absolute;
-  width: 340px;
-  z-index: 20;
-  border-radius: 16px;
-  overflow: hidden;
-  border: 1px solid var(--line-strong);
-  background: var(--panel-raised);
-  box-shadow: var(--shadow);
-}
-
-.hintItem {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 4px;
   padding: 12px 14px;
+  margin-bottom: 12px;
+  border-radius: 18px;
+  border: 1px solid rgba(96, 177, 207, 0.24);
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.windowDots {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.windowDots i {
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffffff, #79e5ff);
+  box-shadow: 0 0 10px rgba(67, 213, 248, 0.7);
+}
+
+.editorPath,
+.editorMeta {
+  font-size: 0.84rem;
+  color: var(--text-soft);
+}
+
+.editorPath {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.editorSurface {
+  position: relative;
+  display: block;
+  min-height: 600px;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(92, 176, 209, 0.24);
+  background: var(--editor-bg);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -10px 30px rgba(63, 170, 214, 0.08);
+}
+
+.editorSurface textarea,
+.runtimeCode,
+.consoleLog,
+.runtimeMemo pre,
+.tracePanelCard pre,
+.memoryContent {
+  font-family: 'Consolas', 'Lucida Console', 'Courier New', monospace;
+}
+
+.editorSurface textarea {
+  width: 100%;
+  height: 100%;
+  min-height: 600px;
+  padding: 22px 24px;
   border: 0;
-  border-bottom: 1px solid var(--line);
-  border-radius: 0;
+  outline: none;
+  resize: vertical;
   background: transparent;
-  color: var(--text);
+  color: var(--heading);
+  font-size: 1.14rem;
+  line-height: 1.55;
 }
 
-.hintItem:last-child {
-  border-bottom: 0;
+.editorFooter {
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 18px;
+  margin-top: 14px;
 }
 
-.hintItem.active {
-  background: rgba(214, 122, 45, 0.16);
-}
-
-.hintLabel {
-  font-size: 0.95rem;
-}
-
-.hintDetail {
-  color: var(--muted);
-  font-size: 0.8rem;
-  line-height: 1.35;
-  white-space: normal;
-}
-
-.controlBar {
-  grid-template-columns: auto 1fr;
-  align-items: end;
-  margin-top: 18px;
-}
-
-.compactField {
-  width: 190px;
-}
-
-.fieldLabel {
+.stepsControl {
   display: grid;
   gap: 8px;
-  font-weight: 600;
+  color: var(--text-soft);
+  font-size: 0.88rem;
 }
 
-.actionRow {
-  justify-content: flex-end;
-  gap: 12px;
+.stepsControl input,
+.consoleControls input {
+  border: 1px solid var(--line-strong);
+  border-radius: 16px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.64);
+  color: var(--heading);
+  outline: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.84);
 }
 
-.monitorGrid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin-bottom: 18px;
+.stepsControl input {
+  width: 160px;
 }
 
-.monitorCard {
+.editorActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.runtimePanel {
+  display: flex;
+  flex-direction: column;
+}
+
+.runtimeTopRow {
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.runtimeTopRow > .runtimeBlock {
+  flex: 1 1 0;
+}
+
+.runtimeBlock,
+.consolePanel,
+.tracePanelCard {
+  border-radius: 24px;
   padding: 16px;
-  border-radius: 20px;
+  border: 1px solid rgba(91, 177, 208, 0.22);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.36), rgba(220, 245, 255, 0.22));
 }
 
-.monitorPre,
-.tracePanelCard pre {
-  margin: 10px 0 0;
+.runtimeBlockHead,
+.consolePanelHead {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.runtimeBlockHead span,
+.consolePanelHead h3,
+.consolePanelHead p,
+.monitorLabel {
+  margin: 0;
+}
+
+.runtimeBlockHead span,
+.consoleState,
+.runtimeMemo span {
+  color: var(--text-soft);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.runtimeCode {
+  margin: 0;
+  min-height: 112px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.34);
   white-space: pre-wrap;
   word-break: break-word;
-  line-height: 1.6;
-  color: var(--text);
+  overflow: auto;
+  font-size: 1rem;
+  line-height: 1.55;
 }
 
-.consoleDeck {
-  padding: 18px;
-  border-radius: 24px;
-}
-
-.consoleDeckHead {
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: start;
-}
-
-.consoleStatus {
-  border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--muted);
-}
-
-.consoleStatus.pending {
-  color: var(--warn);
-  border-color: rgba(231, 188, 99, 0.28);
-  background: rgba(231, 188, 99, 0.12);
+.consolePanel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  flex: 1 1 auto;
 }
 
 .consoleLog {
-  min-height: 260px;
-  max-height: 260px;
+  min-height: 300px;
+  max-height: 300px;
   overflow: auto;
-  padding: 16px;
-  border-radius: 18px;
-  border: 1px solid var(--line);
-  background: rgba(0, 0, 0, 0.16);
-  line-height: 1.32;
-}
-
-.siteShell[data-theme='light'] .consoleLog {
-  background: rgba(121, 92, 59, 0.04);
+  padding: 16px 18px;
+  border-radius: 20px;
+  background: var(--console-bg);
+  border: 1px solid rgba(92, 177, 209, 0.16);
+  display: grid;
+  gap: 8px;
+  line-height: 1.28;
 }
 
 .consoleLine {
-  white-space: pre;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.98rem;
 }
 
-.consoleLine + .consoleLine {
-  margin-top: 2px;
+.consolePrefix {
+  min-width: 56px;
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-soft);
 }
 
 .consoleLine.output {
-  color: #6fc6ff;
-}
-
-.consoleLine.input {
-  color: var(--ok);
+  color: var(--accent-strong);
 }
 
 .consoleLine.error {
-  color: var(--danger);
+  color: #cc335d;
+}
+
+.consoleLine.input {
+  color: #1e7c52;
 }
 
 .consoleControls {
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.consoleControls input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.slimButton {
+  padding-inline: 16px;
+}
+
+.runtimeMemo {
+  display: grid;
+  gap: 8px;
+}
+
+.runtimeMemo pre {
+  margin: 0;
+  min-height: 86px;
+  max-height: 120px;
+  overflow: auto;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px dashed rgba(93, 174, 205, 0.24);
+  background: rgba(255, 255, 255, 0.28);
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .traceDeck {
-  padding: 24px;
+  padding-top: 20px;
 }
 
 .traceNav {
-  justify-content: flex-end;
+  align-items: center;
   gap: 10px;
 }
 
-.traceArrow {
-  min-width: 52px;
-}
-
-.traceArrow:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
 .traceCounter {
-  border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.03);
-  color: var(--text);
+  min-width: 132px;
+  text-align: center;
+  color: var(--heading);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.traceArrow {
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0;
 }
 
 .traceWorkspace {
-  margin-top: 18px;
+  display: grid;
+  gap: 16px;
 }
 
 .traceStatusLine {
   margin: 0;
-  color: var(--soft);
-  font: 700 0.8rem/1.2 "IBM Plex Mono", "Cascadia Code", monospace;
-  letter-spacing: 0.08em;
+  color: var(--text-soft);
+  font-size: 0.88rem;
   text-transform: uppercase;
+  letter-spacing: 0.12em;
 }
 
 .registerWall {
-  grid-template-columns: repeat(8, minmax(0, 1fr));
-  margin-top: 14px;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .registerCard {
-  padding: 14px;
+  flex: 1 1 124px;
+  min-width: 120px;
+  padding: 14px 16px;
   border-radius: 18px;
+  border: 1px solid rgba(95, 178, 208, 0.24);
+  background: rgba(255, 255, 255, 0.32);
 }
 
 .registerCard span {
   display: block;
-  margin-bottom: 8px;
-  color: var(--soft);
-  font: 700 0.72rem/1.2 "IBM Plex Mono", "Cascadia Code", monospace;
-  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+  color: var(--text-soft);
+  font-size: 0.78rem;
   text-transform: uppercase;
+  letter-spacing: 0.12em;
 }
 
 .registerCard strong {
-  font-size: 1.05rem;
+  color: var(--heading);
+  font-size: 1.38rem;
+  font-family: 'Consolas', 'Lucida Console', 'Courier New', monospace;
 }
 
 .registerCard.emphasis {
-  background: linear-gradient(180deg, rgba(214, 122, 45, 0.12), rgba(214, 122, 45, 0.04)), var(--panel-raised);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(188, 244, 255, 0.54));
 }
 
 .tracePanelGrid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin-top: 14px;
+  flex-wrap: wrap;
+  gap: 14px;
 }
 
 .tracePanelCard {
-  padding: 16px;
-  border-radius: 20px;
+  flex: 1 1 280px;
+  min-width: 0;
 }
 
-.tracePanelCard h4,
-.manualCard h4 {
-  margin: 0;
-  font-size: 1rem;
+.tracePanelWide {
+  flex-basis: 100%;
+}
+
+.tracePanelCard h4 {
+  margin: 0 0 12px;
+  color: var(--heading);
 }
 
 .flagRail {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  flex-wrap: wrap;
   gap: 10px;
-  margin-top: 12px;
 }
 
 .flagChip {
-  padding: 12px 10px;
-  border-radius: 14px;
-  border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.03);
+  min-width: 68px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.26);
+  border: 1px solid rgba(95, 176, 206, 0.2);
   text-align: center;
 }
 
 .flagChip span {
   display: block;
-  margin-bottom: 4px;
-  color: var(--soft);
-  font: 700 0.7rem/1.2 "IBM Plex Mono", "Cascadia Code", monospace;
+  margin-bottom: 6px;
+  color: var(--text-soft);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.flagChip strong {
+  color: var(--heading);
 }
 
 .flagChip.active {
-  border-color: rgba(214, 122, 45, 0.34);
-  background: rgba(214, 122, 45, 0.16);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(174, 240, 255, 0.64));
 }
 
-.tracePanelWide {
-  grid-column: 1 / -1;
+.tracePanelCard pre,
+.memoryContent {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.5;
+  font-size: 1rem;
 }
 
 .memoryContent {
-  min-height: 120px;
-  max-height: 160px;
-  overflow: auto;
-  margin-top: 12px;
-  padding: 14px 16px;
-  border-radius: 16px;
-  border: 1px solid var(--line);
-  background: rgba(0, 0, 0, 0.16);
-  line-height: 1.6;
-}
-
-.siteShell[data-theme='light'] .memoryContent {
-  background: rgba(121, 92, 59, 0.04);
+  min-height: 104px;
 }
 
 .traceEmpty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   min-height: 220px;
-  border-radius: 20px;
-  border: 1px dashed var(--line-strong);
-  color: var(--muted);
+  display: grid;
+  place-items: center;
+  border-radius: 22px;
+  border: 1px dashed rgba(91, 176, 207, 0.26);
+  background: rgba(255, 255, 255, 0.22);
 }
 
-.manualDeck {
-  padding: 24px;
+.hintBox {
+  position: absolute;
+  z-index: 10;
+  width: min(300px, calc(100% - 16px));
+  padding: 8px;
+  border-radius: 18px;
+  border: 1px solid rgba(67, 157, 196, 0.32);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(216, 245, 255, 0.94));
+  box-shadow: 0 18px 34px rgba(40, 128, 169, 0.18);
+  backdrop-filter: blur(12px);
 }
 
-.manualGrid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  margin-top: 18px;
+.hintItem {
+  width: 100%;
+  display: grid;
+  gap: 2px;
+  text-align: left;
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 12px;
+  color: var(--heading);
+  background: transparent;
 }
 
-.manualCard {
-  padding: 18px;
-  border-radius: 20px;
+.hintItem.active,
+.hintItem:hover {
+  background: rgba(112, 221, 248, 0.2);
 }
 
-.manualCard ul {
-  margin: 14px 0 0;
-  padding-left: 18px;
-  color: var(--muted);
-  line-height: 1.7;
+.hintLabel {
+  font-weight: 700;
+}
+
+.hintDetail {
+  color: var(--text-soft);
+  font-size: 0.82rem;
 }
 
 .errorBanner {
-  width: min(1480px, 100%);
-  margin: 16px auto 0;
-  padding: 14px 16px;
-  border-radius: 16px;
-  border: 1px solid rgba(243, 140, 134, 0.4);
-  background: rgba(243, 140, 134, 0.12);
-  color: var(--danger);
+  margin: 0 0 16px;
+  padding: 14px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(222, 92, 124, 0.28);
+  background: linear-gradient(180deg, rgba(255, 245, 247, 0.95), rgba(255, 221, 229, 0.9));
+  color: #9a1f47;
+  box-shadow: 0 10px 20px rgba(222, 92, 124, 0.12);
 }
 
-@media (max-width: 1260px) {
-  .overviewSection,
-  .layoutGrid,
-  .monitorGrid,
-  .tracePanelGrid,
-  .manualGrid {
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 1320px) {
+  .compilerDesktop {
     grid-template-columns: 1fr;
   }
 
-  .registerWall {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+  .sideRail {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
   }
 }
 
-@media (max-width: 860px) {
-  .siteShell {
-    padding: 14px;
-    --editor-height: 48vh;
-  }
-
-  .utilityBar,
-  .overviewIntro,
-  .overviewTelemetry,
-  .workCard,
-  .manualDeck {
-    padding: 18px;
-  }
-
-  .utilityBar,
-  .controlBar,
-  .consoleControls,
-  .cardHeader,
-  .consoleDeckHead {
+@media (max-width: 1120px) {
+  .desktopHeader {
     grid-template-columns: 1fr;
   }
 
-  .utilityBar,
-  .utilityActions,
-  .overviewMeta,
-  .actionRow,
-  .traceNav,
-  .cardBadges {
+  .modeTabs {
+    justify-self: start;
+    overflow: auto;
+  }
+
+  .desktopActions {
     justify-content: flex-start;
+    flex-wrap: wrap;
   }
 
-  .overviewIntro h2 {
-    font-size: clamp(2.4rem, 12vw, 3.6rem);
+  .editorRuntimeGrid,
+  .runtimeTopRow {
+    flex-direction: column;
   }
 
-  .telemetryGrid,
-  .registerWall,
-  .flagRail {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .sideRail {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .siteShell {
+    padding: 12px;
   }
 
-  .hintBox {
-    width: min(320px, calc(100vw - 56px));
+  .desktopHeader,
+  .workspaceRibbon,
+  .panel,
+  .railPanel {
+    border-radius: 22px;
+  }
+
+  .brandCluster {
+    align-items: flex-start;
+  }
+
+  .brandBubble {
+    width: 56px;
+    height: 56px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+  }
+
+  .workspaceRibbon,
+  .ribbonCapsule,
+  .ribbonStats,
+  .consoleControls,
+  .editorFooter,
+  .traceNav {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .consoleControls input,
+  .stepsControl input {
+    width: 100%;
+  }
+
+  .editorSurface,
+  .editorSurface textarea {
+    min-height: 460px;
+  }
+
+  .registerCard {
+    min-width: calc(50% - 6px);
   }
 }
