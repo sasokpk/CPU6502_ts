@@ -617,13 +617,6 @@ function App() {
           </div>
         </div>
 
-        <nav className="modeTabs" aria-label="workspace sections">
-          <span className="modeTab active">Editor</span>
-          <span className="modeTab">Runtime</span>
-          <span className="modeTab">Trace</span>
-          <span className="modeTab">Manual</span>
-        </nav>
-
         <div className="desktopActions">
           <button
             type="button"
@@ -631,9 +624,6 @@ function App() {
             onClick={() => setTheme((current) => (current === 'light' ? 'dark' : 'light'))}
           >
             {theme === 'light' ? 'Dark' : 'Light'}
-          </button>
-          <button type="button" className="toolbarButton" onClick={connect}>
-            Reconnect
           </button>
         </div>
       </header>
