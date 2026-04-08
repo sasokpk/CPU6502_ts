@@ -621,26 +621,34 @@ function App() {
     ? currentStep.memory_used.map((cell) => `${formatHex(cell.address)}:${formatHex(cell.value)}`).join('  ')
     : '-'
 
+  const bytesPreview = assembled.map((value) => formatHex(value, 2)).join(' ') || '—'
+  const outputPreview = result?.outputs.length
+    ? result.outputs
+        .map((output) => `${formatHex(output.address)} -> ${output.value.toString(16).toUpperCase()} (${output.value})`)
+        .join('\n')
+    : 'No runtime output yet.'
+  const activeFlags = currentStep
+    ? Object.entries(currentStep.before.flags).filter(([, active]) => active).map(([flag]) => flag)
+    : []
+
   return (
     <main className="siteShell" data-theme={theme}>
-      <header className="topbar">
-        <a className="brand" href="#hero">
-          <span className="brandMark">6502</span>
-          <span className="brandText">Theoretical CPU Lab</span>
-        </a>
-        <nav className="navLinks">
-          <a href="#workspace">Workspace</a>
-          <a href="#modules">Modules</a>
-          <a href="#docs">Reference</a>
-          <a href="#about">About</a>
-        </nav>
-        <div className="navActions">
+      <header className="utilityBar">
+        <div className="utilityBrand">
+          <span className="utilityStamp">6502</span>
+          <div>
+            <p className="utilityKicker">Interactive emulator studio</p>
+            <h1>Assembly Workbench</h1>
+          </div>
+        </div>
+        <div className="utilityActions">
+          <span className={`statusPill ${status}`}>{status}</span>
           <button
             type="button"
             className="ghostButton"
             onClick={() => setTheme((current) => (current === 'light' ? 'dark' : 'light'))}
           >
-            {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
+            {theme === 'light' ? 'Dark mode' : 'Light mode'}
           </button>
           <button type="button" className="ghostButton" onClick={connect}>
             Reconnect
@@ -648,13 +656,14 @@ function App() {
         </div>
       </header>
 
-      <section className="hero" id="hero">
-        <div className="heroCopy">
-          <p className="eyebrow">Theoretical informatics meets full-stack engineering</p>
-          <h1>Explore, assemble, and step through MOS 6502 programs in the browser.</h1>
-          <p className="heroText">
-            CPU6502_ts combines a Python-backed emulator, a React/TypeScript workspace, and a
-            live execution trace into one educational platform for low-level programming.
+      <section className="overviewSection">
+        <div className="overviewIntro">
+          <p className="overviewEyebrow">MOS 6502 emulator / long integer mode / browser runtime</p>
+          <h2>Write assembler like a lab experiment, not like a form.</h2>
+          <p className="overviewText">
+            The interface is now built as a focused workstation: code on the left, live machine
+            state on the right, and the trace spread wide enough that you can actually read what
+            the CPU is doing step by step.
           </p>
           <div className="heroSignals" aria-label="platform capabilities">
             {HERO_SIGNALS.map((signal) => (
@@ -663,91 +672,69 @@ function App() {
               </span>
             ))}
           </div>
-          <div className="heroActions">
-            <a className="primaryLink" href="#workspace">
-              Get Started
-            </a>
-            <a className="secondaryLink" href="#modules">
-              View Modules
-            </a>
-          </div>
-          <div className="heroMeta">
-            <span className={`statusPill ${status}`}>{status}</span>
-            <span>API: {apiUrl}</span>
-          </div>
-          <div className="metricStrip">
-            <article className="metricCard">
-              <span>Runtime</span>
-              <strong>{result?.halted ? 'HALTED' : 'LIVE'}</strong>
-            </article>
-            <article className="metricCard">
-              <span>Program bytes</span>
-              <strong>{assembled.length || 0}</strong>
-            </article>
-            <article className="metricCard">
-              <span>Trace steps</span>
-              <strong>{result?.trace.length ?? 0}</strong>
-            </article>
+          <div className="overviewMeta">
+            <span>API {apiUrl}</span>
+            <span>{waitingInput ? 'Input requested by CTA' : 'Console idle'}</span>
+            <span>{result?.trace.length ?? 0} trace steps</span>
           </div>
         </div>
 
-        <aside className="heroTerminal" aria-label="runtime preview">
-          <div className="terminalBar">
-            <span />
-            <span />
-            <span />
+        <aside className="overviewTelemetry">
+          <div className="telemetryGrid">
+            <article className="telemetryCard">
+              <span>Runtime</span>
+              <strong>{result?.halted ? 'HALTED' : 'LIVE'}</strong>
+            </article>
+            <article className="telemetryCard">
+              <span>Program bytes</span>
+              <strong>{assembled.length || 0}</strong>
+            </article>
+            <article className="telemetryCard">
+              <span>Flags</span>
+              <strong>{activeFlags.join(' ') || '—'}</strong>
+            </article>
           </div>
-          <div className="terminalBody">
-            <p className="terminalFile">cpu6502-simulator.exe</p>
-            <p>$ initialize_emulator</p>
-            <p>Loading MOS 6502 core...</p>
-            <p>$ attach_transport</p>
-            <p>protocol = Django JSON API</p>
-            <p>$ runtime_snapshot</p>
-            <p>program_bytes = {assembled.length || DEFAULT_SOURCE.length}</p>
-            <p>input_mode = {waitingInput ? 'waiting' : 'idle'}</p>
-            <p>trace_steps = {result?.trace.length ?? 0}</p>
-            <p>mode = {theme}</p>
+          <div className="signalBoard">
+            <div className="signalBoardHeader">
+              <span className="signalBoardLabel">Runtime memo</span>
+              <span className="signalBoardMode">{theme}</span>
+            </div>
+            <pre className="signalBoardBody">
+{`$ boot monitor
+transport = django http api
+mode = ${theme}
+trace = ${result?.trace.length ?? 0} steps
+waiting_input = ${waitingInput ? 'yes' : 'no'}
+current_step = ${currentStep ? `${stepIndex + 1}/${result?.trace.length}` : 'idle'}
+
+${outputPreview}`}
+            </pre>
           </div>
         </aside>
       </section>
 
       {error ? <p className="errorBanner">{error}</p> : null}
 
-      <section className="featureSection" id="modules">
-        <div className="sectionHeading">
-          <p className="sectionKicker">Explore Computational Models</p>
-          <h2>Everything important stays visible at the same time.</h2>
-          <p>
-            The interface is organized like a technical simulator: source on the left, runtime on
-            the right, and docs close enough that you can learn while you experiment.
-          </p>
-        </div>
-        <div className="featureGrid">
-          {FEATURE_CARDS.map((card) => (
-            <article key={card.title} className="featureCard">
-              <p className="featureMeta">{card.meta}</p>
-              <h3>{card.title}</h3>
-              <p>{card.text}</p>
-              <a href="#workspace">Explore</a>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="workspaceSection" id="workspace">
-        <article className="panel editorPanel">
-          <div className="panelHead">
+      <section className="layoutGrid">
+        <article className="workCard editorCard">
+          <div className="cardHeader">
             <div>
-              <p className="panelKicker">Editor</p>
-              <h2>Assembly Workspace</h2>
+              <p className="cardKicker">Program bay</p>
+              <h3>Source editor</h3>
             </div>
-            <span className="tag">assembler</span>
+            <div className="cardBadges">
+              <span className="chip">autocomplete</span>
+              <span className="chip">assembly</span>
+            </div>
           </div>
 
-          <label className="fieldLabel">
-            Source code
-            <div className="editorWrap">
+          <div className="editorFrame">
+            <div className="editorFrameBar">
+              <span>program.asm</span>
+              <span>{assembled.length || DEFAULT_SOURCE.length} bytes in view</span>
+            </div>
+            <label className="fieldLabel editorLabel">
+              <span>Source code</span>
               <textarea
                 ref={textareaRef}
                 value={source}
@@ -805,12 +792,12 @@ function App() {
                   ))}
                 </div>
               ) : null}
-            </div>
-          </label>
+            </label>
+          </div>
 
-          <div className="editorFooter">
+          <div className="controlBar">
             <label className="fieldLabel compactField">
-              Max steps
+              <span>Max steps</span>
               <input
                 type="number"
                 min={1}
@@ -821,38 +808,47 @@ function App() {
 
             <div className="actionRow">
               <button type="button" className="primaryButton" onClick={onRun}>
-                Run Simulation
+                Run simulation
               </button>
               <button type="button" className="ghostButton" onClick={onAssemble}>
-                Assemble Bytes
+                Assemble only
               </button>
             </div>
           </div>
         </article>
 
-        <article className="panel runtimePanel">
-          <div className="panelHead">
+        <article className="workCard runtimeCard">
+          <div className="cardHeader">
             <div>
-              <p className="panelKicker">Runtime</p>
-              <h2>Execution Output</h2>
+              <p className="cardKicker">Machine side</p>
+              <h3>Runtime monitor</h3>
             </div>
-            <span className="tag">monitor</span>
+            <div className="cardBadges">
+              <span className="chip">live state</span>
+              <span className="chip">console</span>
+            </div>
           </div>
 
-          <section className="stackCard compact">
-            <h3>Program bytes</h3>
-            <pre>{assembled.map((value) => formatHex(value, 2)).join(' ') || '-'}</pre>
-          </section>
+          <div className="monitorGrid">
+            <section className="monitorCard">
+              <span className="monitorLabel">Program bytes</span>
+              <pre className="monitorPre">{bytesPreview}</pre>
+            </section>
+            <section className="monitorCard">
+              <span className="monitorLabel">Final state</span>
+              <pre className="monitorPre">{formatStateLine(result?.final_state ?? null)}</pre>
+            </section>
+          </div>
 
-          <section className="stackCard compact">
-            <h3>Final state</h3>
-            <pre>{formatStateLine(result?.final_state ?? null)}</pre>
-          </section>
-
-          <section className="stackCard consoleCard">
-            <div className="consoleHead">
-              <h3>Console</h3>
-              <span>{waitingInput ? 'awaiting input' : 'ready'}</span>
+          <section className="consoleDeck">
+            <div className="consoleDeckHead">
+              <div>
+                <p className="cardKicker">Machine I/O</p>
+                <h3>Interactive console</h3>
+              </div>
+              <span className={`consoleStatus ${waitingInput ? 'pending' : 'idle'}`}>
+                {waitingInput ? 'awaiting input' : 'idle'}
+              </span>
             </div>
             <div className="consoleLog">
               {consoleEntries.map((entry, index) => (
@@ -865,7 +861,7 @@ function App() {
               <input
                 value={consoleInput}
                 onChange={(e) => setConsoleInput(e.target.value)}
-                placeholder={waitingInput ? 'enter hex input (0A / 0x0A)' : 'program input will be requested here'}
+                placeholder={waitingInput ? 'enter hex input (0A / 0x0A)' : 'console waits until CTA asks for input'}
               />
               <button type="button" className="ghostButton" onClick={addConsoleInput}>
                 Send
@@ -881,32 +877,40 @@ function App() {
           </section>
         </article>
 
-        <section className="traceCard tracePanel">
-          {currentStep ? (
-            <div className="stepper">
-              <div className="stepperTop">
-                <button
-                  type="button"
-                  className="stepArrow ghostButton"
-                  onClick={() => setStepIndex((prev) => Math.max(0, prev - 1))}
-                  disabled={stepIndex === 0}
-                >
-                  ←
-                </button>
-                <h3>STEP {stepIndex + 1}/{result?.trace.length}</h3>
-                <button
-                  type="button"
-                  className="stepArrow ghostButton"
-                  onClick={() =>
-                    setStepIndex((prev) => Math.min((result?.trace.length ?? 1) - 1, prev + 1))
-                  }
-                  disabled={stepIndex === (result?.trace.length ?? 1) - 1}
-                >
-                  →
-                </button>
-              </div>
+        <section className="workCard traceDeck">
+          <div className="cardHeader">
+            <div>
+              <p className="cardKicker">Step inspector</p>
+              <h3>Trace + occupied memory</h3>
+            </div>
+            <div className="traceNav">
+              <button
+                type="button"
+                className="ghostButton traceArrow"
+                onClick={() => setStepIndex((prev) => Math.max(0, prev - 1))}
+                disabled={stepIndex === 0}
+              >
+                ←
+              </button>
+              <span className="traceCounter">
+                {currentStep ? `step ${stepIndex + 1}/${result?.trace.length}` : 'trace idle'}
+              </span>
+              <button
+                type="button"
+                className="ghostButton traceArrow"
+                onClick={() =>
+                  setStepIndex((prev) => Math.min((result?.trace.length ?? 1) - 1, prev + 1))
+                }
+                disabled={stepIndex === (result?.trace.length ?? 1) - 1}
+              >
+                →
+              </button>
+            </div>
+          </div>
 
-              <p className="stepMeta">
+          {currentStep ? (
+            <div className="traceWorkspace">
+              <p className="traceStatusLine">
                 {currentStep.error
                   ? `ERROR: ${currentStep.error}`
                   : currentStep.halted
@@ -914,132 +918,104 @@ function App() {
                     : 'RUNNING'}
               </p>
 
-                <div className="traceLayout">
-                  <div className="traceTopRow">
-                    <div className="tracePrimary">
-                      <div className="registerGrid registerGridPrimary">
-                        <div className="regBox">
-                          <span>A</span>
-                          <strong>{formatHex(currentStep.before.A)}</strong>
-                        </div>
-                        <div className="regBox">
-                          <span>X</span>
-                          <strong>{formatHex(currentStep.before.X)}</strong>
-                        </div>
-                        <div className="regBox">
-                          <span>Y</span>
-                          <strong>{formatHex(currentStep.before.Y)}</strong>
-                        </div>
-                        <div className="regBox">
-                          <span>PC</span>
-                          <strong>{formatHex(currentStep.before.PC)}</strong>
-                        </div>
-                        <div className="regBox">
-                          <span>OP</span>
-                          <strong>{formatHex(currentStep.opcode, 2)}</strong>
-                        </div>
-                      </div>
-
-                      <div className="registerGrid registerGridSecondary">
-                        <div className="regBox">
-                          <span>SP</span>
-                          <strong>{formatHex(currentStep.before.SP, 2)}</strong>
-                        </div>
-                        <div className="regBox">
-                          <span>P</span>
-                          <strong>{formatHex(currentStep.before.P, 2)}</strong>
-                        </div>
-                        <div className="regBox">
-                          <span>Cycles</span>
-                          <strong>{currentStep.before.cycles}</strong>
-                        </div>
-                      </div>
-                    </div>
-
-                    <section className="flagPanel">
-                      <h3>Flags</h3>
-                      <div className="flagGrid">
-                        {['C', 'Z', 'N', 'V', 'I', 'D', 'B'].map((flag) => (
-                          <div key={flag} className={`flagBox ${currentFlags[flag] ? 'active' : ''}`}>
-                            <span>{flag}</span>
-                            <strong>{currentFlags[flag] ? '1' : '0'}</strong>
-                          </div>
-                        ))}
-                      </div>
-                    </section>
-                  </div>
-
-                <div className="traceBottomRow">
-                  <section className="snapshotCard">
-                    <h3>Before</h3>
-                    <pre>{formatStateLine(currentStep.before)}</pre>
-                  </section>
-                  <section className="snapshotCard">
-                    <h3>After</h3>
-                    <pre>{formatStateLine(currentStep.after ?? null)}</pre>
-                  </section>
-                  <div className="memoryPanel">
-                    <h3>Memory</h3>
-                    <div className="memoryContent">{memoryView}</div>
-                  </div>
+              <div className="registerWall">
+                <div className="registerCard emphasis">
+                  <span>A</span>
+                  <strong>{formatHex(currentStep.before.A)}</strong>
                 </div>
+                <div className="registerCard">
+                  <span>X</span>
+                  <strong>{formatHex(currentStep.before.X)}</strong>
+                </div>
+                <div className="registerCard">
+                  <span>Y</span>
+                  <strong>{formatHex(currentStep.before.Y)}</strong>
+                </div>
+                <div className="registerCard">
+                  <span>PC</span>
+                  <strong>{formatHex(currentStep.before.PC)}</strong>
+                </div>
+                <div className="registerCard">
+                  <span>OP</span>
+                  <strong>{formatHex(currentStep.opcode, 2)}</strong>
+                </div>
+                <div className="registerCard">
+                  <span>SP</span>
+                  <strong>{formatHex(currentStep.before.SP, 2)}</strong>
+                </div>
+                <div className="registerCard">
+                  <span>P</span>
+                  <strong>{formatHex(currentStep.before.P, 2)}</strong>
+                </div>
+                <div className="registerCard">
+                  <span>Cycles</span>
+                  <strong>{currentStep.before.cycles}</strong>
+                </div>
+              </div>
+
+              <div className="tracePanelGrid">
+                <section className="tracePanelCard">
+                  <h4>Flags</h4>
+                  <div className="flagRail">
+                    {['C', 'Z', 'N', 'V', 'I', 'D', 'B'].map((flag) => (
+                      <div key={flag} className={`flagChip ${currentFlags[flag] ? 'active' : ''}`}>
+                        <span>{flag}</span>
+                        <strong>{currentFlags[flag] ? '1' : '0'}</strong>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="tracePanelCard">
+                  <h4>Before</h4>
+                  <pre>{formatStateLine(currentStep.before)}</pre>
+                </section>
+
+                <section className="tracePanelCard">
+                  <h4>After</h4>
+                  <pre>{formatStateLine(currentStep.after ?? null)}</pre>
+                </section>
+
+                <section className="tracePanelCard tracePanelWide">
+                  <h4>Occupied memory</h4>
+                  <div className="memoryContent">{memoryView}</div>
+                </section>
               </div>
             </div>
           ) : (
-            <div className="traceEmpty">No trace yet. Click Run to execute program.</div>
+            <div className="traceEmpty">No trace yet. Click Run to execute the current program.</div>
           )}
         </section>
-      </section>
 
-      <section className="docsSection" id="docs">
-        <div className="sectionHeading narrow">
-          <p className="sectionKicker">Reference</p>
-          <h2>Instruction guide for the current educational ISA.</h2>
-        </div>
-        <div className="docsGrid">
-          {INSTRUCTION_HELP.map((group) => (
-            <article key={group.title} className="docCard">
-              <h3>{group.title}</h3>
-              <ul>
-                {group.items.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
-      </section>
+        <section className="manualDeck">
+          <div className="cardHeader">
+            <div>
+              <p className="cardKicker">Manual</p>
+              <h3>Instruction reference</h3>
+            </div>
+            <div className="cardBadges">
+              {FEATURE_CARDS.map((card) => (
+                <span key={card.title} className="chip muted">
+                  {card.meta}
+                </span>
+              ))}
+            </div>
+          </div>
 
-      <section className="ctaSection" id="about">
-        <div>
-          <p className="sectionKicker">Ready to explore 6502?</p>
-          <h2>Use the platform as a classroom demo, a self-study lab, or a portfolio project.</h2>
-          <p>
-            The app keeps historical CPU ideas and modern web engineering in one place: Python
-            backend, Django HTTP API, React runtime, and a browser-first workflow.
-          </p>
-        </div>
-        <div className="ctaActions">
-          <a className="primaryLink" href="#workspace">
-            Launch Workspace
-          </a>
-          <a className="secondaryLink" href="#docs">
-            Study Instructions
-          </a>
-        </div>
+          <div className="manualGrid">
+            {INSTRUCTION_HELP.map((group) => (
+              <article key={group.title} className="manualCard">
+                <h4>{group.title}</h4>
+                <ul>
+                  {group.items.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
+        </section>
       </section>
-
-      <footer className="footer">
-        <div>
-          <p className="footerBrand">CPU6502_ts</p>
-          <p>An interactive educational platform for studying assembler, CPU state, and runtime behavior.</p>
-        </div>
-        <div className="footerLinks">
-          <a href="#workspace">Workspace</a>
-          <a href="#modules">Modules</a>
-          <a href="#docs">Reference</a>
-        </div>
-      </footer>
     </main>
   )
 }
