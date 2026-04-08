@@ -602,6 +602,7 @@ function App() {
     : []
   const currentAfterFlags = currentStep?.after?.flags ?? {}
   const runtimeState = result?.halted ? 'halted' : waitingInput ? 'input required' : 'running'
+  const sourceLines = source.split('\n')
 
   return (
     <main className="siteShell" data-theme={theme} data-connection-state={status}>
@@ -640,8 +641,8 @@ function App() {
       <section className="workspaceRibbon">
         <div className="ribbonCapsule">
           <span className="ribbonDot" />
-          <strong>compiler</strong>
-          <span>assemble, run and inspect 6502 programs in one view</span>
+          <strong>workspace</strong>
+          <span>assemble, run and inspect 6502 programs in one glass desktop</span>
         </div>
         <div className="ribbonStats">
           <span>bytes: {assembled.length || 0}</span>
@@ -658,9 +659,8 @@ function App() {
             <p className="railEyebrow">workspace</p>
             <h2>Build, run, inspect.</h2>
             <p>
-              This layout behaves like an online compiler first and a learning tool second. The
-              editor stays primary, the runtime stays readable, and the CPU details stay one click
-              away.
+              A browser compiler styled like a late-2000s operating system shell: code in the
+              center, runtime on the right, step inspector below, manual in the side dock.
             </p>
           </section>
 
@@ -692,7 +692,7 @@ function App() {
                   <h3>Program.asm</h3>
                 </div>
                 <div className="panelHeaderMeta">
-                  <span className="glassTag">autocomplete</span>
+                  <span className="glassTag">assist</span>
                   <span className="glassTag">assembly</span>
                 </div>
               </div>
@@ -709,6 +709,12 @@ function App() {
 
               <label className="editorSurface">
                 <span className="srOnly">Source code</span>
+                <div className="editorGloss" aria-hidden="true" />
+                <div className="editorGutter" aria-hidden="true">
+                  {sourceLines.map((_, index) => (
+                    <span key={`line-${index + 1}`}>{index + 1}</span>
+                  ))}
+                </div>
                 <textarea
                   ref={textareaRef}
                   value={source}
