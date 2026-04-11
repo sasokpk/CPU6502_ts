@@ -32,6 +32,8 @@
   --radius-lg: 24px;
   --radius-md: 18px;
   --radius-sm: 14px;
+  /* Фон корня = страница: при overscroll не просвечивает белый canvas / index.css */
+  background: var(--page-bg);
 }
 
 [data-theme='dark'] {
@@ -75,9 +77,17 @@ body,
   min-height: 100%;
 }
 
+html {
+  /* Уменьшает «резиновый» скролл и просвет белого фона браузера сверху/снизу */
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+}
+
 body {
   margin: 0;
   min-width: 320px;
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
   background: var(--page-bg);
   color: var(--text);
   font-family: 'Trebuchet MS', 'Segoe UI', Tahoma, sans-serif;
@@ -529,6 +539,11 @@ button {
 .editorRuntimeGrid > .panel {
   flex: 1 1 0;
   min-width: 0;
+}
+
+.editorPanel {
+  display: flex;
+  flex-direction: column;
 }
 
 .editorToolbar {
@@ -1012,8 +1027,11 @@ button {
 }
 
 .hintBox {
+  position: absolute;
   z-index: 10;
   width: min(320px, calc(100% - 16px));
+  max-height: min(280px, calc(100% - 16px));
+  overflow: auto;
   padding: 8px;
   border-radius: 18px;
   border: 1px solid rgba(219, 255, 255, 0.22);
@@ -1119,32 +1137,116 @@ button {
     display: flex;
     flex-direction: column;
   }
+
+  .editorRuntimeGrid > .panel,
+  .runtimeTopRow > .runtimeBlock {
+    flex: none;
+    width: 100%;
+  }
+
+  .editorPanel,
+  .runtimePanel {
+    min-height: auto;
+  }
 }
 
 @media (max-width: 720px) {
   .siteShell {
-    padding: 12px;
+    padding: 10px;
   }
 
   .desktopHeader,
   .workspaceRibbon,
   .panel,
   .railPanel {
-    border-radius: 24px;
+    border-radius: 20px;
   }
 
   .brandCluster {
     align-items: flex-start;
   }
 
+  .brandCopy h1 {
+    font-size: 1.9rem;
+  }
+
+  .brandEyebrow {
+    font-size: 0.62rem;
+  }
+
+  .compilerDesktop {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .workspaceStack {
+    order: 1;
+    gap: 14px;
+  }
+
+  .sideRail {
+    order: 2;
+    gap: 14px;
+  }
+
+  .welcomePanel {
+    display: none;
+  }
+
+  .manualPreviewPanel {
+    min-height: auto;
+  }
+
+  .manualPreviewList {
+    max-height: none;
+  }
+
   .workspaceRibbon,
   .ribbonCapsule,
-  .ribbonStats,
-  .consoleControls,
   .editorFooter,
-  .traceNav {
+  .desktopActions {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .workspaceRibbon {
+    gap: 10px;
+    padding: 10px 12px;
+  }
+
+  .ribbonCapsule {
+    gap: 8px;
+  }
+
+  .ribbonCapsule span:last-child {
+    display: none;
+  }
+
+  .ribbonStats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px 10px;
+    width: 100%;
+    font-size: 0.74rem;
+  }
+
+  .ribbonStats span:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .panel,
+  .railPanel {
+    padding: 14px;
+  }
+
+  .panelHeader,
+  .cardHeader {
+    margin-bottom: 12px;
+  }
+
+  .panelHeaderMeta {
+    gap: 6px;
   }
 
   .consoleControls input,
@@ -1154,21 +1256,128 @@ button {
     width: 100%;
   }
 
+  .editorRuntimeGrid {
+    gap: 14px;
+  }
+
+  .editorToolbar {
+    grid-template-columns: auto 1fr;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+
+  .editorMeta {
+    grid-column: 1 / -1;
+    justify-self: end;
+    font-size: 0.74rem;
+  }
+
   .editorSurface,
   .editorSurface textarea {
-    min-height: 460px;
+    min-height: 400px;
   }
 
   .editorGutter {
-    width: 52px;
-    padding-right: 8px;
+    width: 44px;
+    padding-right: 6px;
+    font-size: 0.78rem;
   }
 
   .editorSurface textarea {
-    padding-left: 72px;
+    padding: 18px 16px 18px 58px;
+    font-size: 0.92rem;
+    line-height: 1.52;
+  }
+
+  .editorFooter {
+    gap: 12px;
+  }
+
+  .editorActions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .runtimeTopRow {
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .runtimeCode {
+    min-height: 84px;
+    padding: 12px 14px;
+    font-size: 0.9rem;
+  }
+
+  .consolePanel {
+    gap: 10px;
+  }
+
+  .consoleLog {
+    min-height: 180px;
+    max-height: 220px;
+    padding: 14px;
+    font-size: 0.88rem;
+  }
+
+  .consoleControls {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .consoleControls input {
+    grid-column: 1 / -1;
+  }
+
+  .traceDeck {
+    padding-top: 14px;
+  }
+
+  .traceNav {
+    display: grid;
+    grid-template-columns: 48px 1fr 48px;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .traceCounter {
+    min-width: 0;
+    font-size: 0.82rem;
+  }
+
+  .traceWorkspace {
+    gap: 12px;
+  }
+
+  .registerWall {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .registerCard {
-    min-width: calc(50% - 6px);
+    min-width: 0;
+    padding: 12px 14px;
+  }
+
+  .registerCard strong {
+    font-size: 1.08rem;
+  }
+
+  .tracePanelGrid {
+    gap: 12px;
+  }
+
+  .tracePanelCard {
+    flex-basis: 100%;
+    padding: 14px;
+  }
+
+  .traceEmpty {
+    min-height: 160px;
+    padding: 18px;
   }
 }
