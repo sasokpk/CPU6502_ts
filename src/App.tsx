@@ -59,6 +59,9 @@ const debugLog = (payload: {
 }
 
 const DEFAULT_SOURCE = `CTA
+SBC 1
+BMI one
+ADC 1
 STA 60
 LDA 2
 STA 62
@@ -77,7 +80,13 @@ JMP loop
 done:
 LSAL 70
 OTTL 70
-BRK`
+BRK
+one:
+LDA 1
+STA 70
+OTTL 70
+BRK
+`
 
 const INSTRUCTION_HELP = [
   {

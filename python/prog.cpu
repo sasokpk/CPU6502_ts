@@ -1,20 +1,28 @@
 CTA
+SBC 1
+BMI one
+ADC 1
 STA 60
 LDA 2
 STA 62
 LDA 1
 loop:
-    MUL 62
-    STAL 70
-    LSA 62
-    CMPC 60
-    BEQ done
-    CLC
-    ADC 1
-    STA 62
-    LSAL 70
-    JMP loop
+MUL 62
+STAL 70
+LSA 62
+CMPC 60
+BEQ done
+CLC
+ADC 1
+STA 62
+LSAL 70
+JMP loop
 done:
-    LSAL 70
-    OTTL 70
-    BRK
+LSAL 70
+OTTL 70
+BRK
+one:
+LDA 1
+STA 70
+OTTL 70
+BRK
