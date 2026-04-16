@@ -39,6 +39,7 @@ OPCODES = {
     "MUL": 0x07,
     "MULM": 0x14,
     "CMPC": 0xCD,
+    "APA": 0x17,
     "STA": 0x01,
     "LSA": 0x02,
     "STX": 0x03,

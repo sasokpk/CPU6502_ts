@@ -311,6 +311,12 @@ class CPU6502:
         self.update_zn_flags(self._A, bits=32)
         self.cycles += 2
 
+    def addr_plus_a(self, addr):
+        self._A = (self._A + self.memory[addr]) & self.MASK32
+        self.update_zn_flags(self._A, bits=32)
+        self.cycles += 2
+    
+
     def MUL(self, addr):
         value = self._read16(addr)
         self._A = (self._A * value) & self.MASK32
@@ -392,6 +398,10 @@ class CPU6502:
             addr = self.memory[self._PC]
             self._PC += 1
             self.MULL(addr)
+        elif op == 0x17:
+            addr = self.memory[self._PC]
+            self._PC += 1
+            self.addr_plus_a(addr)  # This instruction doesn't do anything by itself, but can b
         elif op == 0x18:
             self.CLC()
         elif op == 0x29:
